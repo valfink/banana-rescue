@@ -22,7 +22,7 @@ class FoodItemServiceTest {
         foodItem1 = new FoodItem(
                 "1",
                 "Food Item 1",
-                "http://photo.com/1.jpg",
+                "https://photo.com/1.jpg",
                 "Berlin",
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),

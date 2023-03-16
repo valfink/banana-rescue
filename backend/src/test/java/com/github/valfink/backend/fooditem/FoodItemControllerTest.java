@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,7 +31,7 @@ class FoodItemControllerTest {
         foodItem1 = new FoodItem(
                 "1",
                 "Food Item 1",
-                "http://photo.com/1.jpg",
+                "https://photo.com/1.jpg",
                 "Berlin",
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
@@ -60,7 +59,7 @@ class FoodItemControllerTest {
                             {
                                 "id": "1",
                                 "title": "Food Item 1",
-                                "photo_uri": "http://photo.com/1.jpg",
+                                "photo_uri": "https://photo.com/1.jpg",
                                 "location": "Berlin",
                                 "pickup_until": "2023-03-16T11:14:00Z",
                                 "consume_until": "2023-03-18T11:00:00Z",
