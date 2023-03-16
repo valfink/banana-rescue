@@ -16,7 +16,7 @@ export default function FoodItemGallery() {
     return (
         <main>
             <h1>All Items</h1>
-            {foodItems.map(e => <FoodItemCard  foodItem={e}/>)}
+            {foodItems.map(e => <FoodItemCard key={e.id}  foodItem={e}/>)}
         </main>
     );
 }
