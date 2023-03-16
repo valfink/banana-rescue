@@ -1,0 +1,17 @@
+.food-item-card {
+    background-color: var(--bright-bg);
+    border-radius: 0.5rem;
+    display: flex;
+}
+.food-item-card main {
+    flex-basis: 60%;
+    padding: 0.2rem 0.3rem 0.2rem 0.2rem;
+}
+.food-item-card ul {
+    list-style: none;
+    padding: 0;
+}
+.food-item-card aside {
+    flex-basis: 40%;
+    background-size: cover;
+}

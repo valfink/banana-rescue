@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {FoodItem} from "../model/FoodItem";
 import axios from "axios";
 import FoodItemCard from "../component/FoodItemCard";
+import "./FoodItemGallery.css";
 
 export default function FoodItemGallery() {
     const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
@@ -14,9 +15,14 @@ export default function FoodItemGallery() {
     }, [])
 
     return (
-        <main>
+        <main className={"food-item-gallery"}>
             <h1>All Items</h1>
-            {foodItems.map(e => <FoodItemCard key={e.id}  foodItem={e}/>)}
+            <section>
+                {foodItems.map(e => <FoodItemCard key={e.id} foodItem={e}/>)}
+                {foodItems.length === 0 &&
+                    <article className={"food-item-card"}><h2>No items to display 😢</h2></article>
+                }
+            </section>
         </main>
     );
 }
