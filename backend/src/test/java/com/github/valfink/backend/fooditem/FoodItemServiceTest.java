@@ -32,8 +32,6 @@ class FoodItemServiceTest {
 
     @Test
     void getAll_whenRepoReturnsListOfOneItem_thenReturnListOfOneItem() {
-        // GIVEN
-
         // WHEN
         List<FoodItem> expected = new ArrayList<>(List.of(foodItem1));
         when(foodItemRepository.findAll()).thenReturn(expected);
