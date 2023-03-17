@@ -57,6 +57,15 @@ class MongoUserServiceTest {
     }
 
     @Test
+    void signUp_whenPaswordEmpty_thenThrowException() {
+        // GIVEN
+        MongoUserDTORequest invalidUser = new MongoUserDTORequest(mongoUser1.username(), "");
+
+        // WHEN & THEN
+        assertThrows(BadCredentialsException.class, () -> mongoUserService.signUp(invalidUser));
+    }
+
+    @Test
     void signUp_whenUserExistsAlready_thenThrowException() {
         // GIVEN
         when(mongoUserRepository.existsByUsername(mongoUser1.username())).thenReturn(true);
