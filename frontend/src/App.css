@@ -19,7 +19,7 @@ form, .input-with-icon {
   flex-flow: column nowrap;
 }
 
-form input, form button {
+form input, form button, form .form-error {
   margin: 0.5rem 1rem;
   padding: 0.5rem;
   border: 0.1rem solid var(--accent-dark);
@@ -31,6 +31,14 @@ form input, form button {
 form button {
   color: var(--bright-bg);
   background-color: var(--accent-dark);
+}
+
+form .form-error {
+  color: #CC0000;
+  border: 0.1rem solid #FF0000;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-weight: bold;
 }
 
 button[type=submit] {
