@@ -1,4 +1,4 @@
-package com.github.valfink.backend.config;
+package com.github.valfink.backend.util;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
