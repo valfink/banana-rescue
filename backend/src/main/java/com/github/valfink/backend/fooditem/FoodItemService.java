@@ -10,7 +10,7 @@ import java.util.List;
 public class FoodItemService {
     private final FoodItemRepository foodItemRepository;
 
-    public List<FoodItem> getAll() {
+    public List<FoodItem> getAllFoodItems() {
         return foodItemRepository.findAll();
     }
 }
