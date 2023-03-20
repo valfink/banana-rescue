@@ -9,6 +9,7 @@ import java.time.Instant;
 public record FoodItem(
         @Id
         String id,
+        String donator_id,
         String title,
         String photo_uri,
         String location,
