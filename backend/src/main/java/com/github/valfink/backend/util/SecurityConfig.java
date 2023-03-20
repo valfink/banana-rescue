@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/food").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/csrf").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll().and()
                 .build();

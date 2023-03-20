@@ -16,6 +16,11 @@ public class MongoUserController {
         return mongoUserService.signUp(mongoUserDTORequest);
     }
 
+    @PostMapping("/login")
+    public MongoUserDTOResponse login(Principal principal) {
+        return getMe(principal);
+    }
+
     @GetMapping("/me")
     public MongoUserDTOResponse getMe(Principal principal) {
         return mongoUserService.getMe(principal);
