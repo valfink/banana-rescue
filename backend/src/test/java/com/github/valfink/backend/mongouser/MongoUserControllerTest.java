@@ -51,6 +51,20 @@ class MongoUserControllerTest {
 
     @Test
     @DirtiesContext
+    void signUp_whenInvalidInput_thenReturn401() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                "username": "user"
+                                }
+                                """)
+                        .with(csrf()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DirtiesContext
     @WithMockUser
     void getMe_whenPrincipalUsernameIsInRepo_thenReturnUser() throws Exception {
         mongoUserRepository.save(mongoUser1);
