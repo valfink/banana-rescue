@@ -52,8 +52,7 @@ public class FoodItemService {
                 idService.generateId(),
                 mongoUserService.getMongoUserDTOResponseByUsername(principal.getName()).id(),
                 foodItemDTORequest.title(),
-                // TODO: PHOTO UPLOAD!
-                "PHOTO URI",
+                null,
                 foodItemDTORequest.location(),
                 foodItemDTORequest.pickup_until(),
                 foodItemDTORequest.consume_until(),

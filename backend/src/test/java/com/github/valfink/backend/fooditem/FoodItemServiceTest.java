@@ -38,7 +38,7 @@ class FoodItemServiceTest {
                 "1",
                 mongoUserDTOResponse1.id(),
                 "Food Item 1",
-                "PHOTO URI",
+                null,
                 "Berlin",
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
