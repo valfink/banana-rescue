@@ -1,5 +1,7 @@
 package com.github.valfink.backend.fooditem;
 
+import com.github.valfink.backend.mongouser.MongoUser;
+import com.github.valfink.backend.mongouser.MongoUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +25,18 @@ class FoodItemControllerTest {
     MockMvc mockMvc;
     @Autowired
     FoodItemRepository foodItemRepository;
+    @Autowired
+    MongoUserRepository mongoUserRepository;
+    MongoUser mongoUser1;
     FoodItem foodItem1;
     List<FoodItem> foodItemListOfOne;
 
     @BeforeEach
     void setUp() {
+        mongoUser1 = new MongoUser("1", "user", "pass", "BASIC");
         foodItem1 = new FoodItem(
                 "1",
+                mongoUser1.id(),
                 "Food Item 1",
                 "https://photo.com/1.jpg",
                 "Berlin",
@@ -51,6 +58,7 @@ class FoodItemControllerTest {
     @Test
     @DirtiesContext
     void getAll_whenOneItemInRepo_thenReturnListOfOneItem() throws Exception {
+        mongoUserRepository.save(mongoUser1);
         foodItemRepository.save(foodItem1);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/food"))
                 .andExpect(status().isOk())

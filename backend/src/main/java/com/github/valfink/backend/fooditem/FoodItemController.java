@@ -14,7 +14,7 @@ public class FoodItemController {
     private final FoodItemService foodItemService;
 
     @GetMapping
-    public List<FoodItem> getAllFoodItems() {
+    public List<FoodItemDTOResponse> getAllFoodItems() {
         return foodItemService.getAllFoodItems();
     }
 }
