@@ -4,7 +4,11 @@ import com.github.valfink.backend.util.IdService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.security.Principal;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,6 +22,7 @@ class MongoUserServiceTest {
     PasswordEncoder passwordEncoder;
     MongoUser mongoUser1;
     MongoUserDTOResponse mongoUserDTOResponse1;
+    Principal principal;
 
     @BeforeEach
     void setUp() {
@@ -25,6 +30,7 @@ class MongoUserServiceTest {
         idService = mock(IdService.class);
         passwordEncoder = mock(PasswordEncoder.class);
         mongoUserService = new MongoUserService(mongoUserRepository, idService, passwordEncoder);
+        principal = mock(Principal.class);
 
         mongoUser1 = new MongoUser("1", "user", "pass", "BASIC");
         mongoUserDTOResponse1 = new MongoUserDTOResponse(mongoUser1.id(), mongoUser1.username());
@@ -73,5 +79,29 @@ class MongoUserServiceTest {
 
         // WHEN & THEN
         assertThrows(BadCredentialsException.class, () -> mongoUserService.signUp(existingUser));
+    }
+
+    @Test
+    void getMe_whenPrincipalUsernameIsInRepo_thenReturnUser() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUser1.username());
+        when(mongoUserRepository.findMongoUserByUsername(mongoUser1.username())).thenReturn(Optional.ofNullable(mongoUser1));
+
+        // WHEN
+        MongoUserDTOResponse expected = mongoUserDTOResponse1;
+        MongoUserDTOResponse actual = mongoUserService.getMe(principal);
+
+        // THEN
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getMe_whenPrincipalUsernameNotInRepo_thenThrowException() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUser1.username());
+        when(mongoUserRepository.findMongoUserByUsername(mongoUser1.username())).thenReturn(Optional.empty());
+
+        // WHEN & THEN
+        assertThrows(UsernameNotFoundException.class, () -> mongoUserService.getMe(principal));
     }
 }

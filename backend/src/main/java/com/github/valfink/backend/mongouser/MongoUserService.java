@@ -3,8 +3,11 @@ package com.github.valfink.backend.mongouser;
 import com.github.valfink.backend.util.IdService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.security.Principal;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,15 @@ public class MongoUserService {
         return new MongoUserDTOResponse(
                 savedUser.id(),
                 savedUser.username()
+        );
+    }
+
+    public MongoUserDTOResponse getMe(Principal principal) {
+        MongoUser mongoUser = mongoUserRepository.findMongoUserByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("The user " + principal.getName() + " doesn't exist in the database."));
+        return new MongoUserDTOResponse(
+                mongoUser.id(),
+                mongoUser.username()
         );
     }
 }
