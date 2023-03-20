@@ -1,7 +1,3 @@
-.food-item-gallery h1 {
-    margin: 0 0 1rem 0;
-    text-align: center;
-}
 .food-item-gallery section {
     display: flex;
     flex-flow: column;

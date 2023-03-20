@@ -2,7 +2,55 @@
   background-color: var(--dark-bg);
   height: 100vh;
 }
+
 :root {
   --dark-bg: #FAFAFA;
   --bright-bg: #FFFFFF;
+  --accent-dark: #000000;
+}
+
+main h1 {
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+form, .input-with-icon {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+form input, form button, form .form-error {
+  margin: 0.5rem 1rem;
+  padding: 0.5rem;
+  border: 0.1rem solid var(--accent-dark);
+  border-radius: 0.3rem;
+  font-family: inherit;
+  line-height: 1;
+}
+
+form button {
+  color: var(--bright-bg);
+  background-color: var(--accent-dark);
+}
+
+form .form-error {
+  color: #CC0000;
+  border: 0.1rem solid #FF0000;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-weight: bold;
+}
+
+button[type=submit] {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.input-with-icon svg {
+  position: absolute;
+  margin: 1.15rem 1.5rem;
+}
+
+.input-with-icon input {
+  padding-left: 1.8rem;
 }
