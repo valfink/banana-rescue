@@ -33,7 +33,7 @@ class MongoUserServiceTest {
     @Test
     void signUp_whenUsernameAndPasswordOk_thenReturnNewUser() {
         // GIVEN
-        when(mongoUserRepository.existsByUsername(mongoUser1.username())).thenReturn(false);
+        when(mongoUserRepository.existsMongoUserByUsername(mongoUser1.username())).thenReturn(false);
         when(passwordEncoder.encode(mongoUser1.password())).thenReturn(mongoUser1.password());
         when(idService.generateId()).thenReturn(mongoUser1.id());
         when(mongoUserRepository.save(mongoUser1)).thenReturn(mongoUser1);
@@ -68,7 +68,7 @@ class MongoUserServiceTest {
     @Test
     void signUp_whenUserExistsAlready_thenThrowException() {
         // GIVEN
-        when(mongoUserRepository.existsByUsername(mongoUser1.username())).thenReturn(true);
+        when(mongoUserRepository.existsMongoUserByUsername(mongoUser1.username())).thenReturn(true);
         MongoUserDTORequest existingUser = new MongoUserDTORequest(mongoUser1.username(), mongoUser1.password());
 
         // WHEN & THEN

@@ -20,7 +20,7 @@ public class MongoUserService {
         if (mongoUserDTORequest.password() == null || mongoUserDTORequest.password().length() == 0) {
             throw new BadCredentialsException("Password is required");
         }
-        if (mongoUserRepository.existsByUsername(mongoUserDTORequest.username())) {
+        if (mongoUserRepository.existsMongoUserByUsername(mongoUserDTORequest.username())) {
             throw new BadCredentialsException("Username is already taken");
         }
 
