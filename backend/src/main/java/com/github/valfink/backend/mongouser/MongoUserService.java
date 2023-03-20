@@ -71,4 +71,10 @@ public class MongoUserService implements UserDetailsService {
                 .orElseThrow(() -> new IllegalArgumentException("The user with the id " + id + " does not exist in the database."));
         return mongoUserDTOResponseFromMongoUser(mongoUser);
     }
+
+    public MongoUserDTOResponse getMongoUserDTOResponseByUsername(String username) {
+        MongoUser mongoUser = mongoUserRepository.findMongoUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("The user " + username + " doesn't exist in the database."));
+        return mongoUserDTOResponseFromMongoUser(mongoUser);
+    }
 }
