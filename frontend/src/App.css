@@ -19,7 +19,7 @@ form, .input-with-icon {
   flex-flow: column nowrap;
 }
 
-form input, form button, form .form-error {
+form input, form button, form .form-error, form .form-success {
   margin: 0.5rem 1rem;
   padding: 0.5rem;
   border: 0.1rem solid var(--accent-dark);
@@ -36,6 +36,14 @@ form button {
 form .form-error {
   color: #CC0000;
   border: 0.1rem solid #FF0000;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-weight: bold;
+}
+
+form .form-success {
+  color: #008800;
+  border: 0.1rem solid #00DD00;
   padding-top: 1rem;
   padding-bottom: 1rem;
   font-weight: bold;
