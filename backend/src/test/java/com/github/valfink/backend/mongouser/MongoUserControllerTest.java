@@ -63,4 +63,19 @@ class MongoUserControllerTest {
                         }
                         """));
     }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void getMe_whenPrincipalUsernameIsNotInRepo_thenReturn401() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/me"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DirtiesContext
+    void getMe_whenNotAuthenticated_thenReturn401() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/me"))
+                .andExpect(status().isUnauthorized());
+    }
 }
