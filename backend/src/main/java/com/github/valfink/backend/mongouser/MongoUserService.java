@@ -29,10 +29,10 @@ public class MongoUserService implements UserDetailsService {
     }
 
     public MongoUserDTOResponse signUp(MongoUserDTORequest mongoUserDTORequest) {
-        if (mongoUserDTORequest.username() == null || mongoUserDTORequest.username().length() == 0) {
+        if (mongoUserDTORequest.username() == null || mongoUserDTORequest.username().isBlank()) {
             throw new BadCredentialsException("Username is required");
         }
-        if (mongoUserDTORequest.password() == null || mongoUserDTORequest.password().length() == 0) {
+        if (mongoUserDTORequest.password() == null || mongoUserDTORequest.password().isBlank()) {
             throw new BadCredentialsException("Password is required");
         }
         if (mongoUserRepository.existsMongoUserByUsername(mongoUserDTORequest.username())) {
