@@ -2,9 +2,12 @@ package com.github.valfink.backend.fooditem;
 
 import com.github.valfink.backend.mongouser.MongoUserService;
 import com.github.valfink.backend.util.IdService;
+import com.github.valfink.backend.util.PhotoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -15,6 +18,7 @@ public class FoodItemService {
     private final FoodItemRepository foodItemRepository;
     private final MongoUserService mongoUserService;
     private final IdService idService;
+    private final PhotoService photoService;
 
     public List<FoodItemDTOResponse> getAllFoodItems() {
         return foodItemRepository.getAllByOrderByPickupUntilDesc()
@@ -32,7 +36,7 @@ public class FoodItemService {
                 .toList();
     }
 
-    public FoodItemDTOResponse addFoodItem(FoodItemDTORequest foodItemDTORequest, Principal principal) {
+    public FoodItemDTOResponse addFoodItem(FoodItemDTORequest foodItemDTORequest, MultipartFile photo, Principal principal) {
         if (foodItemDTORequest.title() == null || foodItemDTORequest.title().isBlank()) {
             throw new InputMismatchException("Title must not be blank");
         }
@@ -48,11 +52,17 @@ public class FoodItemService {
         if (foodItemDTORequest.description() == null || foodItemDTORequest.description().isBlank()) {
             throw new InputMismatchException("Description must not be blank");
         }
+        String photoUri;
+        try {
+            photoUri = photoService.uploadPhoto(photo);
+        } catch (IOException e) {
+            throw new InputMismatchException("The photo upload didn't work: " + e.getMessage());
+        }
         FoodItem foodItem = foodItemRepository.save(new FoodItem(
                 idService.generateId(),
                 mongoUserService.getMongoUserDTOResponseByUsername(principal.getName()).id(),
                 foodItemDTORequest.title(),
-                null,
+                photoUri,
                 foodItemDTORequest.location(),
                 foodItemDTORequest.pickupUntil(),
                 foodItemDTORequest.consumeUntil(),
