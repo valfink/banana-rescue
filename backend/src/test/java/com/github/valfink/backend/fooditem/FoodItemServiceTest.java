@@ -48,10 +48,10 @@ class FoodItemServiceTest {
                 foodItem1.id(),
                 mongoUserDTOResponse1,
                 foodItem1.title(),
-                foodItem1.photo_uri(),
+                foodItem1.photoUri(),
                 foodItem1.location(),
-                foodItem1.pickup_until(),
-                foodItem1.consume_until(),
+                foodItem1.pickupUntil(),
+                foodItem1.consumeUntil(),
                 foodItem1.description()
         );
     }
@@ -60,7 +60,7 @@ class FoodItemServiceTest {
     void getAll_whenRepoReturnsListOfOneItem_thenReturnListOfOneItem() {
         // GIVEN
         when(foodItemRepository.findAll()).thenReturn(new ArrayList<>(List.of(foodItem1)));
-        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donator_id())).thenReturn(new MongoUserDTOResponse(foodItem1.donator_id(), "user"));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(new MongoUserDTOResponse(foodItem1.donatorId(), "user"));
 
         // WHEN
         List<FoodItemDTOResponse> expected = new ArrayList<>(List.of(foodItemDTOResponse1));
@@ -73,7 +73,7 @@ class FoodItemServiceTest {
     @Test
     void addFoodItem_whenValidDTORequest_thenReturnDTOResponse() {
         // GIVEN
-        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickup_until(), foodItem1.consume_until(), foodItem1.description());
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(idService.generateId()).thenReturn("1");
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
@@ -92,7 +92,7 @@ class FoodItemServiceTest {
     @Test
     void addFoodItem_whenNoTitle_thenThrowException() {
         // GIVEN
-        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(null, foodItem1.location(), foodItem1.pickup_until(), foodItem1.consume_until(), foodItem1.description());
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(null, foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
         // WHEN & THEN
         assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, principal));
     }
@@ -100,7 +100,7 @@ class FoodItemServiceTest {
     @Test
     void addFoodItem_whenNoLocation_thenThrowException() {
         // GIVEN
-        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), "", foodItem1.pickup_until(), foodItem1.consume_until(), foodItem1.description());
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), "", foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
         // WHEN & THEN
         assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, principal));
     }
@@ -108,7 +108,7 @@ class FoodItemServiceTest {
     @Test
     void addFoodItem_whenNoPickupUntil_thenThrowException() {
         // GIVEN
-        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), null, foodItem1.consume_until(), foodItem1.description());
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), null, foodItem1.consumeUntil(), foodItem1.description());
         // WHEN & THEN
         assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, principal));
     }
@@ -116,7 +116,7 @@ class FoodItemServiceTest {
     @Test
     void addFoodItem_whenNoConsumeUntil_thenThrowException() {
         // GIVEN
-        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickup_until(), null, foodItem1.description());
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickupUntil(), null, foodItem1.description());
         // WHEN & THEN
         assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, principal));
     }
@@ -124,7 +124,7 @@ class FoodItemServiceTest {
     @Test
     void addFoodItem_whenNoDescription_thenThrowException() {
         // GIVEN
-        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickup_until(), foodItem1.consume_until(), "     ");
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), "     ");
         // WHEN & THEN
         assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, principal));
     }

@@ -17,16 +17,16 @@ public class FoodItemService {
     private final IdService idService;
 
     public List<FoodItemDTOResponse> getAllFoodItems() {
-        return foodItemRepository.findAll()
+        return foodItemRepository.getAllByOrderByPickupUntilDesc()
                 .stream()
                 .map(item -> new FoodItemDTOResponse(
                         item.id(),
-                        mongoUserService.getMongoUserDTOResponseById(item.donator_id()),
+                        mongoUserService.getMongoUserDTOResponseById(item.donatorId()),
                         item.title(),
-                        item.photo_uri(),
+                        item.photoUri(),
                         item.location(),
-                        item.pickup_until(),
-                        item.consume_until(),
+                        item.pickupUntil(),
+                        item.consumeUntil(),
                         item.description()
                 ))
                 .toList();
@@ -39,10 +39,10 @@ public class FoodItemService {
         if (foodItemDTORequest.location() == null || foodItemDTORequest.location().isBlank()) {
             throw new InputMismatchException("Location must not be blank");
         }
-        if (foodItemDTORequest.pickup_until() == null) {
+        if (foodItemDTORequest.pickupUntil() == null) {
             throw new InputMismatchException("Pickup until must not be blank");
         }
-        if (foodItemDTORequest.consume_until() == null) {
+        if (foodItemDTORequest.consumeUntil() == null) {
             throw new InputMismatchException("Consume until must not be blank");
         }
         if (foodItemDTORequest.description() == null || foodItemDTORequest.description().isBlank()) {
@@ -54,18 +54,18 @@ public class FoodItemService {
                 foodItemDTORequest.title(),
                 null,
                 foodItemDTORequest.location(),
-                foodItemDTORequest.pickup_until(),
-                foodItemDTORequest.consume_until(),
+                foodItemDTORequest.pickupUntil(),
+                foodItemDTORequest.consumeUntil(),
                 foodItemDTORequest.description()
         ));
         return new FoodItemDTOResponse(
                 foodItem.id(),
-                mongoUserService.getMongoUserDTOResponseById(foodItem.donator_id()),
+                mongoUserService.getMongoUserDTOResponseById(foodItem.donatorId()),
                 foodItem.title(),
-                foodItem.photo_uri(),
+                foodItem.photoUri(),
                 foodItem.location(),
-                foodItem.pickup_until(),
-                foodItem.consume_until(),
+                foodItem.pickupUntil(),
+                foodItem.consumeUntil(),
                 foodItem.description()
         );
     }

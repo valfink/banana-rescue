@@ -65,10 +65,10 @@ class FoodItemControllerTest {
                             {
                                 "id": "1",
                                 "title": "Food Item 1",
-                                "photo_uri": "https://photo.com/1.jpg",
+                                "photoUri": "https://photo.com/1.jpg",
                                 "location": "Berlin",
-                                "pickup_until": "2023-03-16T11:14:00Z",
-                                "consume_until": "2023-03-18T11:00:00Z",
+                                "pickupUntil": "2023-03-16T11:14:00Z",
+                                "consumeUntil": "2023-03-18T11:00:00Z",
                                 "description": "This is my first food item."
                             }
                         ]
@@ -85,8 +85,8 @@ class FoodItemControllerTest {
                                 {
                                 "title": "Food Item 1",
                                 "location": "Berlin",
-                                "pickup_until": "2023-03-16T11:14:00Z",
-                                "consume_until": "2023-03-18T11:00:00Z",
+                                "pickupUntil": "2023-03-16T11:14:00Z",
+                                "consumeUntil": "2023-03-18T11:00:00Z",
                                 "description": "This is my first food item."
                                 }
                                 """)
@@ -96,8 +96,8 @@ class FoodItemControllerTest {
                                 {
                                 "title": "Food Item 1",
                                 "location": "Berlin",
-                                "pickup_until": "2023-03-16T11:14:00Z",
-                                "consume_until": "2023-03-18T11:00:00Z",
+                                "pickupUntil": "2023-03-16T11:14:00Z",
+                                "consumeUntil": "2023-03-18T11:00:00Z",
                                 "description": "This is my first food item."
                                 }
                         """))

@@ -8,10 +8,10 @@ public record FoodItemDTOResponse(
         String id,
         MongoUserDTOResponse donator,
         String title,
-        String photo_uri,
+        String photoUri,
         String location,
-        Instant pickup_until,
-        Instant consume_until,
+        Instant pickupUntil,
+        Instant consumeUntil,
         String description
 ) {
 }
