@@ -14,18 +14,40 @@ main h1 {
   text-align: center;
 }
 
+.form {
+  background-color: var(--bright-bg);
+  height: 100%;
+}
+
+.form h1 {
+  margin: 5rem 0 5rem 0;
+}
+
 form, .input-with-icon {
   display: flex;
   flex-flow: column nowrap;
 }
 
-form input, form button, form .form-error, form .form-success {
-  margin: 0.5rem 1rem;
+form {
+  padding: 1rem;
+  gap: 1rem;
+}
+
+form input, form textarea, form button, form .form-error, form .form-success {
   padding: 0.5rem;
   border: 0.1rem solid var(--accent-dark);
   border-radius: 0.3rem;
   font-family: inherit;
-  line-height: 1;
+  font-size: inherit;
+  background-color: var(--bright-bg);
+}
+
+textarea {
+  height: 7rem;
+}
+
+form input[type=datetime-local], form input[type=date], form input[type=time] {
+  appearance: initial;
 }
 
 form button {
@@ -56,7 +78,7 @@ button[type=submit] {
 
 .input-with-icon svg {
   position: absolute;
-  margin: 1.15rem 1.5rem;
+  margin: 0.75rem 0.5rem;
 }
 
 .input-with-icon input {
