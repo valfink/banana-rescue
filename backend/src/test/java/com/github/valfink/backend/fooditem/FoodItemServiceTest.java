@@ -91,31 +91,41 @@ class FoodItemServiceTest {
 
     @Test
     void addFoodItem_whenNoTitle_thenThrowException() {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(null, foodItem1.location(), foodItem1.pickup_until(), foodItem1.consume_until(), foodItem1.description());
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(new FoodItemDTORequest(null, foodItem1.location(), foodItem1.pickup_until(), foodItem1.consume_until(), foodItem1.description()), principal));
+        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, principal));
     }
 
     @Test
     void addFoodItem_whenNoLocation_thenThrowException() {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), "", foodItem1.pickup_until(), foodItem1.consume_until(), foodItem1.description());
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(new FoodItemDTORequest(foodItem1.title(), "", foodItem1.pickup_until(), foodItem1.consume_until(), foodItem1.description()), principal));
+        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, principal));
     }
 
     @Test
     void addFoodItem_whenNoPickupUntil_thenThrowException() {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), null, foodItem1.consume_until(), foodItem1.description());
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), null, foodItem1.consume_until(), foodItem1.description()), principal));
+        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, principal));
     }
 
     @Test
     void addFoodItem_whenNoConsumeUntil_thenThrowException() {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickup_until(), null, foodItem1.description());
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickup_until(), null, foodItem1.description()), principal));
+        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, principal));
     }
 
     @Test
     void addFoodItem_whenNoDescription_thenThrowException() {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickup_until(), foodItem1.consume_until(), "     ");
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickup_until(), foodItem1.consume_until(), "   "), principal));
+        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, principal));
     }
 }
