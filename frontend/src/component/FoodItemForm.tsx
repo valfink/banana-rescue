@@ -9,8 +9,8 @@ export default function FoodItemForm() {
     const initialFormState = {
         title: "",
         location: "",
-        pickup_until: "",
-        consume_until: "",
+        pickupUntil: "",
+        consumeUntil: "",
         description: ""
     };
     const [formData, setFormData] = useState(initialFormState);
@@ -49,8 +49,8 @@ export default function FoodItemForm() {
         let url = "/api/food",
             data = {
                 ...formData,
-                pickup_until: moment(formData.pickup_until),
-                consume_until: moment(formData.consume_until)
+                pickupUntil: moment(formData.pickupUntil),
+                consumeUntil: moment(formData.consumeUntil)
             },
             navigateTo = "/",
             navigateOptions = {state: {successMessage: "Successfully registered."}};
@@ -79,15 +79,15 @@ export default function FoodItemForm() {
             </div>
             <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faTrainSubway}/>
-                <input type={"text"} name={"pickup_until"} placeholder={"Pickup until"} readOnly={true} required={true}
-                       value={formData.pickup_until} onChange={handleInputChange}
+                <input type={"text"} name={"pickupUntil"} placeholder={"Pickup until"} readOnly={true} required={true}
+                       value={formData.pickupUntil} onChange={handleInputChange}
                        onFocus={setInputTypeToDateOrTime} onBlur={resetInputTypeToText}
                        data-on-focus-type={"datetime-local"} data-has-focus={"false"}/>
             </div>
             <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faUtensils}/>
-                <input type={"text"} name={"consume_until"} placeholder={"Consume until"} readOnly={true}
-                       required={true} value={formData.consume_until} onChange={handleInputChange}
+                <input type={"text"} name={"consumeUntil"} placeholder={"Consume until"} readOnly={true}
+                       required={true} value={formData.consumeUntil} onChange={handleInputChange}
                        onFocus={setInputTypeToDateOrTime} onBlur={resetInputTypeToText}
                        data-on-focus-type={"datetime-local"} data-has-focus={"false"}/>
             </div>
