@@ -1,7 +1,8 @@
-import {Key, Person} from "react-bootstrap-icons";
 import {ChangeEvent, FormEvent, useState} from "react";
 import axios from "axios";
 import {useLocation, useNavigate} from "react-router-dom";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faKey, faUser} from "@fortawesome/free-solid-svg-icons";
 
 type UserFormProps = {
     action: "login" | "signup"
@@ -54,12 +55,12 @@ export default function UserForm(props: UserFormProps) {
             {formError && <div className={"form-error"}>Error: {formError}</div>}
             {successMessage && <div className={"form-success"}>{successMessage}</div>}
             <div className={"input-with-icon"}>
-                <Person/>
+                <FontAwesomeIcon icon={faUser}/>
                 <input type={"text"} placeholder={"Username"} value={username} onChange={handleInputChange}
                        required={true}/>
             </div>
             <div className={"input-with-icon"}>
-                <Key/>
+                <FontAwesomeIcon icon={faKey}/>
                 <input type={"password"} placeholder={"Password"} value={password} onChange={handleInputChange}
                        required={true}/>
             </div>
