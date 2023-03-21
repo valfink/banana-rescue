@@ -1,15 +1,12 @@
 package com.github.valfink.backend.fooditem;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.github.valfink.backend.mongouser.MongoUserDTOResponse;
 
 import java.time.Instant;
 
-@Document("foodItems")
-public record FoodItem(
-        @Id
+public record FoodItemDTOResponse(
         String id,
-        String donator_id,
+        MongoUserDTOResponse donator,
         String title,
         String photo_uri,
         String location,

@@ -130,4 +130,30 @@ class MongoUserServiceTest {
         // WHEN & THEN
         assertThrows(UsernameNotFoundException.class, () -> mongoUserService.getMe(principal));
     }
+
+    @Test
+    void getMongoUserDTOResponseById_whenIdInRepo_thenReturnDTOResponse() {
+        // GIVEN
+        when(mongoUserRepository.findById(mongoUser1.id())).thenReturn(Optional.of(mongoUser1));
+
+        // WHEN
+        MongoUserDTOResponse expected = mongoUserDTOResponse1;
+        MongoUserDTOResponse actual = mongoUserService.getMongoUserDTOResponseById(mongoUser1.id());
+
+        // THEN
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getMongoUserDTOResponseByUsername_whenUsernameInRepo_thenReturnDTOResponse() {
+        // GIVEN
+        when(mongoUserRepository.findMongoUserByUsername(mongoUser1.username())).thenReturn(Optional.of(mongoUser1));
+
+        // WHEN
+        MongoUserDTOResponse expected = mongoUserDTOResponse1;
+        MongoUserDTOResponse actual = mongoUserService.getMongoUserDTOResponseByUsername(mongoUser1.username());
+
+        // THEN
+        assertEquals(expected, actual);
+    }
 }

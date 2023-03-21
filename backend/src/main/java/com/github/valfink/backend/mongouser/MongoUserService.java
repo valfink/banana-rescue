@@ -21,28 +21,32 @@ public class MongoUserService implements UserDetailsService {
     private final IdService idService;
     private final PasswordEncoder passwordEncoder;
 
+    private MongoUserDTOResponse mongoUserDTOResponseFromMongoUser(MongoUser mongoUser) {
+        return new MongoUserDTOResponse(
+                mongoUser.id(),
+                mongoUser.username()
+        );
+    }
+
     public MongoUserDTOResponse signUp(MongoUserDTORequest mongoUserDTORequest) {
-        if (mongoUserDTORequest.username() == null || mongoUserDTORequest.username().length() == 0) {
+        if (mongoUserDTORequest.username() == null || mongoUserDTORequest.username().isBlank()) {
             throw new BadCredentialsException("Username is required");
         }
-        if (mongoUserDTORequest.password() == null || mongoUserDTORequest.password().length() == 0) {
+        if (mongoUserDTORequest.password() == null || mongoUserDTORequest.password().isBlank()) {
             throw new BadCredentialsException("Password is required");
         }
         if (mongoUserRepository.existsMongoUserByUsername(mongoUserDTORequest.username())) {
             throw new BadCredentialsException("Username is already taken");
         }
 
-        MongoUser savedUser = mongoUserRepository.save(new MongoUser(
+        MongoUser mongoUser = mongoUserRepository.save(new MongoUser(
                 idService.generateId(),
                 mongoUserDTORequest.username(),
                 passwordEncoder.encode(mongoUserDTORequest.password()),
                 "BASIC"
         ));
 
-        return new MongoUserDTOResponse(
-                savedUser.id(),
-                savedUser.username()
-        );
+        return mongoUserDTOResponseFromMongoUser(mongoUser);
     }
 
     @Override
@@ -59,9 +63,18 @@ public class MongoUserService implements UserDetailsService {
     public MongoUserDTOResponse getMe(Principal principal) {
         MongoUser mongoUser = mongoUserRepository.findMongoUserByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("The user " + principal.getName() + " doesn't exist in the database."));
-        return new MongoUserDTOResponse(
-                mongoUser.id(),
-                mongoUser.username()
-        );
+        return mongoUserDTOResponseFromMongoUser(mongoUser);
+    }
+
+    public MongoUserDTOResponse getMongoUserDTOResponseById(String id) {
+        MongoUser mongoUser = mongoUserRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("The user with the id " + id + " does not exist in the database."));
+        return mongoUserDTOResponseFromMongoUser(mongoUser);
+    }
+
+    public MongoUserDTOResponse getMongoUserDTOResponseByUsername(String username) {
+        MongoUser mongoUser = mongoUserRepository.findMongoUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("The user " + username + " doesn't exist in the database."));
+        return mongoUserDTOResponseFromMongoUser(mongoUser);
     }
 }

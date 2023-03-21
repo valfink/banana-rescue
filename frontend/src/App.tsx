@@ -6,6 +6,7 @@ import UserSignUpPage from "./page/UserSignUpPage";
 import axios from "axios";
 import Cookies from "js-cookie";
 import UserLogInPage from "./page/UserLogInPage";
+import FoodItemAddPage from "./page/FoodItemAddPage";
 
 axios.interceptors.request.use(config => {
     if (["put", "post", "delete"].includes(config.method || "")) {
@@ -25,6 +26,7 @@ function App() {
             <Routes>
                 <Route path={"/"} element={<Navigate to={"/food"}/>}/>
                 <Route path={"/food"} element={<FoodItemGallery/>}/>
+                <Route path={"/add-food"} element={<FoodItemAddPage/>}/>
                 <Route path={"/signup"} element={<UserSignUpPage/>}/>
                 <Route path={"/login"} element={<UserLogInPage/>}/>
             </Routes>
