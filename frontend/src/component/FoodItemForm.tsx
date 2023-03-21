@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faLocationDot, faQuoteLeft, faTrainSubway, faUtensils} from '@fortawesome/free-solid-svg-icons';
+import {faCamera, faLocationDot, faQuoteLeft, faTrainSubway, faUtensils} from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import moment from "moment";
@@ -14,6 +14,7 @@ export default function FoodItemForm() {
         description: ""
     };
     const [formData, setFormData] = useState(initialFormState);
+    const [photo, setPhoto] = useState<File | null>(null)
     const [formError, setFormError] = useState("");
     const navigate = useNavigate();
 
@@ -41,6 +42,13 @@ export default function FoodItemForm() {
             ...oldData,
             [e.target.name]: e.target.value
         }))
+    }
+
+    function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+        if (e.target.files && e.target.files.length > 0) {
+            setPhoto(e.target.files[0]);
+            e.target.classList.remove("dont-display");
+        }
     }
 
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
@@ -71,6 +79,12 @@ export default function FoodItemForm() {
                 <FontAwesomeIcon icon={faQuoteLeft}/>
                 <input type={"text"} name={"title"} placeholder={"Title"} required={true} value={formData.title}
                        onChange={handleInputChange}/>
+            </div>
+            <div className={"input-with-icon"}>
+                <FontAwesomeIcon icon={faCamera}/>
+                <input type={"file"} id={"photo"} name={"photo"} placeholder={"Photo"} required={true}
+                       className={"dont-display"} onChange={handleFileChange}/>
+                <label htmlFor={"photo"} className={"input-replacement"}>Photo</label>
             </div>
             <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faLocationDot}/>
