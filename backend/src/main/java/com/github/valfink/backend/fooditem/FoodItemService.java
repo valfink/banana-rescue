@@ -53,10 +53,14 @@ public class FoodItemService {
             throw new InputMismatchException("Description must not be blank");
         }
         String photoUri;
-        try {
-            photoUri = photoService.uploadPhoto(photo);
-        } catch (IOException e) {
-            throw new InputMismatchException("The photo upload didn't work: " + e.getMessage());
+        if (photo != null) {
+            try {
+                photoUri = photoService.uploadPhoto(photo);
+            } catch (IOException e) {
+                throw new InputMismatchException("The photo upload didn't work: " + e.getMessage());
+            }
+        } else {
+            photoUri = null;
         }
         FoodItem foodItem = foodItemRepository.save(new FoodItem(
                 idService.generateId(),

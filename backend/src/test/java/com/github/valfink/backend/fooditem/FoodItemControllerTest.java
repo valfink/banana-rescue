@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
@@ -79,9 +79,9 @@ class FoodItemControllerTest {
     @WithMockUser
     void addFoodItem_whenPostingValidItemAndSignedIn_thenReturnNewItem() throws Exception {
         mongoUserRepository.save(mongoUser1);
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/food")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/food")
+                        .file(new MockMultipartFile("form", null,
+                                "application/json", """
                                 {
                                 "title": "Food Item 1",
                                 "location": "Berlin",
@@ -89,7 +89,7 @@ class FoodItemControllerTest {
                                 "consumeUntil": "2023-03-18T11:00:00Z",
                                 "description": "This is my first food item."
                                 }
-                                """)
+                                """.getBytes()))
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().json("""

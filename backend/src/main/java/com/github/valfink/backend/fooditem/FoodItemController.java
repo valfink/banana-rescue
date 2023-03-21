@@ -19,7 +19,7 @@ public class FoodItemController {
     }
 
     @PostMapping
-    public FoodItemDTOResponse addFoodItem(@RequestBody FoodItemDTORequest foodItemDTORequest, @RequestParam("photo") MultipartFile photo, Principal principal) {
+    public FoodItemDTOResponse addFoodItem(@RequestPart("form") FoodItemDTORequest foodItemDTORequest, @RequestPart(value = "photo", required = false) MultipartFile photo, Principal principal) {
         return foodItemService.addFoodItem(foodItemDTORequest, photo, principal);
     }
 }
