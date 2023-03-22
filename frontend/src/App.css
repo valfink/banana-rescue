@@ -34,7 +34,7 @@ form {
   gap: 1rem;
 }
 
-form input, form textarea, form input::file-selector-button, form button, form .input-replacement, form .form-error, form .form-success {
+input, textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success {
   padding: 0.5rem;
   border: 0.1rem solid var(--accent-dark);
   border-radius: 0.3rem;
@@ -43,11 +43,11 @@ form input, form textarea, form input::file-selector-button, form button, form .
   background-color: var(--bright-bg);
 }
 
-form ::placeholder, form .input-replacement {
+::placeholder, .input-replacement {
   color: #999;
 }
 
-form input::file-selector-button {
+input::file-selector-button {
   padding: 0 0.5rem;
   line-height: 1;
 }
@@ -56,7 +56,7 @@ form input::file-selector-button {
   display: none;
 }
 
-form input:not(.dont-display) + .input-replacement {
+input:not(.dont-display) + .input-replacement {
   display: none;
 }
 
@@ -64,16 +64,16 @@ textarea {
   height: 7rem;
 }
 
-form input[type=datetime-local], form input[type=date], form input[type=time] {
+input[type=datetime-local], input[type=date], input[type=time] {
   appearance: initial;
 }
 
-form button {
+button {
   color: var(--bright-bg);
   background-color: var(--accent-dark);
 }
 
-form .form-error {
+.form-error {
   color: #CC0000;
   border: 0.1rem solid #FF0000;
   padding-top: 1rem;
@@ -81,7 +81,7 @@ form .form-error {
   font-weight: bold;
 }
 
-form .form-success {
+.form-success {
   color: #008800;
   border: 0.1rem solid #00DD00;
   padding-top: 1rem;
