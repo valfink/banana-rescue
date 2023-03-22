@@ -1,9 +1,9 @@
 import {createContext} from "react";
 import {User} from "../model/User";
 
-type UserContextType = undefined | {
+type UserContextType = {
     user: User | undefined,
     redirectToLogin: () => void
 };
 
-export const UserContext = createContext<UserContextType>(undefined);
+export const UserContext = createContext<UserContextType>({user: undefined, redirectToLogin: () => undefined});
