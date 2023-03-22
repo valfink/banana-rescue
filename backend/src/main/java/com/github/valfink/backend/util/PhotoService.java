@@ -13,14 +13,8 @@ import java.util.Map;
 @Service
 public class PhotoService {
     private final Cloudinary cloudinary;
-    @Value("${cloudinary.cloud.name}")
-    private String cloudName;
-    @Value("${cloudinary.api.key}")
-    private String apiKey;
-    @Value("${cloudinary.api.secret}")
-    private String apiSecret;
 
-    public PhotoService() {
+    public PhotoService(@Value("${cloudinary.cloud.name}") String cloudName, @Value("${cloudinary.api.key}") String apiKey, @Value("${cloudinary.api.secret}") String apiSecret) {
         Map<String, String> config = new HashMap<>();
         config.put("cloud_name", cloudName);
         config.put("api_key", apiKey);
