@@ -23,11 +23,10 @@ axios.interceptors.request.use(config => {
 }, error => Promise.reject(error));
 
 function App() {
-    const {user, redirectToLogin} = useUserAuth();
 
     return (
         <div className="App">
-            <UserContext.Provider value={{user, redirectToLogin}}>
+            <UserContext.Provider value={useUserAuth()}>
                 <Routes>
                     <Route path={"/"} element={<Navigate to={"/food"}/>}/>
                     <Route path={"/food"} element={<FoodItemGallery/>}/>
