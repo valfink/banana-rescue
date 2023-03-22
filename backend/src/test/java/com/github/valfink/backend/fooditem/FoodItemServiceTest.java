@@ -98,6 +98,16 @@ class FoodItemServiceTest {
     }
 
     @Test
+    void addFoodItem_whenPhotoUploadFails_thenThrowException() throws IOException {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
+        when(photoService.uploadPhoto(multipartFile)).thenThrow(IOException.class);
+
+        // WHEN & THEN
+        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+    }
+
+    @Test
     void addFoodItem_whenNoTitle_thenThrowException() {
         // GIVEN
         FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(null, foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
