@@ -80,7 +80,11 @@ class FoodItemControllerTest {
                                 "location": "Berlin",
                                 "pickupUntil": "2023-03-16T11:14:00Z",
                                 "consumeUntil": "2023-03-18T11:00:00Z",
-                                "description": "This is my first food item."
+                                "description": "This is my first food item.",
+                                "donator": {
+                                    "id": "1",
+                                    "username": "user"
+                                }
                             }
                         ]
                         """));
@@ -110,7 +114,11 @@ class FoodItemControllerTest {
                                 "location": "Berlin",
                                 "pickupUntil": "2023-03-16T11:14:00Z",
                                 "consumeUntil": "2023-03-18T11:00:00Z",
-                                "description": "This is my first food item."
+                                "description": "This is my first food item.",
+                                "donator": {
+                                    "id": "1",
+                                    "username": "user"
+                                }
                                 }
                         """))
                 .andExpect(jsonPath("$.id").isNotEmpty());
@@ -144,9 +152,37 @@ class FoodItemControllerTest {
                                 "pickupUntil": "2023-03-16T11:14:00Z",
                                 "consumeUntil": "2023-03-18T11:00:00Z",
                                 "description": "This is my first food item.",
-                                "photoUri": "https://photo.com/1.jpg"
+                                "photoUri": "https://photo.com/1.jpg",
+                                "donator": {
+                                    "id": "1",
+                                    "username": "user"
+                                }
                                 }
                         """))
                 .andExpect(jsonPath("$.id").isNotEmpty());
+    }
+
+    @Test
+    @DirtiesContext
+    void getFoodItemById_whenIdIsInRepo_thenReturnValidResponse() throws Exception {
+        mongoUserRepository.save(mongoUser1);
+        foodItemRepository.save(foodItem1);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/food/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                            "id": "1",
+                            "title": "Food Item 1",
+                            "photoUri": "https://photo.com/1.jpg",
+                            "location": "Berlin",
+                            "pickupUntil": "2023-03-16T11:14:00Z",
+                            "consumeUntil": "2023-03-18T11:00:00Z",
+                            "description": "This is my first food item.",
+                            "donator": {
+                                "id": "1",
+                                "username": "user"
+                            }
+                        }
+                        """));
     }
 }

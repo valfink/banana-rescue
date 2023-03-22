@@ -22,4 +22,9 @@ public class FoodItemController {
     public FoodItemDTOResponse addFoodItem(@RequestPart("form") FoodItemDTORequest foodItemDTORequest, @RequestPart(value = "photo", required = false) MultipartFile photo, Principal principal) {
         return foodItemService.addFoodItem(foodItemDTORequest, photo, principal);
     }
+
+    @GetMapping("/{id}")
+    public FoodItemDTOResponse getFoodItemById(@PathVariable String id) {
+        return foodItemService.getFoodItemById(id);
+    }
 }
