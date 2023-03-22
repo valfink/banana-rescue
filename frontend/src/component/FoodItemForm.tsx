@@ -55,14 +55,20 @@ export default function FoodItemForm() {
         event.preventDefault();
         setFormError("");
         let url = "/api/food",
-            data = {
-                ...formData,
-                pickupUntil: moment(formData.pickupUntil),
-                consumeUntil: moment(formData.consumeUntil)
-            },
+            payload = new FormData(),
             navigateTo = "/",
             navigateOptions = {state: {successMessage: "Successfully registered."}};
-        axios.post(url, data)
+        if (photo) {
+            payload.set("photo", photo);
+        }
+        payload.set("form", new Blob([JSON.stringify({
+            ...formData,
+            pickupUntil: moment(formData.pickupUntil),
+            consumeUntil: moment(formData.consumeUntil)
+        })], {
+            type: "application/json"
+        }));
+        axios.post(url, payload)
             .then(() => {
                 navigate(navigateTo, navigateOptions);
             })
@@ -82,9 +88,9 @@ export default function FoodItemForm() {
             </div>
             <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faCamera}/>
-                <input type={"file"} id={"photo"} name={"photo"} placeholder={"Photo"} required={true}
+                <input type={"file"} accept={"image/jpeg, image/png"} id={"photo"} name={"photo"}
                        className={"dont-display"} onChange={handleFileChange}/>
-                <label htmlFor={"photo"} className={"input-replacement"}>Photo</label>
+                <label htmlFor={"photo"} className={"input-replacement"}>Photo (optional)</label>
             </div>
             <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faLocationDot}/>
