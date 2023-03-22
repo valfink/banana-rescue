@@ -5,6 +5,7 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import moment from "moment";
 import {UserContext} from "../context/UserContext";
+import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
 
 export default function FoodItemForm() {
     const initialFormState = {
@@ -19,6 +20,7 @@ export default function FoodItemForm() {
     const [formError, setFormError] = useState("");
     const navigate = useNavigate();
     const {redirectIfNotSignedIn} = useContext(UserContext);
+    const setAppIsLoading = useContext(SetAppIsLoadingContext);
 
     function setInputTypeToDateOrTime(e: React.FocusEvent<HTMLInputElement>) {
         if (e.target.dataset.hasFocus === "false") {
@@ -55,6 +57,7 @@ export default function FoodItemForm() {
 
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        setAppIsLoading(true);
         setFormError("");
         let url = "/api/food",
             payload = new FormData(),
@@ -77,6 +80,9 @@ export default function FoodItemForm() {
             .catch(err => {
                 console.error(err);
                 setFormError(err.response.data.error || err.response.data.message);
+            })
+            .finally(() => {
+                setAppIsLoading(false);
             });
     }
 

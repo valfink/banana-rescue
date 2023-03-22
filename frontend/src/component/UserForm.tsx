@@ -4,6 +4,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faKey, faUser} from "@fortawesome/free-solid-svg-icons";
 import {UserContext} from "../context/UserContext";
+import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
 
 type UserFormProps = {
     action: "login" | "signup"
@@ -16,6 +17,7 @@ export default function UserForm(props: UserFormProps) {
     const navigate = useNavigate();
     const successMessage = useLocation().state?.successMessage || "";
     const {setUser} = useContext(UserContext);
+    const setAppIsLoading = useContext(SetAppIsLoadingContext);
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
         event.target.placeholder === "Username"
@@ -24,6 +26,7 @@ export default function UserForm(props: UserFormProps) {
     }
 
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
+        setAppIsLoading(true);
         event.preventDefault();
         setFormError("");
         let url = "/api/users",
@@ -49,6 +52,9 @@ export default function UserForm(props: UserFormProps) {
             .catch(err => {
                 console.error(err);
                 setFormError(err.response.data.error || err.response.data.message);
+            })
+            .finally(() => {
+                setAppIsLoading(false);
             });
     }
 
