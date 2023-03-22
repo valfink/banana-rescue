@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .sessionManagement(config ->
                         config.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, "/api/food").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/food/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/csrf").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
