@@ -42,6 +42,10 @@ form input, form textarea, form input::file-selector-button, form button, form .
   background-color: var(--bright-bg);
 }
 
+form ::placeholder, form .input-replacement {
+  color: #999;
+}
+
 form input::file-selector-button {
   padding: 0 0.5rem;
   line-height: 1;
