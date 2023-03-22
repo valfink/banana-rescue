@@ -1,6 +1,7 @@
 .App {
   background-color: var(--dark-bg);
   height: 100vh;
+  box-sizing: border-box;
 }
 
 :root {
@@ -20,7 +21,7 @@ main h1 {
 }
 
 .form h1 {
-  margin: 5rem 0 5rem 0;
+  padding: 5rem 0 5rem 0;
 }
 
 form, .input-with-icon {
