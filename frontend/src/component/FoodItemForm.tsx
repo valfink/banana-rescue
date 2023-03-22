@@ -1,11 +1,11 @@
 import React, {ChangeEvent, FormEvent, useContext, useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCamera, faLocationDot, faQuoteLeft, faTrainSubway, faUtensils} from '@fortawesome/free-solid-svg-icons';
-import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import moment from "moment";
 import {UserContext} from "../context/UserContext";
 import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
+import {FoodItemFormData} from "../model/FoodItemFormData";
+import {postNewFoodItem} from "../hook/useFoodItems";
 
 export default function FoodItemForm() {
     const initialFormState = {
@@ -15,7 +15,7 @@ export default function FoodItemForm() {
         consumeUntil: "",
         description: ""
     };
-    const [formData, setFormData] = useState(initialFormState);
+    const [formData, setFormData] = useState<FoodItemFormData>(initialFormState);
     const [photo, setPhoto] = useState<File | null>(null)
     const [formError, setFormError] = useState("");
     const navigate = useNavigate();
@@ -57,33 +57,14 @@ export default function FoodItemForm() {
 
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        setAppIsLoading(true);
         setFormError("");
-        let url = "/api/food",
-            payload = new FormData(),
-            navigateTo = "/",
+        let navigateTo = "/",
             navigateOptions = {state: {successMessage: "Successfully registered."}};
-        if (photo) {
-            payload.set("photo", photo);
-        }
-        payload.set("form", new Blob([JSON.stringify({
-            ...formData,
-            pickupUntil: moment(formData.pickupUntil),
-            consumeUntil: moment(formData.consumeUntil)
-        })], {
-            type: "application/json"
-        }));
-        axios.post(url, payload)
+        postNewFoodItem(formData, photo, setAppIsLoading)
             .then(() => {
                 navigate(navigateTo, navigateOptions);
             })
-            .catch(err => {
-                console.error(err);
-                setFormError(err.response.data.error || err.response.data.message);
-            })
-            .finally(() => {
-                setAppIsLoading(false);
-            });
+            .catch(setFormError);
     }
 
     useEffect(() => {

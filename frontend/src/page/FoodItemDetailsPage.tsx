@@ -1,26 +1,14 @@
 import {useParams} from "react-router-dom";
-import {useContext, useEffect, useState} from "react";
-import {FoodItem} from "../model/FoodItem";
-import axios from "axios";
+import {useContext} from "react";
 import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
 import "./FoodItemDetailsPage.css";
 import moment from "moment/moment";
+import {useFetchSingleFoodItem} from "../hook/useFoodItems";
 
 export default function FoodItemDetailsPage() {
-    const [foodItem, setFoodItem] = useState<FoodItem | undefined>(undefined);
     const {id} = useParams();
     const setAppIsLoading = useContext(SetAppIsLoadingContext);
-
-    useEffect(() => {
-        setAppIsLoading(true);
-        axios.get(`/api/food/${id}`)
-            .then(res => res.data)
-            .then(setFoodItem)
-            .catch(console.error)
-            .finally(() => {
-                setAppIsLoading(false);
-            });
-    }, [id, setAppIsLoading]);
+    const foodItem = useFetchSingleFoodItem(id, setAppIsLoading);
 
     if (!foodItem) {
         return (

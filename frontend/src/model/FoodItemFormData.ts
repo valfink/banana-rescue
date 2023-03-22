@@ -1,12 +1,7 @@
-import {User} from "./User";
-
-export type FoodItem = {
-    id?: string;
+export type FoodItemFormData = {
     title: string;
-    photoUri: string;
     location: string;
     pickupUntil: string;
     consumeUntil: string;
     description: string;
-    donator: User;
 }
