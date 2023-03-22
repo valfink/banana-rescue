@@ -1,0 +1,31 @@
+.food-item-details {
+    background-color: var(--bright-bg);
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 0.5rem;
+    height: 100%;
+}
+
+.food-item-details h1 {
+    font-size: 2rem;
+}
+
+.food-item-details header {
+    flex-basis: 35%;
+    background-size: cover;
+    background-position: center;
+}
+
+.food-item-details main {
+    padding: 0 0.5rem;
+    flex-grow: 1;
+}
+
+.food-item-details ul {
+    list-style: none;
+    padding: 0;
+}
+
+.food-item-details li:not(:first-child) {
+    padding-top: 0.8rem;
+}
