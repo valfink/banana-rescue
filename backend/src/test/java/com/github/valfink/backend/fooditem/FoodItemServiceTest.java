@@ -11,9 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -145,5 +143,30 @@ class FoodItemServiceTest {
         FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), "     ");
         // WHEN & THEN
         assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+    }
+
+    @Test
+    void getFoodItemById_whenIdIsInRepo_thenReturnDTO() {
+        // GIVEN
+        when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(foodItem1));
+        when(mongoUserService.getMongoUserDTOResponseById(mongoUserDTOResponse1.id())).thenReturn(mongoUserDTOResponse1);
+
+        // WHEN
+        FoodItemDTOResponse expected = foodItemDTOResponse1;
+        FoodItemDTOResponse actual = foodItemService.getFoodItemById(foodItem1.id());
+
+        // THEN
+        assertEquals(expected, actual);
+        verify(foodItemRepository).findById(foodItem1.id());
+        verify(mongoUserService).getMongoUserDTOResponseById(mongoUserDTOResponse1.id());
+    }
+
+    @Test
+    void getFoodItemById_whenIdIsNotInRepo_thenThrowException() {
+        // GIVEN
+        when(foodItemRepository.findById("1π")).thenReturn(Optional.empty());
+
+        // WHEN & THEN
+        assertThrows(NoSuchElementException.class, () -> foodItemService.getFoodItemById("1"));
     }
 }
