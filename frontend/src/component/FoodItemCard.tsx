@@ -18,8 +18,7 @@ export default function FoodItemCard(props: FoodItemCardProps) {
                     <li><strong>Location:</strong> {props.foodItem.location}</li>
                 </ul>
             </main>
-            <aside style={{backgroundImage: `url(${props.foodItem.photoUri})`}}>
-            </aside>
+            {props.foodItem.photoUri && <aside style={{backgroundImage: `url(${props.foodItem.photoUri})`}}/>}
         </article>
     );
 }
