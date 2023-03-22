@@ -1,21 +1,26 @@
-import React, {ChangeEvent, FormEvent, useState} from "react";
+import React, {ChangeEvent, FormEvent, useContext, useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faLocationDot, faQuoteLeft, faTrainSubway, faUtensils} from '@fortawesome/free-solid-svg-icons';
+import {faCamera, faLocationDot, faQuoteLeft, faTrainSubway, faUtensils} from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import moment from "moment";
+import {UserContext} from "../context/UserContext";
+import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
 
 export default function FoodItemForm() {
     const initialFormState = {
         title: "",
         location: "",
-        pickup_until: "",
-        consume_until: "",
+        pickupUntil: "",
+        consumeUntil: "",
         description: ""
     };
     const [formData, setFormData] = useState(initialFormState);
+    const [photo, setPhoto] = useState<File | null>(null)
     const [formError, setFormError] = useState("");
     const navigate = useNavigate();
+    const {redirectIfNotSignedIn} = useContext(UserContext);
+    const setAppIsLoading = useContext(SetAppIsLoadingContext);
 
     function setInputTypeToDateOrTime(e: React.FocusEvent<HTMLInputElement>) {
         if (e.target.dataset.hasFocus === "false") {
@@ -43,26 +48,47 @@ export default function FoodItemForm() {
         }))
     }
 
+    function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+        if (e.target.files && e.target.files.length > 0) {
+            setPhoto(e.target.files[0]);
+            e.target.classList.remove("dont-display");
+        }
+    }
+
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        setAppIsLoading(true);
         setFormError("");
         let url = "/api/food",
-            data = {
-                ...formData,
-                pickup_until: moment(formData.pickup_until),
-                consume_until: moment(formData.consume_until)
-            },
+            payload = new FormData(),
             navigateTo = "/",
             navigateOptions = {state: {successMessage: "Successfully registered."}};
-        axios.post(url, data)
+        if (photo) {
+            payload.set("photo", photo);
+        }
+        payload.set("form", new Blob([JSON.stringify({
+            ...formData,
+            pickupUntil: moment(formData.pickupUntil),
+            consumeUntil: moment(formData.consumeUntil)
+        })], {
+            type: "application/json"
+        }));
+        axios.post(url, payload)
             .then(() => {
                 navigate(navigateTo, navigateOptions);
             })
             .catch(err => {
                 console.error(err);
                 setFormError(err.response.data.error || err.response.data.message);
+            })
+            .finally(() => {
+                setAppIsLoading(false);
             });
     }
+
+    useEffect(() => {
+        redirectIfNotSignedIn();
+    })
 
     return (
         <form onSubmit={handleFormSubmit}>
@@ -73,21 +99,27 @@ export default function FoodItemForm() {
                        onChange={handleInputChange}/>
             </div>
             <div className={"input-with-icon"}>
+                <FontAwesomeIcon icon={faCamera}/>
+                <input type={"file"} accept={"image/jpeg, image/png"} id={"photo"} name={"photo"}
+                       className={"dont-display"} onChange={handleFileChange}/>
+                <label htmlFor={"photo"} className={"input-replacement"}>Photo (optional)</label>
+            </div>
+            <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faLocationDot}/>
                 <input type={"text"} name={"location"} placeholder={"Location"} required={true}
                        value={formData.location} onChange={handleInputChange}/>
             </div>
             <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faTrainSubway}/>
-                <input type={"text"} name={"pickup_until"} placeholder={"Pickup until"} readOnly={true} required={true}
-                       value={formData.pickup_until} onChange={handleInputChange}
+                <input type={"text"} name={"pickupUntil"} placeholder={"Pickup until"} readOnly={true} required={true}
+                       value={formData.pickupUntil} onChange={handleInputChange}
                        onFocus={setInputTypeToDateOrTime} onBlur={resetInputTypeToText}
                        data-on-focus-type={"datetime-local"} data-has-focus={"false"}/>
             </div>
             <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faUtensils}/>
-                <input type={"text"} name={"consume_until"} placeholder={"Consume until"} readOnly={true}
-                       required={true} value={formData.consume_until} onChange={handleInputChange}
+                <input type={"text"} name={"consumeUntil"} placeholder={"Consume until"} readOnly={true}
+                       required={true} value={formData.consumeUntil} onChange={handleInputChange}
                        onFocus={setInputTypeToDateOrTime} onBlur={resetInputTypeToText}
                        data-on-focus-type={"datetime-local"} data-has-focus={"false"}/>
             </div>

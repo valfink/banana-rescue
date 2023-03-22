@@ -1,9 +1,9 @@
 export type FoodItem = {
     id?: string;
     title: string;
-    photo_uri: string;
+    photoUri: string;
     location: string;
-    pickup_until: string;
-    consume_until: string;
+    pickupUntil: string;
+    consumeUntil: string;
     description: string;
 }

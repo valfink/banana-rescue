@@ -5,8 +5,8 @@ import java.time.Instant;
 public record FoodItemDTORequest(
         String title,
         String location,
-        Instant pickup_until,
-        Instant consume_until,
+        Instant pickupUntil,
+        Instant consumeUntil,
         String description
 ) {
 }

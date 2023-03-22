@@ -2,6 +2,7 @@ package com.github.valfink.backend.fooditem;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -18,7 +19,7 @@ public class FoodItemController {
     }
 
     @PostMapping
-    public FoodItemDTOResponse addFoodItem(@RequestBody FoodItemDTORequest foodItemDTORequest, Principal principal) {
-        return foodItemService.addFoodItem(foodItemDTORequest, principal);
+    public FoodItemDTOResponse addFoodItem(@RequestPart("form") FoodItemDTORequest foodItemDTORequest, @RequestPart(value = "photo", required = false) MultipartFile photo, Principal principal) {
+        return foodItemService.addFoodItem(foodItemDTORequest, photo, principal);
     }
 }

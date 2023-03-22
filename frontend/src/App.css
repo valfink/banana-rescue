@@ -1,6 +1,7 @@
 .App {
   background-color: var(--dark-bg);
   height: 100vh;
+  box-sizing: border-box;
 }
 
 :root {
@@ -20,7 +21,7 @@ main h1 {
 }
 
 .form h1 {
-  margin: 5rem 0 5rem 0;
+  padding: 5rem 0 5rem 0;
 }
 
 form, .input-with-icon {
@@ -33,13 +34,30 @@ form {
   gap: 1rem;
 }
 
-form input, form textarea, form button, form .form-error, form .form-success {
+form input, form textarea, form input::file-selector-button, form button, form .input-replacement, form .form-error, form .form-success {
   padding: 0.5rem;
   border: 0.1rem solid var(--accent-dark);
   border-radius: 0.3rem;
   font-family: inherit;
   font-size: inherit;
   background-color: var(--bright-bg);
+}
+
+form ::placeholder, form .input-replacement {
+  color: #999;
+}
+
+form input::file-selector-button {
+  padding: 0 0.5rem;
+  line-height: 1;
+}
+
+.dont-display {
+  display: none;
+}
+
+form input:not(.dont-display) + .input-replacement {
+  display: none;
 }
 
 textarea {
@@ -81,6 +99,6 @@ button[type=submit] {
   margin: 0.75rem 0.5rem;
 }
 
-.input-with-icon input {
+.input-with-icon input, .input-with-icon .input-replacement {
   padding-left: 1.8rem;
 }

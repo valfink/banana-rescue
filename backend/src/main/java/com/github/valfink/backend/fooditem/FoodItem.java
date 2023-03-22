@@ -9,12 +9,12 @@ import java.time.Instant;
 public record FoodItem(
         @Id
         String id,
-        String donator_id,
+        String donatorId,
         String title,
-        String photo_uri,
+        String photoUri,
         String location,
-        Instant pickup_until,
-        Instant consume_until,
+        Instant pickupUntil,
+        Instant consumeUntil,
         String description
 ) {
 }
