@@ -12,6 +12,7 @@ import useUserAuth from "./hook/useUserAuth";
 import {SetAppIsLoadingContext} from "./context/SetAppIsLoadingContext";
 import LoadingScreen from "./component/LoadingScreen";
 import FoodItemDetailsPage from "./page/FoodItemDetailsPage";
+import FoodItemEditPage from "./page/FoodItemEditPage";
 
 axios.interceptors.request.use(config => {
     if (["put", "post", "delete"].includes(config.method || "")) {
@@ -37,6 +38,7 @@ function App() {
                         <Route path={"/"} element={<Navigate to={"/food"}/>}/>
                         <Route path={"/food"} element={<FoodItemGallery/>}/>
                         <Route path={"/food/:id"} element={<FoodItemDetailsPage/>}/>
+                        <Route path={"/food/:id/edit"} element={<FoodItemEditPage/>}/>
                         <Route path={"/add-food"} element={<FoodItemAddPage/>}/>
                         <Route path={"/signup"} element={<UserSignUpPage/>}/>
                         <Route path={"/login"} element={<UserLogInPage/>}/>

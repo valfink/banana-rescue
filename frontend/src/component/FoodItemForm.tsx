@@ -6,14 +6,21 @@ import {UserContext} from "../context/UserContext";
 import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
 import {FoodItemFormData} from "../model/FoodItemFormData";
 import {postNewFoodItem} from "../hook/useFoodItems";
+import {FoodItem} from "../model/FoodItem";
+import moment from "moment";
 
-export default function FoodItemForm() {
+type FoodItemFormProps = {
+    action: "add" | "edit";
+    oldData?: FoodItem;
+}
+
+export default function FoodItemForm(props: FoodItemFormProps) {
     const initialFormState = {
-        title: "",
-        location: "",
-        pickupUntil: "",
-        consumeUntil: "",
-        description: ""
+        title: props.oldData?.title || "",
+        location: props.oldData?.location || "",
+        pickupUntil: props.oldData?.pickupUntil ? moment(props.oldData?.pickupUntil).format("YYYY-MM-DDTHH:mm") : "",
+        consumeUntil: props.oldData?.consumeUntil ? moment(props.oldData?.consumeUntil).format("YYYY-MM-DDTHH:mm") : "",
+        description: props.oldData?.description || ""
     };
     const [formData, setFormData] = useState<FoodItemFormData>(initialFormState);
     const [photo, setPhoto] = useState<File | null>(null)
@@ -58,13 +65,16 @@ export default function FoodItemForm() {
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setFormError("");
-        let navigateTo = "/",
-            navigateOptions = {state: {successMessage: "Successfully registered."}};
-        postNewFoodItem(formData, photo, setAppIsLoading)
-            .then(() => {
-                navigate(navigateTo, navigateOptions);
-            })
-            .catch(setFormError);
+        if (props.action === "add") {
+            let navigateOptions = {state: {successMessage: "Food item successfully added."}};
+            postNewFoodItem(formData, photo, setAppIsLoading)
+                .then(foodItemResponse => {
+                    navigate(`/food/${foodItemResponse.id}`, navigateOptions);
+                })
+                .catch(setFormError);
+        } else {
+            console.log("EDIT WORKFLOW MISSING!")
+        }
     }
 
     useEffect(() => {
@@ -92,14 +102,16 @@ export default function FoodItemForm() {
             </div>
             <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faTrainSubway}/>
-                <input type={"text"} name={"pickupUntil"} placeholder={"Pickup until"} readOnly={true} required={true}
+                <input type={!formData.pickupUntil ? "text" : "datetime-local"} name={"pickupUntil"}
+                       placeholder={"Pickup until"} readOnly={true} required={true}
                        value={formData.pickupUntil} onChange={handleInputChange}
                        onFocus={setInputTypeToDateOrTime} onBlur={resetInputTypeToText}
                        data-on-focus-type={"datetime-local"} data-has-focus={"false"}/>
             </div>
             <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faUtensils}/>
-                <input type={"text"} name={"consumeUntil"} placeholder={"Consume until"} readOnly={true}
+                <input type={!formData.consumeUntil ? "text" : "datetime-local"} name={"consumeUntil"}
+                       placeholder={"Consume until"} readOnly={true}
                        required={true} value={formData.consumeUntil} onChange={handleInputChange}
                        onFocus={setInputTypeToDateOrTime} onBlur={resetInputTypeToText}
                        data-on-focus-type={"datetime-local"} data-has-focus={"false"}/>

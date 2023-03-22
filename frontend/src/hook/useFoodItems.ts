@@ -53,6 +53,7 @@ export function postNewFoodItem(formData: FoodItemFormData, photo: File | null, 
         type: "application/json"
     }));
     return axios.post(url, payload)
+        .then(res => res.data)
         .catch(err => {
             console.error(err);
             return err.response.data.error || err.response.data.message;
