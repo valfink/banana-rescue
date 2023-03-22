@@ -1,8 +1,9 @@
-import {ChangeEvent, FormEvent, useState} from "react";
+import {ChangeEvent, FormEvent, useContext, useState} from "react";
 import axios from "axios";
 import {useLocation, useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faKey, faUser} from "@fortawesome/free-solid-svg-icons";
+import {UserContext} from "../context/UserContext";
 
 type UserFormProps = {
     action: "login" | "signup"
@@ -14,7 +15,7 @@ export default function UserForm(props: UserFormProps) {
     const [formError, setFormError] = useState("");
     const navigate = useNavigate();
     const successMessage = useLocation().state?.successMessage || "";
-
+    const {setUser} = useContext(UserContext);
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
         event.target.placeholder === "Username"
@@ -28,7 +29,7 @@ export default function UserForm(props: UserFormProps) {
         let url = "/api/users",
             data = {},
             config = {},
-            navigateTo = "/",
+            navigateTo = window.sessionStorage.getItem("signInRedirect") || "/",
             navigateOptions = {state: {}};
         if (props.action === "signup") {
             data = {username, password};
@@ -41,7 +42,8 @@ export default function UserForm(props: UserFormProps) {
             navigateOptions.state = {successMessage: "Successfully logged in."};
         }
         axios.post(url, data, config)
-            .then(() => {
+            .then(res => {
+                setUser(res.data);
                 navigate(navigateTo, navigateOptions);
             })
             .catch(err => {

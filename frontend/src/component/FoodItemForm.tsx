@@ -1,9 +1,10 @@
-import React, {ChangeEvent, FormEvent, useState} from "react";
+import React, {ChangeEvent, FormEvent, useContext, useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCamera, faLocationDot, faQuoteLeft, faTrainSubway, faUtensils} from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import moment from "moment";
+import {UserContext} from "../context/UserContext";
 
 export default function FoodItemForm() {
     const initialFormState = {
@@ -17,6 +18,7 @@ export default function FoodItemForm() {
     const [photo, setPhoto] = useState<File | null>(null)
     const [formError, setFormError] = useState("");
     const navigate = useNavigate();
+    const {redirectIfNotSignedIn} = useContext(UserContext);
 
     function setInputTypeToDateOrTime(e: React.FocusEvent<HTMLInputElement>) {
         if (e.target.dataset.hasFocus === "false") {
@@ -77,6 +79,10 @@ export default function FoodItemForm() {
                 setFormError(err.response.data.error || err.response.data.message);
             });
     }
+
+    useEffect(() => {
+        redirectIfNotSignedIn();
+    })
 
     return (
         <form onSubmit={handleFormSubmit}>
