@@ -26,7 +26,7 @@ export default function UserForm(props: UserFormProps) {
     }
 
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
-        setAppIsLoading(true);
+        setAppIsLoading(oldValue => oldValue++);
         event.preventDefault();
         setFormError("");
         let url = "/api/users",
@@ -54,7 +54,7 @@ export default function UserForm(props: UserFormProps) {
                 setFormError(err.response.data.error || err.response.data.message);
             })
             .finally(() => {
-                setAppIsLoading(false);
+                setAppIsLoading(oldValue => Math.max(0, oldValue--));
             });
     }
 

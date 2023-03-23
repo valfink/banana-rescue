@@ -5,10 +5,10 @@ import {FoodItemFormData} from "../model/FoodItemFormData";
 
 const API_URL = "/api/food";
 
-export async function fetchAllFoodItems(setAppIsLoading: React.Dispatch<React.SetStateAction<boolean>>) {
+export async function fetchAllFoodItems(setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     let foodItems: FoodItem[] = [];
 
-    setAppIsLoading(true);
+    setAppIsLoading(oldValue => oldValue++);
     try {
         const response = await axios.get(API_URL);
         foodItems = response.data;
@@ -16,16 +16,16 @@ export async function fetchAllFoodItems(setAppIsLoading: React.Dispatch<React.Se
         console.error(err);
         return Promise.reject(err.response.data.error || err.response.data.message);
     } finally {
-        setAppIsLoading(false);
+        setAppIsLoading(oldValue => Math.max(0, oldValue--));
     }
 
     return foodItems;
 }
 
-export async function fetchSingleFoodItem(id: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<boolean>>) {
+export async function fetchSingleFoodItem(id: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     let foodItem: FoodItem | undefined;
 
-    setAppIsLoading(true);
+    setAppIsLoading(oldValue => oldValue++);
     try {
         const res = await axios.get(`${API_URL}/${id}`);
         foodItem = res.data;
@@ -33,16 +33,16 @@ export async function fetchSingleFoodItem(id: string | undefined, setAppIsLoadin
         console.error(err);
         return Promise.reject(err.response.data.error || err.response.data.message);
     } finally {
-        setAppIsLoading(false);
+        setAppIsLoading(oldValue => Math.max(0, oldValue--));
     }
 
     return foodItem;
 }
 
-export async function postNewFoodItem(formData: FoodItemFormData, photo: File | null, setAppIsLoading: React.Dispatch<React.SetStateAction<boolean>>) {
+export async function postNewFoodItem(formData: FoodItemFormData, photo: File | null, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     let savedFoodItem: FoodItem;
 
-    setAppIsLoading(true);
+    setAppIsLoading(oldValue => oldValue++);
     let payload = new FormData();
     if (photo) {
         payload.set("photo", photo);
@@ -62,7 +62,7 @@ export async function postNewFoodItem(formData: FoodItemFormData, photo: File | 
         console.error(err);
         return Promise.reject(err.response.data.error || err.response.data.message);
     } finally {
-        setAppIsLoading(false);
+        setAppIsLoading(oldValue => Math.max(0, oldValue--));
     }
 
     return savedFoodItem;

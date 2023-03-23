@@ -3,7 +3,7 @@ import {User} from "../model/User";
 import axios from "axios";
 import {useLocation, useNavigate} from "react-router-dom";
 
-export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetStateAction<boolean>>) {
+export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     const [user, setUser] = useState<User | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(false);
     const [doRedirect, setDoRedirect] = useState(false);
@@ -18,7 +18,7 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
 
     useEffect(() => {
         setIsLoading(true);
-        setAppIsLoading(true);
+        setAppIsLoading(oldValue => oldValue++);
         axios.get("/api/users/me")
             .then(res => res.data)
             .then(setUser)
@@ -27,7 +27,7 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
             })
             .finally(() => {
                 setIsLoading(false);
-                setAppIsLoading(false);
+                setAppIsLoading(oldValue => Math.max(0, oldValue--));
             });
     }, [setAppIsLoading]);
 
