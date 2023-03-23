@@ -1,0 +1,25 @@
+.delete-image-warning {
+    height: 100vh;
+    background-color: var(--bright-bg);
+    z-index: 1000;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 1rem;
+    padding: 0 1rem;
+}
+
+.delete-image-warning h1 {
+    margin: 6rem 0 4rem 0;
+}
+
+.delete-image-warning h2 {
+    line-height: 2;
+}
+
+.delete-image-warning .buttons {
+    display: flex;
+    flex-flow: column nowrap;
+    flex-grow: 1;
+    justify-content: center;
+    gap: 6rem;
+}

@@ -1,0 +1,8 @@
+.old-item-image {
+    cursor: pointer;
+    background-color: red;
+}
+
+.old-item-image:hover {
+    filter: grayscale(1);
+}
