@@ -27,4 +27,9 @@ public class FoodItemController {
     public FoodItemDTOResponse getFoodItemById(@PathVariable String id) {
         return foodItemService.getFoodItemById(id);
     }
+
+    @PutMapping("/{id}")
+    public FoodItemDTOResponse updateFoodItemById(@PathVariable String id, @RequestPart("form") FoodItemDTORequest foodItemDTORequest, @RequestPart(value = "photo", required = false) MultipartFile photo, Principal principal) {
+        return foodItemService.updateFoodItemById(id, foodItemDTORequest, photo, principal);
+    }
 }
