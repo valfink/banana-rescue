@@ -34,14 +34,7 @@ public class FoodItemService {
         );
     }
 
-    public List<FoodItemDTOResponse> getAllFoodItems() {
-        return foodItemRepository.getAllByOrderByPickupUntilDesc()
-                .stream()
-                .map(this::foodItemDTOResponseFromFoodItem)
-                .toList();
-    }
-
-    public FoodItemDTOResponse addFoodItem(FoodItemDTORequest foodItemDTORequest, MultipartFile photo, Principal principal) {
+    private void throwExceptionIfFoodItemDTORequestIsNotValid(FoodItemDTORequest foodItemDTORequest) {
         if (foodItemDTORequest.title() == null || foodItemDTORequest.title().isBlank()) {
             throw new InputMismatchException("Title must not be blank");
         }
@@ -57,7 +50,9 @@ public class FoodItemService {
         if (foodItemDTORequest.description() == null || foodItemDTORequest.description().isBlank()) {
             throw new InputMismatchException("Description must not be blank");
         }
+    }
 
+    private String uploadPhotoIfPresentAndReturnUriOrNull(MultipartFile photo) {
         String photoUri;
         if (photo != null) {
             try {
@@ -68,6 +63,22 @@ public class FoodItemService {
         } else {
             photoUri = null;
         }
+
+        return photoUri;
+    }
+
+    public List<FoodItemDTOResponse> getAllFoodItems() {
+        return foodItemRepository.getAllByOrderByPickupUntilDesc()
+                .stream()
+                .map(this::foodItemDTOResponseFromFoodItem)
+                .toList();
+    }
+
+    public FoodItemDTOResponse addFoodItem(FoodItemDTORequest foodItemDTORequest, MultipartFile photo, Principal principal) {
+
+        throwExceptionIfFoodItemDTORequestIsNotValid(foodItemDTORequest);
+
+        String photoUri = uploadPhotoIfPresentAndReturnUriOrNull(photo);
 
         FoodItem foodItem = foodItemRepository.save(new FoodItem(
                 idService.generateId(),
@@ -85,7 +96,37 @@ public class FoodItemService {
 
     public FoodItemDTOResponse getFoodItemById(String id) {
         FoodItem foodItem = foodItemRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("The task with the id " + id + " doesn't exist."));
+
+        return foodItemDTOResponseFromFoodItem(foodItem);
+    }
+
+    public FoodItemDTOResponse updateFoodItemById(String id, FoodItemDTORequest foodItemDTORequest, MultipartFile photo, Principal principal) {
+        String userId = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName()).id();
+        FoodItemDTOResponse oldFoodItem = getFoodItemById(id);
+
+        if (!oldFoodItem.donator().id().equals(userId)) {
+            throw new SecurityException("You may only edit you own items!");
+        }
+        throwExceptionIfFoodItemDTORequestIsNotValid(foodItemDTORequest);
+
+        String photoUri;
+        if (oldFoodItem.photoUri() == null || oldFoodItem.photoUri().isBlank()) {
+            photoUri = uploadPhotoIfPresentAndReturnUriOrNull(photo);
+        } else {
+            photoUri = oldFoodItem.photoUri();
+        }
+
+        FoodItem foodItem = foodItemRepository.save(new FoodItem(
+                id,
+                userId,
+                foodItemDTORequest.title(),
+                photoUri,
+                foodItemDTORequest.location(),
+                foodItemDTORequest.pickupUntil(),
+                foodItemDTORequest.consumeUntil(),
+                foodItemDTORequest.description()
+        ));
 
         return foodItemDTOResponseFromFoodItem(foodItem);
     }
