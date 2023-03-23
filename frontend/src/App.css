@@ -52,13 +52,7 @@ input, textarea, input::file-selector-button, button, .input-replacement, .form-
     border-radius: 0.3rem;
     font-family: inherit;
     font-size: inherit;
-    background-color: var(--bright-bg);;
-}
-
-.secondary-button {
-    text-decoration: none;
-    cursor: inherit;
-    text-align: center
+    background-color: var(--bright-bg);
 }
 
 form img {
@@ -132,6 +126,9 @@ button[type=submit] {
 }
 
 .secondary-button {
+    text-decoration: none;
+    cursor: inherit;
+    text-align: center;
     background-color: var(--bright-bg);
     color: var(--accent-dark);
 }
