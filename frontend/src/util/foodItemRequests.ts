@@ -75,20 +75,6 @@ export async function updateFoodItem(id: string, formData: FoodItemFormData, pho
     return updatedFoodItem;
 }
 
-export async function deletePhotoFromFoodItem(id: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
-    setAppIsLoading(oldValue => oldValue++);
-    try {
-        await axios.delete(`${API_URL}/${id}/photo`);
-    } catch (err: any) {
-        console.error(err);
-        return Promise.reject(err.response.data.error || err.response.data.message);
-    } finally {
-        setAppIsLoading(oldValue => Math.max(0, oldValue--));
-    }
-
-    return true;
-}
-
 function createFormDataPayload(formData: FoodItemFormData, photo: File | null) {
     const payload = new FormData();
     if (photo) {
