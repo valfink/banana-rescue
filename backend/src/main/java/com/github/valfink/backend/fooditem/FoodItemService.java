@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -20,19 +21,23 @@ public class FoodItemService {
     private final IdService idService;
     private final PhotoService photoService;
 
+    private FoodItemDTOResponse foodItemDTOResponseFromFoodItem(FoodItem foodItem) {
+        return new FoodItemDTOResponse(
+                foodItem.id(),
+                mongoUserService.getMongoUserDTOResponseById(foodItem.donatorId()),
+                foodItem.title(),
+                foodItem.photoUri(),
+                foodItem.location(),
+                foodItem.pickupUntil(),
+                foodItem.consumeUntil(),
+                foodItem.description()
+        );
+    }
+
     public List<FoodItemDTOResponse> getAllFoodItems() {
         return foodItemRepository.getAllByOrderByPickupUntilDesc()
                 .stream()
-                .map(item -> new FoodItemDTOResponse(
-                        item.id(),
-                        mongoUserService.getMongoUserDTOResponseById(item.donatorId()),
-                        item.title(),
-                        item.photoUri(),
-                        item.location(),
-                        item.pickupUntil(),
-                        item.consumeUntil(),
-                        item.description()
-                ))
+                .map(this::foodItemDTOResponseFromFoodItem)
                 .toList();
     }
 
@@ -52,6 +57,7 @@ public class FoodItemService {
         if (foodItemDTORequest.description() == null || foodItemDTORequest.description().isBlank()) {
             throw new InputMismatchException("Description must not be blank");
         }
+
         String photoUri;
         if (photo != null) {
             try {
@@ -62,6 +68,7 @@ public class FoodItemService {
         } else {
             photoUri = null;
         }
+
         FoodItem foodItem = foodItemRepository.save(new FoodItem(
                 idService.generateId(),
                 mongoUserService.getMongoUserDTOResponseByUsername(principal.getName()).id(),
@@ -72,15 +79,14 @@ public class FoodItemService {
                 foodItemDTORequest.consumeUntil(),
                 foodItemDTORequest.description()
         ));
-        return new FoodItemDTOResponse(
-                foodItem.id(),
-                mongoUserService.getMongoUserDTOResponseById(foodItem.donatorId()),
-                foodItem.title(),
-                foodItem.photoUri(),
-                foodItem.location(),
-                foodItem.pickupUntil(),
-                foodItem.consumeUntil(),
-                foodItem.description()
-        );
+
+        return foodItemDTOResponseFromFoodItem(foodItem);
+    }
+
+    public FoodItemDTOResponse getFoodItemById(String id) {
+        FoodItem foodItem = foodItemRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+
+        return foodItemDTOResponseFromFoodItem(foodItem);
     }
 }

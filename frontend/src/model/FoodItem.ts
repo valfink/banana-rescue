@@ -1,3 +1,5 @@
+import {User} from "./User";
+
 export type FoodItem = {
     id?: string;
     title: string;
@@ -6,4 +8,5 @@ export type FoodItem = {
     pickupUntil: string;
     consumeUntil: string;
     description: string;
+    donator: User;
 }

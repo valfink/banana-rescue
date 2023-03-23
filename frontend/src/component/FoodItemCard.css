@@ -5,13 +5,37 @@
 }
 .food-item-card main {
     flex-basis: 60%;
-    padding: 0.2rem 0.3rem 0.2rem 0.2rem;
+    padding: 0.2rem 0.3rem 0.3rem 0.3rem;
 }
+
+.food-item-card h2 {
+    margin: 0;
+}
+
 .food-item-card ul {
     list-style: none;
     padding: 0;
+    margin: 0.5rem 0;
 }
+
+.food-item-card a {
+    display: inline-block;
+    border: 0.1rem solid var(--accent-dark);
+    border-radius: 0.3rem;
+    color: var(--accent-dark);
+    text-decoration: none;
+    padding: 0.1rem 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.food-item-card a:hover, .food-item-card a:active {
+    border-color: var(--bright-bg);
+    color: var(--bright-bg);
+    background-color: var(--accent-dark);
+}
+
 .food-item-card aside {
     flex-basis: 40%;
     background-size: cover;
+    background-position: center;
 }
