@@ -16,8 +16,8 @@
 }
 
 main h1 {
-  margin: 0 0 1rem 0;
-  text-align: center;
+    margin: 0 0 1rem 0;
+    text-align: center;
 }
 
 .form {
@@ -26,17 +26,17 @@ main h1 {
 }
 
 .form h1 {
-  padding: 3rem 0 1rem 0;
+    padding: 3rem 0 1rem 0;
 }
 
 .form, form, .input-with-icon, form main {
-  display: flex;
-  flex-flow: column nowrap;
+    display: flex;
+    flex-flow: column nowrap;
 }
 
 form main {
-  flex-grow: 1;
-  gap: 1rem;
+    flex-grow: 1;
+    gap: 1rem;
 }
 
 form {
@@ -70,50 +70,50 @@ form img {
 }
 
 input::file-selector-button {
-  padding: 0 0.5rem;
-  line-height: 1;
+    padding: 0 0.5rem;
+    line-height: 1;
 }
 
 .dont-display {
-  display: none;
+    display: none;
 }
 
 input:not(.dont-display) + .input-replacement {
-  display: none;
+    display: none;
 }
 
 textarea {
-  height: 7rem;
+    height: 7rem;
 }
 
 input[type=datetime-local], input[type=date], input[type=time] {
-  appearance: initial;
+    appearance: initial;
 }
 
 button {
-  color: var(--bright-bg);
-  background-color: var(--accent-dark);
+    color: var(--bright-bg);
+    background-color: var(--accent-dark);
 }
 
 .form-error {
-  color: #CC0000;
-  border: 0.1rem solid #FF0000;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  font-weight: bold;
+    color: #CC0000;
+    border: 0.1rem solid #FF0000;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-weight: bold;
 }
 
 .form-success {
-  color: #008800;
-  border: 0.1rem solid #00DD00;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  font-weight: bold;
+    color: #008800;
+    border: 0.1rem solid #00DD00;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-weight: bold;
 }
 
 button[type=submit] {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .input-with-icon svg {
