@@ -1,14 +1,21 @@
 import {useParams} from "react-router-dom";
-import {useContext} from "react";
+import {useContext, useEffect, useState} from "react";
 import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
 import "./FoodItemDetailsPage.css";
 import moment from "moment/moment";
-import {useFetchSingleFoodItem} from "../hook/useFoodItems";
+import {fetchSingleFoodItem} from "../util/foodItemRequests";
+import {FoodItem} from "../model/FoodItem";
 
 export default function FoodItemDetailsPage() {
     const {id} = useParams();
     const setAppIsLoading = useContext(SetAppIsLoadingContext);
-    const foodItem = useFetchSingleFoodItem(id, setAppIsLoading);
+    const [foodItem, setFoodItem] = useState<FoodItem | undefined>(undefined);
+
+    useEffect(() => {
+        fetchSingleFoodItem(id, setAppIsLoading)
+            .then(setFoodItem)
+            .catch(console.error);
+    }, [id, setAppIsLoading]);
 
     if (!foodItem) {
         return (

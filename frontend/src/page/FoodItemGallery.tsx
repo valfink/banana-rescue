@@ -1,12 +1,19 @@
-import {useContext} from "react";
+import {useContext, useEffect, useState} from "react";
 import FoodItemCard from "../component/FoodItemCard";
 import "./FoodItemGallery.css";
 import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
-import {useFetchAllFoodItems} from "../hook/useFoodItems";
+import {fetchAllFoodItems} from "../util/foodItemRequests";
+import {FoodItem} from "../model/FoodItem";
 
 export default function FoodItemGallery() {
     const setAppIsLoading = useContext(SetAppIsLoadingContext);
-    const foodItems = useFetchAllFoodItems(setAppIsLoading);
+    const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
+
+    useEffect(() => {
+        fetchAllFoodItems(setAppIsLoading)
+            .then(setFoodItems)
+            .catch(console.error);
+    }, [setAppIsLoading]);
 
     return (
         <main className={"food-item-gallery"}>
