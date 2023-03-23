@@ -130,4 +130,36 @@ public class FoodItemService {
 
         return foodItemDTOResponseFromFoodItem(foodItem);
     }
+
+    public String deletePhotoFromFoodItem(String foodItemId, Principal principal) {
+        String userId = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName()).id();
+        FoodItemDTOResponse foodItem = getFoodItemById(foodItemId);
+
+        if (!foodItem.donator().id().equals(userId)) {
+            throw new SecurityException("You may only edit you own items!");
+        }
+        if (foodItem.photoUri() == null || foodItem.photoUri().isBlank()) {
+            throw new NoSuchElementException("The selected food item doesn't have an image!");
+        }
+
+        String result;
+        try {
+            result = photoService.deletePhoto(foodItem.photoUri());
+        } catch (IOException e) {
+            throw new InputMismatchException("The photo deletion didn't work: " + e.getMessage());
+        }
+
+        foodItemRepository.save(new FoodItem(
+                foodItemId,
+                userId,
+                foodItem.title(),
+                null,
+                foodItem.location(),
+                foodItem.pickupUntil(),
+                foodItem.consumeUntil(),
+                foodItem.description()
+        ));
+
+        return result;
+    }
 }

@@ -202,4 +202,61 @@ class FoodItemServiceTest {
         // WHEN & THEN
         assertThrows(SecurityException.class, () -> foodItemService.updateFoodItemById(foodItemId, foodItemDTORequest, null, principal));
     }
+
+    @Test
+    void deletePhotoFromFoodItem_whenEverythingIsValid_thenReturnCloudinaryResponse() throws IOException {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
+        when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(foodItem1));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(mongoUserDTOResponse1);
+        when(photoService.deletePhoto(foodItem1.photoUri())).thenReturn("ok");
+
+        // WHEN
+        String expected = "ok";
+        String actual = foodItemService.deletePhotoFromFoodItem(foodItem1.id(), principal);
+
+        // THEN
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void deletePhotoFromFoodItem_whenUserIsNotDonator_thenThrowException() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(new MongoUserDTOResponse("2", "other user"));
+        when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(foodItem1));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(mongoUserDTOResponse1);
+        String id = foodItem1.id();
+
+        // WHEN & THEN
+        assertThrows(SecurityException.class, () -> foodItemService.deletePhotoFromFoodItem(id, principal));
+    }
+
+    @Test
+    void deletePhotoFromFoodItem_whenItemHasNoImage_thenThrowException() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
+        when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(new FoodItem(foodItem1.id(), foodItem1.donatorId(), foodItem1.title(), null, foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description())));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(mongoUserDTOResponse1);
+        String id = foodItem1.id();
+
+        // WHEN & THEN
+        assertThrows(NoSuchElementException.class, () -> foodItemService.deletePhotoFromFoodItem(id, principal));
+    }
+
+    @Test
+    void deletePhotoFromFoodItem_whenCloudinaryThrowsException_thenThrowException() throws IOException {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
+        when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(foodItem1));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(mongoUserDTOResponse1);
+        when(photoService.deletePhoto(foodItem1.photoUri())).thenThrow(IOException.class);
+        String id = foodItem1.id();
+
+        // WHEN & THEN
+        assertThrows(InputMismatchException.class, () -> foodItemService.deletePhotoFromFoodItem(id, principal));
+    }
 }
