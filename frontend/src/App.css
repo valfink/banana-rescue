@@ -21,26 +21,36 @@ main h1 {
 }
 
 .form h1 {
-  padding: 5rem 0 5rem 0;
+  padding: 3rem 0 1rem 0;
 }
 
-form, .input-with-icon {
+.form, form, .input-with-icon, form main {
   display: flex;
   flex-flow: column nowrap;
+}
+
+form main {
+  flex-grow: 1;
+  gap: 1rem;
 }
 
 form {
   padding: 1rem;
   gap: 1rem;
+  height: 100%;
 }
 
-input, textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success {
+input, textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success, form img {
   padding: 0.5rem;
   border: 0.1rem solid var(--accent-dark);
   border-radius: 0.3rem;
   font-family: inherit;
   font-size: inherit;
   background-color: var(--bright-bg);
+}
+
+form img {
+  padding: 0;
 }
 
 ::placeholder, .input-replacement {
@@ -90,8 +100,8 @@ button {
 }
 
 button[type=submit] {
-  margin-top: 3rem;
-  margin-bottom: 3rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .input-with-icon svg {
