@@ -43,18 +43,7 @@ export async function postNewFoodItem(formData: FoodItemFormData, photo: File | 
     let savedFoodItem: FoodItem;
 
     setAppIsLoading(oldValue => oldValue++);
-    let payload = new FormData();
-    if (photo) {
-        payload.set("photo", photo);
-    }
-    payload.set("form", new Blob([JSON.stringify({
-        ...formData,
-        pickupUntil: moment(formData.pickupUntil),
-        consumeUntil: moment(formData.consumeUntil)
-    })], {
-        type: "application/json"
-    }));
-
+    const payload = createFormDataPayload(formData, photo);
     try {
         const res = await axios.post(API_URL, payload);
         savedFoodItem = res.data;
@@ -66,6 +55,24 @@ export async function postNewFoodItem(formData: FoodItemFormData, photo: File | 
     }
 
     return savedFoodItem;
+}
+
+export async function updateFoodItem(id: string, formData: FoodItemFormData, photo: File | null, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
+    let updatedFoodItem: FoodItem;
+
+    setAppIsLoading(oldValue => oldValue++);
+    const payload = createFormDataPayload(formData, photo);
+    try {
+        const res = await axios.put(`${API_URL}/${id}`, payload);
+        updatedFoodItem = res.data;
+    } catch (err: any) {
+        console.error(err);
+        return Promise.reject(err.response.data.error || err.response.data.message);
+    } finally {
+        setAppIsLoading(oldValue => Math.max(0, oldValue--));
+    }
+
+    return updatedFoodItem;
 }
 
 export async function deletePhotoFromFoodItem(id: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
@@ -80,4 +87,20 @@ export async function deletePhotoFromFoodItem(id: string | undefined, setAppIsLo
     }
 
     return true;
+}
+
+function createFormDataPayload(formData: FoodItemFormData, photo: File | null) {
+    const payload = new FormData();
+    if (photo) {
+        payload.set("photo", photo);
+    }
+    payload.set("form", new Blob([JSON.stringify({
+        ...formData,
+        pickupUntil: moment(formData.pickupUntil),
+        consumeUntil: moment(formData.consumeUntil)
+    })], {
+        type: "application/json"
+    }));
+
+    return payload;
 }

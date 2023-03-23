@@ -5,7 +5,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {UserContext} from "../context/UserContext";
 import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
 import {FoodItemFormData} from "../model/FoodItemFormData";
-import {deletePhotoFromFoodItem, postNewFoodItem} from "../util/foodItemRequests";
+import {deletePhotoFromFoodItem, postNewFoodItem, updateFoodItem} from "../util/foodItemRequests";
 import {FoodItem} from "../model/FoodItem";
 import moment from "moment";
 import "./FoodItemForm.css";
@@ -84,7 +84,18 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                 .catch(setFormError);
 
         } else {
-            console.log("EDIT WORKFLOW MISSING!")
+            if (!props.oldFoodItem?.id) {
+                setFormError("Id not specified!");
+            } else {
+                let navigateOptions = {state: {successMessage: "Food item successfully updated."}};
+
+                updateFoodItem(props.oldFoodItem.id, formData, photo, setAppIsLoading)
+                    .then(foodItemResponse => {
+                        navigate(`/food/${foodItemResponse.id}`, navigateOptions);
+                    })
+                    .catch(setFormError);
+            }
+
         }
     }
 
@@ -118,7 +129,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                            onChange={handleInputChange}/>
                 </div>
                 {oldPhotoUri
-                    ? <img className={"old-item-image"} src={oldPhotoUri} alt={"Your existing photo"}
+                    ? <img className={"old-item-image"} src={oldPhotoUri} alt={"Click to deleteπ"}
                            onClick={handleClickOldImage}/>
                     : <div className={"input-with-icon"}>
                         <FontAwesomeIcon icon={faCamera}/>
