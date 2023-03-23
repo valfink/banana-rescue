@@ -49,7 +49,7 @@ class FoodItemControllerTest {
                 "1",
                 mongoUser1.id(),
                 "Food Item 1",
-                "https://photo.com/1.jpg",
+                "http://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg",
                 "Berlin",
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
@@ -220,5 +220,19 @@ class FoodItemControllerTest {
                         }
                         }
                         """));
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void deletePhotoFromFoodItem_whenEverythingIsValid_thenReturnOk() throws Exception {
+        when(cloudinary.uploader()).thenReturn(uploader);
+        when(uploader.destroy(any(), anyMap())).thenReturn(Map.of("result", "ok"));
+        mongoUserRepository.save(mongoUser1);
+        foodItemRepository.save(foodItem1);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/food/1/photo")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string("ok"));
     }
 }

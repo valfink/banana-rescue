@@ -32,4 +32,9 @@ public class FoodItemController {
     public FoodItemDTOResponse updateFoodItemById(@PathVariable String id, @RequestPart("form") FoodItemDTORequest foodItemDTORequest, @RequestPart(value = "photo", required = false) MultipartFile photo, Principal principal) {
         return foodItemService.updateFoodItemById(id, foodItemDTORequest, photo, principal);
     }
+
+    @DeleteMapping("/{id}/photo")
+    public String deletePhotoFromFoodItem(@PathVariable String id, Principal principal) {
+        return foodItemService.deletePhotoFromFoodItem(id, principal);
+    }
 }
