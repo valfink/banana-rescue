@@ -37,7 +37,7 @@ export default function FoodItemEditPage() {
     return (
         <main className={"form"}>
             <h1>Edit your Item</h1>
-            <FoodItemForm action={"edit"} oldData={foodItem}/>
+            <FoodItemForm action={"edit"} oldFoodItem={foodItem}/>
         </main>
     );
 }
