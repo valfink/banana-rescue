@@ -18,7 +18,7 @@ public class PhotoService {
 
     public String uploadPhoto(MultipartFile photo) throws IOException {
         Map result = cloudinary.uploader().upload(photo.getBytes(), ObjectUtils.emptyMap());
-        return result.get("url").toString();
+        return result.get("secure_url").toString();
     }
 
     public String deletePhoto(String url) throws IOException {
