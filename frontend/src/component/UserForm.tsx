@@ -26,7 +26,7 @@ export default function UserForm(props: UserFormProps) {
     }
 
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
-        setAppIsLoading(oldValue => oldValue++);
+        setAppIsLoading(oldValue => oldValue + 1);
         event.preventDefault();
         setFormError("");
         let url = "/api/users",
@@ -34,6 +34,7 @@ export default function UserForm(props: UserFormProps) {
             config = {},
             navigateTo = window.sessionStorage.getItem("signInRedirect") || "/",
             navigateOptions = {state: {}};
+        window.sessionStorage.removeItem("signInRedirect");
         if (props.action === "signup") {
             data = {username, password};
             navigateTo = "/login";
@@ -54,7 +55,7 @@ export default function UserForm(props: UserFormProps) {
                 setFormError(err.response.data.error || err.response.data.message);
             })
             .finally(() => {
-                setAppIsLoading(oldValue => Math.max(0, oldValue--));
+                setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
             });
     }
 
