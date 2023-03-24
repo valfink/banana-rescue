@@ -26,7 +26,7 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
             })
             .catch(err => {
                 console.error(err);
-                return err.response.data.error || err.response.data.message;
+                return Promise.reject(err.response.data.error || err.response.data.message);
             })
             .finally(() => {
                 setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
@@ -45,7 +45,7 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
             })
             .catch(err => {
                 console.error(err);
-                return err.response.data.error || err.response.data.message;
+                return Promise.reject(err.response.data.error || err.response.data.message);
             })
             .finally(() => {
                 setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
