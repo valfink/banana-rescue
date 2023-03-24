@@ -1,6 +1,4 @@
 .header-bar {
-    position: sticky;
-    top: 0;
     background-color: var(--bright-bg);
     transition: box-shadow 0.1s;
     display: flex;

@@ -1,0 +1,21 @@
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.app-header.full-screen {
+    height: 100vh;
+    display: flex;
+    flex-flow: column nowrap;
+    background-color: var(--bright-bg);
+}
+
+.App:has(.full-screen-nav) {
+    overflow: hidden;
+    display: block;
+}
+
+.header-bar:has(+.full-screen-nav) {
+    box-shadow: none;
+}
