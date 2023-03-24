@@ -18,7 +18,7 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
 
     useEffect(() => {
         setIsLoading(true);
-        setAppIsLoading(oldValue => oldValue++);
+        setAppIsLoading(oldValue => oldValue + 1);
         axios.get("/api/users/me")
             .then(res => res.data)
             .then(setUser)
@@ -27,7 +27,7 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
             })
             .finally(() => {
                 setIsLoading(false);
-                setAppIsLoading(oldValue => Math.max(0, oldValue--));
+                setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
             });
     }, [setAppIsLoading]);
 
