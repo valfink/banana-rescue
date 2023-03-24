@@ -116,6 +116,10 @@ button[type=submit] {
     margin-bottom: 1rem;
 }
 
+.input-with-icon {
+    position: relative;
+}
+
 .input-with-icon svg {
     position: absolute;
     margin: 0.75rem 0.5rem;
@@ -140,4 +144,8 @@ button[type=submit] {
 .secondary-button {
     background-color: var(--bright-bg);
     color: var(--accent-dark);
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }

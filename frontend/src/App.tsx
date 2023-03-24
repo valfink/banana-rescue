@@ -13,7 +13,7 @@ import {SetAppIsLoadingContext} from "./context/SetAppIsLoadingContext";
 import LoadingScreen from "./modal/LoadingScreen";
 import FoodItemDetailsPage from "./page/FoodItemDetailsPage";
 import FoodItemEditPage from "./page/FoodItemEditPage";
-import HeaderBar from "./component/HeaderBar";
+import HeaderBarAndFullScreenNav from "./page/HeaderBarAndFullScreenNav";
 
 axios.interceptors.request.use(config => {
     if (["put", "post", "delete"].includes(config.method || "")) {
@@ -40,7 +40,7 @@ function App() {
             <SetAppIsLoadingContext.Provider value={setAppIsLoading}>
                 <UserContext.Provider value={useUserAuth(setAppIsLoading)}>
                     {appIsLoading !== 0 && <LoadingScreen/>}
-                    <HeaderBar displayShadow={appContentIsScrolled}/>
+                    <HeaderBarAndFullScreenNav displayHeaderBarShadow={appContentIsScrolled}/>
                     <Routes>
                         <Route path={"/"} element={<Navigate to={"/food"}/>}/>
                         <Route path={"/food"} element={<FoodItemGallery/>}/>
