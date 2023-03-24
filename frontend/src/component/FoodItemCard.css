@@ -19,11 +19,10 @@
 }
 
 .food-item-card a {
-    display: inline-block;
-    border: 0.1rem solid var(--accent-dark);
-    border-radius: 0.3rem;
-    color: var(--accent-dark);
+    display: block;
+    max-width: 8rem;
     text-decoration: none;
+    text-align: center;
     padding: 0.1rem 1rem;
     margin-bottom: 0.3rem;
 }
