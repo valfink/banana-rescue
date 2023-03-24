@@ -16,9 +16,44 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
         }
     }
 
+    function signUpUser(username: string, password: string) {
+        setAppIsLoading(oldValue => oldValue + 1);
+        const url = "/api/users",
+            data = {username, password};
+        return axios.post(url, data)
+            .then(() => {
+                return true;
+            })
+            .catch(err => {
+                console.error(err);
+                return err.response.data.error || err.response.data.message;
+            })
+            .finally(() => {
+                setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
+            });
+    }
+
+    function logInUser(username: string, password: string) {
+        setAppIsLoading(oldValue => oldValue + 1);
+        const url = "/api/users/login",
+            btoaString = `${username}:${password}`,
+            config = {headers: {Authorization: `Basic ${window.btoa(btoaString)}`}};
+        return axios.post(url, {}, config)
+            .then(res => {
+                setUser(res.data);
+                return true;
+            })
+            .catch(err => {
+                console.error(err);
+                return err.response.data.error || err.response.data.message;
+            })
+            .finally(() => {
+                setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
+            });
+    }
+
     useEffect(() => {
         setIsLoading(true);
-        setAppIsLoading(oldValue => oldValue + 1);
         axios.get("/api/users/me")
             .then(res => res.data)
             .then(setUser)
@@ -27,9 +62,8 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
             })
             .finally(() => {
                 setIsLoading(false);
-                setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
             });
-    }, [setAppIsLoading]);
+    }, []);
 
     useEffect(() => {
         if (doRedirect && !isLoading) {
@@ -41,5 +75,5 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
         }
     }, [doRedirect, isLoading, user, navigate, pathname])
 
-    return {user, redirectIfNotSignedIn, setUser};
+    return {user, redirectIfNotSignedIn, signUpUser, logInUser, setUser};
 }
