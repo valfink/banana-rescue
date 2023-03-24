@@ -21,9 +21,11 @@ export default function FoodItemCard(props: FoodItemCardProps) {
                     <li><strong>Consume within:</strong> {moment(props.foodItem.consumeUntil).fromNow(true)}</li>
                     <li><strong>Location:</strong> {props.foodItem.location}</li>
                 </ul>
-                <Link to={`/food/${props.foodItem.id}`} className={"secondary-button"}>Find out more</Link>
+                <Link to={`/food/${props.foodItem.id}`} className={"secondary-button"}
+                      state={{navBarBackLink: "/food"}}>Find out more</Link>
                 {user?.id === props.foodItem.donator.id &&
-                    <Link to={`/food/${props.foodItem.id}/edit`} className={"primary-button"}>Edit</Link>}
+                    <Link to={`/food/${props.foodItem.id}/edit`} className={"primary-button"}
+                          state={{navBarBackLink: "/food"}}>Edit</Link>}
             </main>
             {props.foodItem.photoUri && <aside style={{backgroundImage: `url(${props.foodItem.photoUri})`}}/>}
         </article>

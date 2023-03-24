@@ -1,4 +1,4 @@
-import {Link, useParams} from "react-router-dom";
+import {Link, useLocation, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
 import "./FoodItemDetailsPage.css";
@@ -12,6 +12,7 @@ export default function FoodItemDetailsPage() {
     const setAppIsLoading = useContext(SetAppIsLoadingContext);
     const [foodItem, setFoodItem] = useState<FoodItem | undefined>(undefined);
     const {user} = useContext(UserContext) as UserContextType;
+    const {pathname, state} = useLocation();
 
     useEffect(() => {
         fetchSingleFoodItem(id, setAppIsLoading)
@@ -42,7 +43,8 @@ export default function FoodItemDetailsPage() {
                     </ul>
                 </main>
                 {user?.id === foodItem.donator.id &&
-                    <Link to={`/food/${foodItem.id}/edit`} className={"primary-button"}>Edit Item</Link>}
+                    <Link to={`/food/${foodItem.id}/edit`} className={"primary-button"}
+                          state={{navBarBackLink: pathname, oldState: state}}>Edit Item</Link>}
             </section>
         </section>
     );
