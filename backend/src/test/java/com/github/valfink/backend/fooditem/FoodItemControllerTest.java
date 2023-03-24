@@ -130,7 +130,7 @@ class FoodItemControllerTest {
     @WithMockUser
     void addFoodItem_whenPostingValidItemIncludingPhotoAndSignedIn_thenReturnNewItem() throws Exception {
         when(cloudinary.uploader()).thenReturn(uploader);
-        when(uploader.upload(any(), anyMap())).thenReturn(Map.of("url", "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg"));
+        when(uploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg"));
         mongoUserRepository.save(mongoUser1);
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/food")
                         .file(new MockMultipartFile("form", null,
