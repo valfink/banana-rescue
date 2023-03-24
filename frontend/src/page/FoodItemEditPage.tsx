@@ -3,12 +3,12 @@ import {useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
 import {fetchSingleFoodItem} from "../util/foodItemRequests";
-import {UserContext} from "../context/UserContext";
+import {UserContext, UserContextType} from "../context/UserContext";
 import {FoodItem} from "../model/FoodItem";
 
 export default function FoodItemEditPage() {
     const {id} = useParams();
-    const {user} = useContext(UserContext);
+    const {user} = useContext(UserContext) as UserContextType;
     const setAppIsLoading = useContext(SetAppIsLoadingContext);
     const [foodItem, setFoodItem] = useState<FoodItem | undefined>(undefined);
 

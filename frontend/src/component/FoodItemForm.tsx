@@ -2,12 +2,14 @@ import React, {ChangeEvent, FormEvent, useContext, useEffect, useState} from "re
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCamera, faLocationDot, faQuoteLeft, faTrainSubway, faUtensils} from '@fortawesome/free-solid-svg-icons';
 import {Link, useNavigate} from "react-router-dom";
-import {UserContext} from "../context/UserContext";
+import {UserContext, UserContextType} from "../context/UserContext";
 import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
 import {FoodItemFormData} from "../model/FoodItemFormData";
-import {postNewFoodItem, updateFoodItem} from "../util/foodItemRequests";
+import {deletePhotoFromFoodItem, postNewFoodItem, updateFoodItem} from "../util/foodItemRequests";
 import {FoodItem} from "../model/FoodItem";
 import moment from "moment";
+import "./FoodItemForm.css";
+import DeleteImageWarningScreen from "../modal/DeleteImageWarningScreen";
 
 type FoodItemFormProps = {
     action: "add" | "edit";
@@ -24,9 +26,11 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     };
     const [formData, setFormData] = useState<FoodItemFormData>(initialFormState);
     const [photo, setPhoto] = useState<File | null>(null)
+    const [oldPhotoUri, setOldPhotoUri] = useState<string | undefined>(props.oldFoodItem?.photoUri);
     const [formError, setFormError] = useState("");
+    const [showDeleteImageWarning, setShowDeleteImageWarning] = useState(false);
     const navigate = useNavigate();
-    const {redirectIfNotSignedIn} = useContext(UserContext);
+    const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
     const setAppIsLoading = useContext(SetAppIsLoadingContext);
 
     function setInputTypeToDateOrTime(e: React.FocusEvent<HTMLInputElement>) {
@@ -62,6 +66,10 @@ export default function FoodItemForm(props: FoodItemFormProps) {
         }
     }
 
+    function handleClickOldImage() {
+        setShowDeleteImageWarning(true);
+    }
+
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setFormError("");
@@ -91,12 +99,28 @@ export default function FoodItemForm(props: FoodItemFormProps) {
         }
     }
 
+    function handleCloseModalClick() {
+        setShowDeleteImageWarning(false);
+    }
+
+    function handleDeletePhotoClick() {
+        deletePhotoFromFoodItem(props.oldFoodItem?.id || "", setAppIsLoading)
+            .then(() => setOldPhotoUri(undefined))
+            .catch(setFormError)
+            .finally(() => {
+                setShowDeleteImageWarning(false)
+            });
+    }
+
     useEffect(() => {
         redirectIfNotSignedIn();
     }, [redirectIfNotSignedIn]);
 
     return (
         <form onSubmit={handleFormSubmit}>
+            {props.action === "edit" &&
+                <DeleteImageWarningScreen closeModal={handleCloseModalClick} deletePhoto={handleDeletePhotoClick}
+                                          modalIsOpen={showDeleteImageWarning}/>}
             {formError && <div className={"form-error"}>Error: {formError}</div>}
             <main>
                 <div className={"input-with-icon"}>
@@ -104,12 +128,16 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                     <input type={"text"} name={"title"} placeholder={"Title"} required={true} value={formData.title}
                            onChange={handleInputChange}/>
                 </div>
-                <div className={"input-with-icon"}>
-                    <FontAwesomeIcon icon={faCamera}/>
-                    <input type={"file"} accept={"image/jpeg, image/png"} id={"photo"} name={"photo"}
-                           className={"dont-display"} onChange={handleFileChange}/>
-                    <label htmlFor={"photo"} className={"input-replacement"}>Photo (optional)</label>
-                </div>
+                {oldPhotoUri
+                    ? <img className={"old-item-image"} src={oldPhotoUri} alt={"Click to deleteπ"}
+                           onClick={handleClickOldImage}/>
+                    : <div className={"input-with-icon"}>
+                        <FontAwesomeIcon icon={faCamera}/>
+                        <input type={"file"} accept={"image/jpeg, image/png"} id={"photo"} name={"photo"}
+                               className={"dont-display"} onChange={handleFileChange}/>
+                        <label htmlFor={"photo"} className={"input-replacement"}>Photo (optional)</label>
+                    </div>
+                }
                 <div className={"input-with-icon"}>
                     <FontAwesomeIcon icon={faLocationDot}/>
                     <input type={"text"} name={"location"} placeholder={"Location"} required={true}

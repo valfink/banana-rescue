@@ -18,6 +18,14 @@ public class PhotoService {
 
     public String uploadPhoto(MultipartFile photo) throws IOException {
         Map result = cloudinary.uploader().upload(photo.getBytes(), ObjectUtils.emptyMap());
-        return result.get("url").toString();
+        return result.get("secure_url").toString();
+    }
+
+    public String deletePhoto(String url) throws IOException {
+        int startOfPublicId = url.lastIndexOf('/') + 1;
+        int endOfPublicId = url.indexOf('.', startOfPublicId);
+        String publicId = url.substring(startOfPublicId, endOfPublicId);
+        Map result = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        return result.get("result").toString();
     }
 }

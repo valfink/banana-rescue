@@ -9,6 +9,12 @@
     background-color: var(--dark-bg);
     height: 100vh;
     box-sizing: border-box;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.App > * {
+    flex-grow: 1;
 }
 
 .has-open-modal {
@@ -22,7 +28,6 @@ main h1 {
 
 .form {
     background-color: var(--bright-bg);
-    min-height: 100%;
 }
 
 .form h1 {
@@ -42,11 +47,10 @@ form main {
 form {
     padding: 1rem;
     gap: 1rem;
-    height: 100%;
     flex-grow: 1;
 }
 
-input, textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success, form img, .secondary-button {
+input, textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success, form img, .primary-button, .secondary-button {
     padding: 0.5rem;
     border: 0.1rem solid var(--accent-dark);
     border-radius: 0.3rem;
@@ -84,7 +88,7 @@ input[type=datetime-local], input[type=date], input[type=time] {
     appearance: initial;
 }
 
-button {
+button, .primary-button {
     color: var(--bright-bg);
     background-color: var(--accent-dark);
 }
@@ -125,10 +129,13 @@ button[type=submit] {
     color: var(--bright-bg);
 }
 
-.secondary-button {
+.primary-button, .secondary-button {
     text-decoration: none;
     cursor: inherit;
     text-align: center;
+}
+
+.secondary-button {
     background-color: var(--bright-bg);
     color: var(--accent-dark);
 }
