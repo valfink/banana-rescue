@@ -1,18 +1,19 @@
-import {useEffect, useState} from "react";
-import {FoodItem} from "../model/FoodItem";
-import axios from "axios";
+import {useContext, useEffect, useState} from "react";
 import FoodItemCard from "../component/FoodItemCard";
 import "./FoodItemGallery.css";
+import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
+import {fetchAllFoodItems} from "../util/foodItemRequests";
+import {FoodItem} from "../model/FoodItem";
 
 export default function FoodItemGallery() {
+    const setAppIsLoading = useContext(SetAppIsLoadingContext);
     const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
 
     useEffect(() => {
-        axios.get("/api/food")
-            .then(response => response.data)
+        fetchAllFoodItems(setAppIsLoading)
             .then(setFoodItems)
             .catch(console.error);
-    }, [])
+    }, [setAppIsLoading]);
 
     return (
         <main className={"food-item-gallery"}>

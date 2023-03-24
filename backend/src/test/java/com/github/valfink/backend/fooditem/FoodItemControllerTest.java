@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
@@ -182,6 +183,41 @@ class FoodItemControllerTest {
                                 "id": "1",
                                 "username": "user"
                             }
+                        }
+                        """));
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void updateFoodItemById_whenIdIsInRepoAndUserIsDonator_thenReturnUpdatedItem() throws Exception {
+        mongoUserRepository.save(mongoUser1);
+        foodItemRepository.save(foodItem1);
+        mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PUT, "/api/food/1")
+                        .file(new MockMultipartFile("form", null,
+                                "application/json", """
+                                {
+                                "title": "Updated Title",
+                                "location": "New Location",
+                                "pickupUntil": "2023-03-16T11:14:00Z",
+                                "consumeUntil": "2023-03-18T11:00:00Z",
+                                "description": "Description is updated."
+                                }
+                                """.getBytes()))
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                        "id": "1",
+                        "title": "Updated Title",
+                        "location": "New Location",
+                        "pickupUntil": "2023-03-16T11:14:00Z",
+                        "consumeUntil": "2023-03-18T11:00:00Z",
+                        "description": "Description is updated.",
+                        "donator": {
+                            "id": "1",
+                            "username": "user"
+                        }
                         }
                         """));
     }

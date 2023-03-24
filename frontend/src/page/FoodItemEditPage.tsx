@@ -1,13 +1,14 @@
+import FoodItemForm from "../component/FoodItemForm";
 import {useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
-import "./FoodItemDetailsPage.css";
-import moment from "moment/moment";
 import {fetchSingleFoodItem} from "../util/foodItemRequests";
+import {UserContext} from "../context/UserContext";
 import {FoodItem} from "../model/FoodItem";
 
-export default function FoodItemDetailsPage() {
+export default function FoodItemEditPage() {
     const {id} = useParams();
+    const {user} = useContext(UserContext);
     const setAppIsLoading = useContext(SetAppIsLoadingContext);
     const [foodItem, setFoodItem] = useState<FoodItem | undefined>(undefined);
 
@@ -25,19 +26,18 @@ export default function FoodItemDetailsPage() {
         );
     }
 
-    return (
-        <section className={"food-item-details"}>
-            {foodItem.photoUri && <header style={{backgroundImage: `url(${foodItem.photoUri})`}}/>}
+    if (user && foodItem.donator.id !== user.id) {
+        return (
             <main>
-                <h1>{foodItem.title}</h1>
-                <ul>
-                    <li><strong>Pickup until:</strong> {moment(foodItem.pickupUntil).calendar()}</li>
-                    <li><strong>Consume within:</strong> {moment(foodItem.consumeUntil).fromNow(true)}</li>
-                    <li><strong>Location:</strong> {foodItem.location}</li>
-                    <li><strong>Donator:</strong> {foodItem.donator.username}</li>
-                    <li><strong>Comment:</strong> {foodItem.description}</li>
-                </ul>
+                <h1>Sorry, you may only edit your own items 🤔</h1>
             </main>
-        </section>
+        );
+    }
+
+    return (
+        <main className={"form"}>
+            <h1>Edit your Item</h1>
+            <FoodItemForm action={"edit"} oldFoodItem={foodItem}/>
+        </main>
     );
 }

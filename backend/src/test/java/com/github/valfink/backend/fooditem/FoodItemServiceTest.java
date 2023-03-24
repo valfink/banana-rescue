@@ -164,9 +164,42 @@ class FoodItemServiceTest {
     @Test
     void getFoodItemById_whenIdIsNotInRepo_thenThrowException() {
         // GIVEN
-        when(foodItemRepository.findById("1π")).thenReturn(Optional.empty());
+        when(foodItemRepository.findById("1")).thenReturn(Optional.empty());
 
         // WHEN & THEN
         assertThrows(NoSuchElementException.class, () -> foodItemService.getFoodItemById("1"));
+    }
+
+    @Test
+    void updateFoodItemById_whenIdIsInRepoAndRequestIsValid_thenReturnUpdatedItem() {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest("New title", "New location", foodItem1.pickupUntil(), foodItem1.consumeUntil(), "New description");
+        FoodItem updatedFoodItem = new FoodItem(foodItem1.id(), foodItem1.donatorId(), foodItemDTORequest.title(), foodItem1.photoUri(), foodItemDTORequest.location(), foodItemDTORequest.pickupUntil(), foodItemDTORequest.consumeUntil(), foodItemDTORequest.description());
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
+        when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(foodItem1));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(mongoUserDTOResponse1);
+        when(foodItemRepository.save(updatedFoodItem)).thenReturn(updatedFoodItem);
+
+        // WHEN
+        FoodItemDTOResponse expected = new FoodItemDTOResponse(foodItemDTOResponse1.id(), foodItemDTOResponse1.donator(), foodItemDTORequest.title(), foodItemDTOResponse1.photoUri(), foodItemDTORequest.location(), foodItemDTORequest.pickupUntil(), foodItemDTORequest.consumeUntil(), foodItemDTORequest.description());
+        FoodItemDTOResponse actual = foodItemService.updateFoodItemById(foodItem1.id(), foodItemDTORequest, null, principal);
+
+        // THEN
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void updateFoodItemById_whenUserIsNotDonator_thenThrowException() {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest("New title", "New location", foodItem1.pickupUntil(), foodItem1.consumeUntil(), "New description");
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(new MongoUserDTOResponse("2", "other user"));
+        when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(foodItem1));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(mongoUserDTOResponse1);
+        String foodItemId = foodItem1.id();
+
+        // WHEN & THEN
+        assertThrows(SecurityException.class, () -> foodItemService.updateFoodItemById(foodItemId, foodItemDTORequest, null, principal));
     }
 }

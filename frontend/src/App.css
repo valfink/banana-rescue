@@ -1,104 +1,134 @@
-.App {
-  background-color: var(--dark-bg);
-  height: 100vh;
-  box-sizing: border-box;
+:root {
+    --dark-bg: #FAFAFA;
+    --bright-bg: #FFFFFF;
+    --accent-dark: #000000;
+    --danger-bg: #CC0000;
 }
 
-:root {
-  --dark-bg: #FAFAFA;
-  --bright-bg: #FFFFFF;
-  --accent-dark: #000000;
+.App {
+    background-color: var(--dark-bg);
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.has-open-modal {
+    overflow: hidden;
 }
 
 main h1 {
-  margin: 0 0 1rem 0;
-  text-align: center;
+    margin: 0 0 1rem 0;
+    text-align: center;
 }
 
 .form {
-  background-color: var(--bright-bg);
-  height: 100%;
+    background-color: var(--bright-bg);
+    min-height: 100%;
 }
 
 .form h1 {
-  padding: 5rem 0 5rem 0;
+    padding: 3rem 0 1rem 0;
 }
 
-form, .input-with-icon {
-  display: flex;
-  flex-flow: column nowrap;
+.form, form, .input-with-icon, form main {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+form main {
+    flex-grow: 1;
+    gap: 1rem;
 }
 
 form {
-  padding: 1rem;
-  gap: 1rem;
+    padding: 1rem;
+    gap: 1rem;
+    height: 100%;
+    flex-grow: 1;
 }
 
-input, textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success {
-  padding: 0.5rem;
-  border: 0.1rem solid var(--accent-dark);
-  border-radius: 0.3rem;
-  font-family: inherit;
-  font-size: inherit;
-  background-color: var(--bright-bg);
+input, textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success, form img, .secondary-button {
+    padding: 0.5rem;
+    border: 0.1rem solid var(--accent-dark);
+    border-radius: 0.3rem;
+    font-family: inherit;
+    font-size: inherit;
+    background-color: var(--bright-bg);
+}
+
+form img {
+    padding: 0;
 }
 
 ::placeholder, .input-replacement {
-  color: #999;
+    color: #999;
 }
 
 input::file-selector-button {
-  padding: 0 0.5rem;
-  line-height: 1;
+    padding: 0 0.5rem;
+    line-height: 1;
 }
 
 .dont-display {
-  display: none;
+    display: none;
 }
 
 input:not(.dont-display) + .input-replacement {
-  display: none;
+    display: none;
 }
 
 textarea {
-  height: 7rem;
+    height: 7rem;
 }
 
 input[type=datetime-local], input[type=date], input[type=time] {
-  appearance: initial;
+    appearance: initial;
 }
 
 button {
-  color: var(--bright-bg);
-  background-color: var(--accent-dark);
+    color: var(--bright-bg);
+    background-color: var(--accent-dark);
 }
 
 .form-error {
-  color: #CC0000;
-  border: 0.1rem solid #FF0000;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  font-weight: bold;
+    color: #CC0000;
+    border: 0.1rem solid #FF0000;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-weight: bold;
 }
 
 .form-success {
-  color: #008800;
-  border: 0.1rem solid #00DD00;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  font-weight: bold;
+    color: #008800;
+    border: 0.1rem solid #00DD00;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-weight: bold;
 }
 
 button[type=submit] {
-  margin-top: 3rem;
-  margin-bottom: 3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .input-with-icon svg {
-  position: absolute;
-  margin: 0.75rem 0.5rem;
+    position: absolute;
+    margin: 0.75rem 0.5rem;
 }
 
 .input-with-icon input, .input-with-icon .input-replacement {
-  padding-left: 1.8rem;
+    padding-left: 1.8rem;
+}
+
+.danger {
+    background-color: var(--danger-bg);
+    border-color: var(--danger-bg);
+    color: var(--bright-bg);
+}
+
+.secondary-button {
+    text-decoration: none;
+    cursor: inherit;
+    text-align: center;
+    background-color: var(--bright-bg);
+    color: var(--accent-dark);
 }
