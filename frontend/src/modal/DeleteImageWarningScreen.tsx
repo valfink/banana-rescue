@@ -10,12 +10,8 @@ type DeleteImageWarningScreenProps = {
 export default function DeleteImageWarningScreen(props: DeleteImageWarningScreenProps) {
     Modal.setAppElement('#root');
     return (
-        // <section className={"delete-image-warning"}>
-        //     WARNING
-        // </section>
         <Modal
             isOpen={props.modalIsOpen}
-            contentLabel="Example Modal"
             bodyOpenClassName={"has-open-modal"}
             htmlOpenClassName={"has-open-modal"}
             className={"modal delete-image-warning"}
