@@ -1,4 +1,4 @@
-import {ChangeEvent, FormEvent, useContext, useState} from "react";
+import {ChangeEvent, FormEvent, useContext, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faKey, faUser} from "@fortawesome/free-solid-svg-icons";
@@ -46,11 +46,13 @@ export default function UserForm(props: UserFormProps) {
         }
     }
 
-    if (user) {
-        const navigateTo = window.sessionStorage.getItem("signInRedirect") || "/";
-        window.sessionStorage.removeItem("signInRedirect");
-        navigate(navigateTo);
-    }
+    useEffect(() => {
+        if (user) {
+            const navigateTo = window.sessionStorage.getItem("signInRedirect") || "/";
+            window.sessionStorage.removeItem("signInRedirect");
+            navigate(navigateTo);
+        }
+    }, [navigate, user]);
 
     return (
         <form onSubmit={handleFormSubmit}>
