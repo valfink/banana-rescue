@@ -1,0 +1,7 @@
+.user form {
+    flex-grow: 0;
+}
+
+.user footer {
+    text-align: center;
+}

@@ -1,0 +1,16 @@
+.header-bar {
+    background-color: var(--bright-bg);
+    transition: box-shadow 0.1s;
+    display: flex;
+    justify-content: space-between;
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+}
+
+.header-bar.with-shadow {
+    box-shadow: 0 0.2rem 0.5rem;
+}
+
+.header-bar a {
+    color: var(--dark-accent);
+}

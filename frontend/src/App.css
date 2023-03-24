@@ -1,19 +1,25 @@
 :root {
     --dark-bg: #FAFAFA;
     --bright-bg: #FFFFFF;
-    --accent-dark: #000000;
+    --dark-accent: #000000;
+    --subtle-accent: #999;
     --danger-bg: #CC0000;
+    --danger-accent: #FF0000;
+    --success-bg: #008800;
+    --success-accent: #00DD00;
+
 }
 
 .App {
     background-color: var(--dark-bg);
     height: 100vh;
+    overflow: auto;
     box-sizing: border-box;
     display: flex;
     flex-flow: column nowrap;
 }
 
-.App > * {
+.App > *:not(header) {
     flex-grow: 1;
 }
 
@@ -24,6 +30,10 @@
 main h1 {
     margin: 0 0 1rem 0;
     text-align: center;
+}
+
+a {
+    color: var(--dark-accent);
 }
 
 .form {
@@ -52,7 +62,7 @@ form {
 
 input, textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success, form img, .primary-button, .secondary-button {
     padding: 0.5rem;
-    border: 0.1rem solid var(--accent-dark);
+    border: 0.1rem solid var(--dark-accent);
     border-radius: 0.3rem;
     font-family: inherit;
     font-size: inherit;
@@ -90,20 +100,20 @@ input[type=datetime-local], input[type=date], input[type=time] {
 
 button, .primary-button {
     color: var(--bright-bg);
-    background-color: var(--accent-dark);
+    background-color: var(--dark-accent);
 }
 
 .form-error {
-    color: #CC0000;
-    border: 0.1rem solid #FF0000;
+    color: var(--danger-bg);
+    border: 0.1rem solid var(--danger-accent);
     padding-top: 1rem;
     padding-bottom: 1rem;
     font-weight: bold;
 }
 
 .form-success {
-    color: #008800;
-    border: 0.1rem solid #00DD00;
+    color: var(--success-bg);
+    border: 0.1rem solid var(--success-accent);
     padding-top: 1rem;
     padding-bottom: 1rem;
     font-weight: bold;
@@ -112,6 +122,10 @@ button, .primary-button {
 button[type=submit] {
     margin-top: 1rem;
     margin-bottom: 1rem;
+}
+
+.input-with-icon {
+    position: relative;
 }
 
 .input-with-icon svg {
@@ -137,5 +151,9 @@ button[type=submit] {
 
 .secondary-button {
     background-color: var(--bright-bg);
-    color: var(--accent-dark);
+    color: var(--dark-accent);
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }

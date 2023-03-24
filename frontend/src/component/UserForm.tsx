@@ -3,6 +3,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faKey, faUser} from "@fortawesome/free-solid-svg-icons";
 import {UserContext, UserContextType} from "../context/UserContext";
+import "./UserForm.css";
 
 type UserFormProps = {
     action: "login" | "signup"

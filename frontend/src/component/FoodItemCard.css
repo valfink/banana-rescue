@@ -30,7 +30,7 @@
 .food-item-card a:hover, .food-item-card a:active {
     border-color: var(--bright-bg);
     color: var(--bright-bg);
-    background-color: var(--accent-dark);
+    background-color: var(--dark-accent);
 }
 
 .food-item-card aside {

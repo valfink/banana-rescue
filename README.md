@@ -12,12 +12,4 @@ In order to run *BANANA RESCUE* in your environment, you will need to do the fol
 * `cd` into the frontend folder and run: `npm ci`
 * start the frontend with: `npm start`
 
-Without any navigation, you might want to try out the following routes:
-
-* `http://localhost:3000/food`
-* `http://localhost:3000/signup`
-* `http://localhost:3000/login`
-* `http://localhost:3000/food` once again, after logging in
-* `http://localhost:3000/add-food`
-
 ## More infos to follow...!

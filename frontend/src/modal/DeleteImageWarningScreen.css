@@ -1,7 +1,7 @@
 .delete-image-warning {
     height: 100vh;
     background-color: var(--bright-bg);
-    z-index: 1000;
+    z-index: 100;
     display: flex;
     flex-flow: column nowrap;
     gap: 1rem;
