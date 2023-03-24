@@ -62,7 +62,7 @@ export default function UserForm(props: UserFormProps) {
             <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faUser}/>
                 <input type={"text"} placeholder={"Username"} value={username} onChange={handleInputChange}
-                       required={true}/>
+                       required={true} autoFocus={true}/>
             </div>
             <div className={"input-with-icon"}>
                 <FontAwesomeIcon icon={faKey}/>
