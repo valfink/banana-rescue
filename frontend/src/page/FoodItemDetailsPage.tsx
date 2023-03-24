@@ -5,13 +5,13 @@ import "./FoodItemDetailsPage.css";
 import moment from "moment/moment";
 import {fetchSingleFoodItem} from "../util/foodItemRequests";
 import {FoodItem} from "../model/FoodItem";
-import {UserContext} from "../context/UserContext";
+import {UserContext, UserContextType} from "../context/UserContext";
 
 export default function FoodItemDetailsPage() {
     const {id} = useParams();
     const setAppIsLoading = useContext(SetAppIsLoadingContext);
     const [foodItem, setFoodItem] = useState<FoodItem | undefined>(undefined);
-    const {user} = useContext(UserContext);
+    const {user} = useContext(UserContext) as UserContextType;
 
     useEffect(() => {
         fetchSingleFoodItem(id, setAppIsLoading)

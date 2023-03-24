@@ -2,7 +2,7 @@ import React, {ChangeEvent, FormEvent, useContext, useEffect, useState} from "re
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCamera, faLocationDot, faQuoteLeft, faTrainSubway, faUtensils} from '@fortawesome/free-solid-svg-icons';
 import {Link, useNavigate} from "react-router-dom";
-import {UserContext} from "../context/UserContext";
+import {UserContext, UserContextType} from "../context/UserContext";
 import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
 import {FoodItemFormData} from "../model/FoodItemFormData";
 import {deletePhotoFromFoodItem, postNewFoodItem, updateFoodItem} from "../util/foodItemRequests";
@@ -30,7 +30,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     const [formError, setFormError] = useState("");
     const [showDeleteImageWarning, setShowDeleteImageWarning] = useState(false);
     const navigate = useNavigate();
-    const {redirectIfNotSignedIn} = useContext(UserContext);
+    const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
     const setAppIsLoading = useContext(SetAppIsLoadingContext);
 
     function setInputTypeToDateOrTime(e: React.FocusEvent<HTMLInputElement>) {

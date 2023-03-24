@@ -3,14 +3,14 @@ import moment from "moment";
 import "./FoodItemCard.css";
 import {Link} from "react-router-dom";
 import {useContext} from "react";
-import {UserContext} from "../context/UserContext";
+import {UserContext, UserContextType} from "../context/UserContext";
 
 type FoodItemCardProps = {
     foodItem: FoodItem
 }
 
 export default function FoodItemCard(props: FoodItemCardProps) {
-    const {user} = useContext(UserContext);
+    const {user} = useContext(UserContext) as UserContextType;
 
     return (
         <article className={"food-item-card"}>
