@@ -26,6 +26,7 @@ export default function UserForm(props: UserFormProps) {
     }
 
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
+        // TODO: outsource the request in hook!
         setAppIsLoading(oldValue => oldValue + 1);
         event.preventDefault();
         setFormError("");
