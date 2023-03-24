@@ -2,18 +2,20 @@
     --dark-bg: #FAFAFA;
     --bright-bg: #FFFFFF;
     --accent-dark: #000000;
+    --accent-subtle: #999;
     --danger-bg: #CC0000;
 }
 
 .App {
     background-color: var(--dark-bg);
     height: 100vh;
+    overflow: auto;
     box-sizing: border-box;
     display: flex;
     flex-flow: column nowrap;
 }
 
-.App > * {
+.App > *:not(header) {
     flex-grow: 1;
 }
 
