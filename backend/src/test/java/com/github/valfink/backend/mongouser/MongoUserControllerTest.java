@@ -121,4 +121,13 @@ class MongoUserControllerTest {
                         .with(csrf()))
                 .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void logout_whenLoggId_thenStatusOk() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/logout")
+                        .with(csrf()))
+                .andExpect(status().isOk());
+    }
 }
