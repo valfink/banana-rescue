@@ -9,7 +9,7 @@ type FullScreenNavProps = {
 }
 
 export default function FullScreenNav(props: FullScreenNavProps) {
-    const {user} = useContext(UserContext) as UserContextType;
+    const {user, logOutUser} = useContext(UserContext) as UserContextType;
     const {pathname} = useLocation();
 
     function closeNavBar() {
@@ -21,7 +21,11 @@ export default function FullScreenNav(props: FullScreenNavProps) {
             <NavLink to={"/food"} className={"secondary-button cursor-pointer"}>All Items</NavLink>
             <NavLink to={"/add-food"} className={"secondary-button cursor-pointer"} state={{navBarBackLink: pathname}}>Add
                 Item</NavLink>
-            {!user &&
+            {user ?
+                <>
+                    <button onClick={logOutUser} className={"secondary-button cursor-pointer"}>Log Out</button>
+                </>
+                :
                 <>
                     <NavLink to={"/login"} className={"secondary-button cursor-pointer"}>Log In</NavLink>
                     <NavLink to={"/signup"} className={"secondary-button cursor-pointer"}>Sign Up</NavLink>

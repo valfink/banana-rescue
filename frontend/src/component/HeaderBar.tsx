@@ -12,7 +12,7 @@ type HeaderBarProps = {
 }
 
 export default function HeaderBar(props: HeaderBarProps) {
-    const {user} = useContext(UserContext) as UserContextType;
+    const {user, logOutUser} = useContext(UserContext) as UserContextType;
     const location = useLocation();
     const navBarBackLink = location.state?.navBarBackLink;
 
@@ -27,8 +27,15 @@ export default function HeaderBar(props: HeaderBarProps) {
                 <span className={"cursor-pointer"} onClick={handleShowNavBarClick}><FontAwesomeIcon
                     icon={faBars}/></span>}
             <span><FontAwesomeIcon icon={faTruckMedical}/> Banana Rescue</span>
-            <Link to={"/login"} state={{navBarBackLink: location.pathname, oldState: location.state}}><FontAwesomeIcon
-                icon={user ? loggedInUser : loggedOutUser}/></Link>
+            {user ?
+                <span onClick={logOutUser} className={"cursor-pointer"}>
+                    <FontAwesomeIcon icon={loggedInUser}/>
+                </span>
+                :
+                <Link to={"/login"} state={{navBarBackLink: location.pathname, oldState: location.state}}>
+                    <FontAwesomeIcon icon={loggedOutUser}/>
+                </Link>
+            }
         </section>
     );
 }

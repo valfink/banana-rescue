@@ -22,7 +22,7 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
             data = {username, password};
         return axios.post(url, data)
             .then(() => {
-                return true;
+                return;
             })
             .catch(err => {
                 console.error(err);
@@ -41,7 +41,24 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
         return axios.post(url, {}, config)
             .then(res => {
                 setUser(res.data);
-                return true;
+                return;
+            })
+            .catch(err => {
+                console.error(err);
+                return Promise.reject(err.response.data.error || err.response.data.message);
+            })
+            .finally(() => {
+                setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
+            });
+    }
+
+    function logOutUser() {
+        setAppIsLoading(oldValue => oldValue + 1);
+        const url = "/api/users/logout";
+        return axios.post(url)
+            .then(() => {
+                setUser(undefined);
+                return;
             })
             .catch(err => {
                 console.error(err);
@@ -75,5 +92,5 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
         }
     }, [doRedirect, isLoading, user, navigate, pathname])
 
-    return {user, redirectIfNotSignedIn, signUpUser, logInUser, setUser};
+    return {user, redirectIfNotSignedIn, signUpUser, logInUser, logOutUser};
 }
