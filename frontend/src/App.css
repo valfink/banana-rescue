@@ -46,19 +46,13 @@ form {
     flex-grow: 1;
 }
 
-input, textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success, form img, .secondary-button {
+input, textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success, form img, .primary-button, .secondary-button {
     padding: 0.5rem;
     border: 0.1rem solid var(--accent-dark);
     border-radius: 0.3rem;
     font-family: inherit;
     font-size: inherit;
-    background-color: var(--bright-bg);;
-}
-
-.secondary-button {
-    text-decoration: none;
-    cursor: inherit;
-    text-align: center
+    background-color: var(--bright-bg);
 }
 
 form img {
@@ -90,7 +84,7 @@ input[type=datetime-local], input[type=date], input[type=time] {
     appearance: initial;
 }
 
-button {
+button, .primary-button {
     color: var(--bright-bg);
     background-color: var(--accent-dark);
 }
@@ -132,6 +126,9 @@ button[type=submit] {
 }
 
 .secondary-button {
+    text-decoration: none;
+    cursor: inherit;
+    text-align: center;
     background-color: var(--bright-bg);
     color: var(--accent-dark);
 }
