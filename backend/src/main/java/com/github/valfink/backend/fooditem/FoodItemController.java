@@ -37,4 +37,9 @@ public class FoodItemController {
     public String deletePhotoFromFoodItem(@PathVariable String id, Principal principal) {
         return foodItemService.deletePhotoFromFoodItem(id, principal);
     }
+
+    @DeleteMapping("/{id}")
+    public FoodItemDTOResponse deleteFoodItemById(@PathVariable String id, Principal principal) {
+        return foodItemService.deleteFoodItemById(id, principal);
+    }
 }
