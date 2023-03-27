@@ -2,12 +2,10 @@ package com.github.valfink.backend.mongouser;
 
 import com.github.valfink.backend.util.IdService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,13 +28,13 @@ public class MongoUserService implements UserDetailsService {
 
     public MongoUserDTOResponse signUp(MongoUserDTORequest mongoUserDTORequest) {
         if (mongoUserDTORequest.username() == null || mongoUserDTORequest.username().isBlank()) {
-            throw new BadCredentialsException("Username is required");
+            throw new MongoUserExceptionBadInputData("Username is required");
         }
         if (mongoUserDTORequest.password() == null || mongoUserDTORequest.password().isBlank()) {
-            throw new BadCredentialsException("Password is required");
+            throw new MongoUserExceptionBadInputData("Password is required");
         }
         if (mongoUserRepository.existsMongoUserByUsername(mongoUserDTORequest.username())) {
-            throw new BadCredentialsException("Username is already taken");
+            throw new MongoUserExceptionBadInputData("Username is already taken");
         }
 
         MongoUser mongoUser = mongoUserRepository.save(new MongoUser(
@@ -52,7 +50,7 @@ public class MongoUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         MongoUser mongoUser = mongoUserRepository.findMongoUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not found!"));
+                .orElseThrow(() -> new MongoUserExceptionNotFound(MongoUserExceptionNotFound.reasonUsername(username)));
         return new User(
                 mongoUser.username(),
                 mongoUser.password(),
@@ -62,19 +60,19 @@ public class MongoUserService implements UserDetailsService {
 
     public MongoUserDTOResponse getMe(Principal principal) {
         MongoUser mongoUser = mongoUserRepository.findMongoUserByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("The user " + principal.getName() + " doesn't exist in the database."));
+                .orElseThrow(() -> new MongoUserExceptionNotFound(MongoUserExceptionNotFound.reasonUsername(principal.getName())));
         return mongoUserDTOResponseFromMongoUser(mongoUser);
     }
 
     public MongoUserDTOResponse getMongoUserDTOResponseById(String id) {
         MongoUser mongoUser = mongoUserRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("The user with the id " + id + " does not exist in the database."));
+                .orElseThrow(() -> new MongoUserExceptionNotFound(MongoUserExceptionNotFound.reasonId(id)));
         return mongoUserDTOResponseFromMongoUser(mongoUser);
     }
 
     public MongoUserDTOResponse getMongoUserDTOResponseByUsername(String username) {
         MongoUser mongoUser = mongoUserRepository.findMongoUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("The user " + username + " doesn't exist in the database."));
+                .orElseThrow(() -> new MongoUserExceptionNotFound(MongoUserExceptionNotFound.reasonUsername(username)));
         return mongoUserDTOResponseFromMongoUser(mongoUser);
     }
 }
