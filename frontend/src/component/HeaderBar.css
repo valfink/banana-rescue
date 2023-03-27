@@ -14,3 +14,7 @@
 .header-bar a {
     color: var(--dark-accent);
 }
+
+.not-logged-in {
+    color: var(--subtle-accent);
+}

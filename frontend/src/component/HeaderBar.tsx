@@ -33,7 +33,7 @@ export default function HeaderBar(props: HeaderBarProps) {
                 </span>
                 :
                 <Link to={"/login"} state={{navBarBackLink: location.pathname, oldState: location.state}}>
-                    <FontAwesomeIcon icon={loggedOutUser}/>
+                    <FontAwesomeIcon icon={loggedOutUser} className={"not-logged-in"}/>
                 </Link>
             }
         </section>
