@@ -1,7 +1,7 @@
 import FoodItemForm from "../component/FoodItemForm";
 import {useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
-import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
+import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import {fetchSingleFoodItem} from "../util/foodItemRequests";
 import {UserContext, UserContextType} from "../context/UserContext";
 import {FoodItem} from "../model/FoodItem";
@@ -9,7 +9,7 @@ import {FoodItem} from "../model/FoodItem";
 export default function FoodItemEditPage() {
     const {id} = useParams();
     const {user} = useContext(UserContext) as UserContextType;
-    const setAppIsLoading = useContext(SetAppIsLoadingContext);
+    const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
     const [foodItem, setFoodItem] = useState<FoodItem | undefined>(undefined);
 
     useEffect(() => {

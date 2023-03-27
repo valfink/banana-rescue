@@ -9,7 +9,7 @@ import UserLogInPage from "./page/UserLogInPage";
 import FoodItemAddPage from "./page/FoodItemAddPage";
 import {UserContext} from "./context/UserContext";
 import useUserAuth from "./hook/useUserAuth";
-import {SetAppIsLoadingContext} from "./context/SetAppIsLoadingContext";
+import {AppIsLoadingContext} from "./context/AppIsLoadingContext";
 import LoadingScreen from "./modal/LoadingScreen";
 import FoodItemDetailsPage from "./page/FoodItemDetailsPage";
 import FoodItemEditPage from "./page/FoodItemEditPage";
@@ -38,7 +38,7 @@ function App() {
 
     return (
         <div className="App" onScroll={handleAppScroll}>
-            <SetAppIsLoadingContext.Provider value={setAppIsLoading}>
+            <AppIsLoadingContext.Provider value={{appIsLoading, setAppIsLoading}}>
                 <UserContext.Provider value={useUserAuth(setAppIsLoading)}>
                     {appIsLoading !== 0 && <LoadingScreen/>}
                     <HeaderBarAndFullScreenNav displayHeaderBarShadow={appContentIsScrolled}/>
@@ -53,7 +53,7 @@ function App() {
                     </Routes>
                     <Toaster/>
                 </UserContext.Provider>
-            </SetAppIsLoadingContext.Provider>
+            </AppIsLoadingContext.Provider>
         </div>
     );
 }

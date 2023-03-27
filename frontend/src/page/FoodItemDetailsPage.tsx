@@ -1,6 +1,6 @@
-import {Link, useLocation, useParams} from "react-router-dom";
+import {Link, Navigate, useLocation, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
-import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
+import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import "./FoodItemDetailsPage.css";
 import moment from "moment/moment";
 import {fetchSingleFoodItem} from "../util/foodItemRequests";
@@ -9,7 +9,7 @@ import {UserContext, UserContextType} from "../context/UserContext";
 
 export default function FoodItemDetailsPage() {
     const {id} = useParams();
-    const setAppIsLoading = useContext(SetAppIsLoadingContext);
+    const {appIsLoading, setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
     const [foodItem, setFoodItem] = useState<FoodItem | undefined>(undefined);
     const {user} = useContext(UserContext) as UserContextType;
     const {pathname, state} = useLocation();
@@ -21,11 +21,17 @@ export default function FoodItemDetailsPage() {
     }, [id, setAppIsLoading]);
 
     if (!foodItem) {
-        return (
-            <main>
-                <h1>Sorry, this food item doesn't seem to exist 😢</h1>
-            </main>
-        );
+        // TODO: DOESNT WORK
+        if (appIsLoading === 0) {
+            return <Navigate to={"/"}/>;
+        } else {
+            return <></>;
+        }
+        // return (
+        //     <main>
+        //         <h1>Sorry, this food item doesn't seem to exist 😢</h1>
+        //     </main>
+        // );
     }
 
     return (
