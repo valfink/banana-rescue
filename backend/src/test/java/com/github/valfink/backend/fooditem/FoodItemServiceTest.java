@@ -11,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -102,7 +104,7 @@ class FoodItemServiceTest {
         when(photoService.uploadPhoto(multipartFile)).thenThrow(IOException.class);
 
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+        assertThrows(FoodItemExceptionPhotoAction.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
     }
 
     @Test
@@ -110,7 +112,7 @@ class FoodItemServiceTest {
         // GIVEN
         FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(null, foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+        assertThrows(FoodItemExceptionBadInputData.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
     }
 
     @Test
@@ -118,7 +120,7 @@ class FoodItemServiceTest {
         // GIVEN
         FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), "", foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+        assertThrows(FoodItemExceptionBadInputData.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
     }
 
     @Test
@@ -126,7 +128,7 @@ class FoodItemServiceTest {
         // GIVEN
         FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), null, foodItem1.consumeUntil(), foodItem1.description());
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+        assertThrows(FoodItemExceptionBadInputData.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
     }
 
     @Test
@@ -134,7 +136,7 @@ class FoodItemServiceTest {
         // GIVEN
         FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickupUntil(), null, foodItem1.description());
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+        assertThrows(FoodItemExceptionBadInputData.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
     }
 
     @Test
@@ -142,7 +144,7 @@ class FoodItemServiceTest {
         // GIVEN
         FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), "     ");
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+        assertThrows(FoodItemExceptionBadInputData.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
     }
 
     @Test
@@ -167,7 +169,7 @@ class FoodItemServiceTest {
         when(foodItemRepository.findById("1")).thenReturn(Optional.empty());
 
         // WHEN & THEN
-        assertThrows(NoSuchElementException.class, () -> foodItemService.getFoodItemById("1"));
+        assertThrows(FoodItemExceptionNotFound.class, () -> foodItemService.getFoodItemById("1"));
     }
 
     @Test
@@ -200,7 +202,7 @@ class FoodItemServiceTest {
         String foodItemId = foodItem1.id();
 
         // WHEN & THEN
-        assertThrows(SecurityException.class, () -> foodItemService.updateFoodItemById(foodItemId, foodItemDTORequest, null, principal));
+        assertThrows(FoodItemExceptionAuthorization.class, () -> foodItemService.updateFoodItemById(foodItemId, foodItemDTORequest, null, principal));
     }
 
     @Test
@@ -230,7 +232,7 @@ class FoodItemServiceTest {
         String id = foodItem1.id();
 
         // WHEN & THEN
-        assertThrows(SecurityException.class, () -> foodItemService.deletePhotoFromFoodItem(id, principal));
+        assertThrows(FoodItemExceptionAuthorization.class, () -> foodItemService.deletePhotoFromFoodItem(id, principal));
     }
 
     @Test
@@ -243,7 +245,7 @@ class FoodItemServiceTest {
         String id = foodItem1.id();
 
         // WHEN & THEN
-        assertThrows(NoSuchElementException.class, () -> foodItemService.deletePhotoFromFoodItem(id, principal));
+        assertThrows(FoodItemExceptionDataMismatch.class, () -> foodItemService.deletePhotoFromFoodItem(id, principal));
     }
 
     @Test
@@ -257,7 +259,7 @@ class FoodItemServiceTest {
         String id = foodItem1.id();
 
         // WHEN & THEN
-        assertThrows(InputMismatchException.class, () -> foodItemService.deletePhotoFromFoodItem(id, principal));
+        assertThrows(FoodItemExceptionPhotoAction.class, () -> foodItemService.deletePhotoFromFoodItem(id, principal));
     }
 
     @Test
