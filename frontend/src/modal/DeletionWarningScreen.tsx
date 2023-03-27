@@ -1,4 +1,4 @@
-import "./DeleteImageWarningScreen.css";
+import "./DeletionWarningScreen.css";
 import Modal from 'react-modal';
 
 type DeletionWarningScreenProps = {
