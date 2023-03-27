@@ -32,6 +32,6 @@
     padding-top: 0.8rem;
 }
 
-.food-item-details a {
+.food-item-details a:last-child, .food-item-details button:last-child {
     margin-bottom: 2rem;
 }

@@ -121,6 +121,9 @@ button, .primary-button {
 
 button[type=submit] {
     margin-top: 1rem;
+}
+
+button[type=submit]:last-of-type {
     margin-bottom: 1rem;
 }
 
