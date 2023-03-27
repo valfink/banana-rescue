@@ -9,10 +9,6 @@ public class MongoUserExceptionNotFound extends RuntimeException {
         return "The user with the id " + id + " doesn't exist in the database.";
     }
 
-    public MongoUserExceptionNotFound() {
-        super("The requested user could not be found!");
-    }
-
     public MongoUserExceptionNotFound(String message) {
         super(message);
     }
