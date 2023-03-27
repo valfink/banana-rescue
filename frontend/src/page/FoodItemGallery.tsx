@@ -1,12 +1,12 @@
 import {useContext, useEffect, useState} from "react";
 import FoodItemCard from "../component/FoodItemCard";
 import "./FoodItemGallery.css";
-import {SetAppIsLoadingContext} from "../context/SetAppIsLoadingContext";
+import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import {fetchAllFoodItems} from "../util/foodItemRequests";
 import {FoodItem} from "../model/FoodItem";
 
 export default function FoodItemGallery() {
-    const setAppIsLoading = useContext(SetAppIsLoadingContext);
+    const {appIsLoading, setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
     const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
 
     useEffect(() => {
@@ -14,6 +14,10 @@ export default function FoodItemGallery() {
             .then(setFoodItems)
             .catch(console.error);
     }, [setAppIsLoading]);
+
+    if (appIsLoading) {
+        return <></>;
+    }
 
     return (
         <main className={"food-item-gallery"}>

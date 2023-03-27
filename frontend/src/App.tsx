@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import './App.css';
 import {Navigate, Route, Routes} from "react-router-dom";
 import FoodItemGallery from "./page/FoodItemGallery";
@@ -9,11 +9,12 @@ import UserLogInPage from "./page/UserLogInPage";
 import FoodItemAddPage from "./page/FoodItemAddPage";
 import {UserContext} from "./context/UserContext";
 import useUserAuth from "./hook/useUserAuth";
-import {SetAppIsLoadingContext} from "./context/SetAppIsLoadingContext";
+import {AppIsLoadingContext} from "./context/AppIsLoadingContext";
 import LoadingScreen from "./modal/LoadingScreen";
 import FoodItemDetailsPage from "./page/FoodItemDetailsPage";
 import FoodItemEditPage from "./page/FoodItemEditPage";
 import HeaderBarAndFullScreenNav from "./page/HeaderBarAndFullScreenNav";
+import {Toaster} from "react-hot-toast";
 
 axios.interceptors.request.use(config => {
     if (["put", "post", "delete"].includes(config.method || "")) {
@@ -29,6 +30,7 @@ axios.interceptors.request.use(config => {
 
 function App() {
     const [appIsLoading, setAppIsLoading] = useState(0);
+    const loadingContext = useMemo(() => ({appIsLoading, setAppIsLoading}), [appIsLoading]);
     const [appContentIsScrolled, setAppContentIsScrolled] = useState(false);
 
     function handleAppScroll(e: React.UIEvent) {
@@ -37,7 +39,7 @@ function App() {
 
     return (
         <div className="App" onScroll={handleAppScroll}>
-            <SetAppIsLoadingContext.Provider value={setAppIsLoading}>
+            <AppIsLoadingContext.Provider value={loadingContext}>
                 <UserContext.Provider value={useUserAuth(setAppIsLoading)}>
                     {appIsLoading !== 0 && <LoadingScreen/>}
                     <HeaderBarAndFullScreenNav displayHeaderBarShadow={appContentIsScrolled}/>
@@ -50,8 +52,9 @@ function App() {
                         <Route path={"/signup"} element={<UserSignUpPage/>}/>
                         <Route path={"/login"} element={<UserLogInPage/>}/>
                     </Routes>
+                    <Toaster/>
                 </UserContext.Provider>
-            </SetAppIsLoadingContext.Provider>
+            </AppIsLoadingContext.Provider>
         </div>
     );
 }
