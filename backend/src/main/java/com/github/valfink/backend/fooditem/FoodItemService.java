@@ -169,6 +169,14 @@ public class FoodItemService {
             throw new FoodItemExceptionAuthorization("You may only delete you own items!");
         }
 
+        if (foodItem.photoUri() != null && !foodItem.photoUri().isBlank()) {
+            try {
+                photoService.deletePhoto(foodItem.photoUri());
+            } catch (IOException e) {
+                throw new FoodItemExceptionPhotoAction("The photo deletion didn't work: " + e.getMessage());
+            }
+        }
+
         foodItemRepository.deleteById(foodItemId);
 
         return foodItem;
