@@ -55,7 +55,7 @@ class MongoUserControllerTest {
 
     @Test
     @DirtiesContext
-    void signUp_whenInvalidInput_thenReturn401() throws Exception {
+    void signUp_whenInvalidInput_thenReturn400() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -64,7 +64,7 @@ class MongoUserControllerTest {
                                 }
                                 """)
                         .with(csrf()))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -85,9 +85,9 @@ class MongoUserControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser
-    void getMe_whenPrincipalUsernameIsNotInRepo_thenReturn401() throws Exception {
+    void getMe_whenPrincipalUsernameIsNotInRepo_thenReturn404() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/me"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isNotFound());
     }
 
     @Test

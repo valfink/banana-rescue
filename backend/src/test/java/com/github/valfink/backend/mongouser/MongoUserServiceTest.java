@@ -3,11 +3,9 @@ package com.github.valfink.backend.mongouser;
 import com.github.valfink.backend.util.IdService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.Principal;
@@ -63,16 +61,16 @@ class MongoUserServiceTest {
         MongoUserDTORequest invalidUser = new MongoUserDTORequest("", mongoUser1.password());
 
         // WHEN & THEN
-        assertThrows(BadCredentialsException.class, () -> mongoUserService.signUp(invalidUser));
+        assertThrows(MongoUserExceptionBadInputData.class, () -> mongoUserService.signUp(invalidUser));
     }
 
     @Test
-    void signUp_whenPaswordEmpty_thenThrowException() {
+    void signUp_whenPasswordEmpty_thenThrowException() {
         // GIVEN
         MongoUserDTORequest invalidUser = new MongoUserDTORequest(mongoUser1.username(), "");
 
         // WHEN & THEN
-        assertThrows(BadCredentialsException.class, () -> mongoUserService.signUp(invalidUser));
+        assertThrows(MongoUserExceptionBadInputData.class, () -> mongoUserService.signUp(invalidUser));
     }
 
     @Test
@@ -82,7 +80,7 @@ class MongoUserServiceTest {
         MongoUserDTORequest existingUser = new MongoUserDTORequest(mongoUser1.username(), mongoUser1.password());
 
         // WHEN & THEN
-        assertThrows(BadCredentialsException.class, () -> mongoUserService.signUp(existingUser));
+        assertThrows(MongoUserExceptionBadInputData.class, () -> mongoUserService.signUp(existingUser));
     }
 
     @Test
@@ -104,7 +102,7 @@ class MongoUserServiceTest {
         when(mongoUserRepository.findMongoUserByUsername(mongoUser1.username())).thenReturn(Optional.empty());
 
         // WHEN & THEN
-        assertThrows(UsernameNotFoundException.class, () -> mongoUserService.loadUserByUsername("invalid user"));
+        assertThrows(MongoUserExceptionNotFound.class, () -> mongoUserService.loadUserByUsername("invalid user"));
     }
 
     @Test
@@ -128,7 +126,7 @@ class MongoUserServiceTest {
         when(mongoUserRepository.findMongoUserByUsername(mongoUser1.username())).thenReturn(Optional.empty());
 
         // WHEN & THEN
-        assertThrows(UsernameNotFoundException.class, () -> mongoUserService.getMe(principal));
+        assertThrows(MongoUserExceptionNotFound.class, () -> mongoUserService.getMe(principal));
     }
 
     @Test
