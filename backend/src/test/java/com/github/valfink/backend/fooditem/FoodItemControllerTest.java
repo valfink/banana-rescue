@@ -263,7 +263,7 @@ class FoodItemControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser("user2")
-    void updateFoodItemById_whenUserIsNotDonator_thenReturn401() throws Exception {
+    void updateFoodItemById_whenUserIsNotDonator_thenReturn403() throws Exception {
         mongoUserRepository.save(mongoUser1);
         mongoUserRepository.save(mongoUser2);
         foodItemRepository.save(foodItem1);
@@ -279,7 +279,7 @@ class FoodItemControllerTest {
                                 }
                                 """.getBytes()))
                         .with(csrf()))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test

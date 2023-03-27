@@ -134,7 +134,7 @@ public class FoodItemService {
         FoodItemDTOResponse foodItem = getFoodItemById(foodItemId);
 
         if (!foodItem.donator().id().equals(userId)) {
-            throw new FoodItemExceptionAuthorization("You may only edit you own items!");
+            throw new FoodItemExceptionAuthorization("You may only edit your own items!");
         }
         if (foodItem.photoUri() == null || foodItem.photoUri().isBlank()) {
             throw new FoodItemExceptionDataMismatch("The selected food item doesn't have an image!");
