@@ -3,6 +3,7 @@ import {FoodItem} from "../model/FoodItem";
 import moment from "moment/moment";
 import {FoodItemFormData} from "../model/FoodItemFormData";
 import React from "react";
+import toast from "react-hot-toast";
 
 const API_URL = "/api/food";
 
@@ -12,10 +13,12 @@ export async function fetchAllFoodItems(setAppIsLoading: React.Dispatch<React.Se
     setAppIsLoading(oldValue => oldValue + 1);
     try {
         const response = await axios.get(API_URL);
-        foodItems = response.data;
+        foodItems = response.data as FoodItem[];
     } catch (err: any) {
         console.error(err);
-        return Promise.reject(err.response.data.error || err.response.data.message);
+        const errorMsg = err.response.data.error || err.response.data.message;
+        toast.error(`Could not fetch food items 😢\n${errorMsg}`);
+        return Promise.reject(errorMsg);
     } finally {
         setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
     }
@@ -29,10 +32,12 @@ export async function fetchSingleFoodItem(id: string | undefined, setAppIsLoadin
     setAppIsLoading(oldValue => oldValue + 1);
     try {
         const res = await axios.get(`${API_URL}/${id}`);
-        foodItem = res.data;
+        foodItem = res.data as FoodItem;
     } catch (err: any) {
         console.error(err);
-        return Promise.reject(err.response.data.error || err.response.data.message);
+        const errorMsg = err.response.data.error || err.response.data.message;
+        toast.error(`Could not fetch food item 😢\n${errorMsg}`);
+        return Promise.reject(errorMsg);
     } finally {
         setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
     }
@@ -48,9 +53,12 @@ export async function postNewFoodItem(formData: FoodItemFormData, photo: File | 
     try {
         const res = await axios.post(API_URL, payload);
         savedFoodItem = res.data;
+        toast.success("Food item successfully added 🤗");
     } catch (err: any) {
         console.error(err);
-        return Promise.reject(err.response.data.error || err.response.data.message);
+        const errorMsg = err.response.data.error || err.response.data.message;
+        toast.error(`Could not post food item 😢\n${errorMsg}`);
+        return Promise.reject(errorMsg);
     } finally {
         setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
     }
@@ -66,9 +74,12 @@ export async function updateFoodItem(id: string, formData: FoodItemFormData, pho
     try {
         const res = await axios.put(`${API_URL}/${id}`, payload);
         updatedFoodItem = res.data;
+        toast.success("Food item successfully updated 🤗");
     } catch (err: any) {
         console.error(err);
-        return Promise.reject(err.response.data.error || err.response.data.message);
+        const errorMsg = err.response.data.error || err.response.data.message;
+        toast.error(`Could not update food item 😢\n${errorMsg}`);
+        return Promise.reject(errorMsg);
     } finally {
         setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
     }
@@ -80,9 +91,12 @@ export async function deletePhotoFromFoodItem(id: string | undefined, setAppIsLo
     setAppIsLoading(oldValue => oldValue + 1);
     try {
         await axios.delete(`${API_URL}/${id}/photo`);
+        toast.success("Photo successfully deleted 🤗");
     } catch (err: any) {
         console.error(err);
-        return Promise.reject(err.response.data.error || err.response.data.message);
+        const errorMsg = err.response.data.error || err.response.data.message;
+        toast.error(`Could not delete photo from food item 😢\n${errorMsg}`);
+        return Promise.reject(errorMsg);
     } finally {
         setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
     }
