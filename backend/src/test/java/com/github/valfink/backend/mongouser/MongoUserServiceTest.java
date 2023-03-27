@@ -143,6 +143,16 @@ class MongoUserServiceTest {
     }
 
     @Test
+    void getMongoUserDTOResponseById_whenIdNotInRepo_thenThrowException() {
+        // GIVEN
+        when(mongoUserRepository.findById(mongoUser1.id())).thenReturn(Optional.empty());
+        String id = mongoUser1.id();
+
+        // WHEN & THEN
+        assertThrows(MongoUserExceptionNotFound.class, () -> mongoUserService.getMongoUserDTOResponseById(id));
+    }
+
+    @Test
     void getMongoUserDTOResponseByUsername_whenUsernameInRepo_thenReturnDTOResponse() {
         // GIVEN
         when(mongoUserRepository.findMongoUserByUsername(mongoUser1.username())).thenReturn(Optional.of(mongoUser1));

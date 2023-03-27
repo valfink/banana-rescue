@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import './App.css';
 import {Navigate, Route, Routes} from "react-router-dom";
 import FoodItemGallery from "./page/FoodItemGallery";
@@ -30,6 +30,7 @@ axios.interceptors.request.use(config => {
 
 function App() {
     const [appIsLoading, setAppIsLoading] = useState(0);
+    const loadingContext = useMemo(() => ({appIsLoading, setAppIsLoading}), [appIsLoading]);
     const [appContentIsScrolled, setAppContentIsScrolled] = useState(false);
 
     function handleAppScroll(e: React.UIEvent) {
@@ -38,7 +39,7 @@ function App() {
 
     return (
         <div className="App" onScroll={handleAppScroll}>
-            <AppIsLoadingContext.Provider value={{appIsLoading, setAppIsLoading}}>
+            <AppIsLoadingContext.Provider value={loadingContext}>
                 <UserContext.Provider value={useUserAuth(setAppIsLoading)}>
                     {appIsLoading !== 0 && <LoadingScreen/>}
                     <HeaderBarAndFullScreenNav displayHeaderBarShadow={appContentIsScrolled}/>

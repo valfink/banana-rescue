@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Map;
 
@@ -39,12 +40,13 @@ class FoodItemControllerTest {
     Uploader uploader = mock(Uploader.class);
     @Autowired
     MongoUserRepository mongoUserRepository;
-    MongoUser mongoUser1;
-    FoodItem foodItem1;
+    MongoUser mongoUser1, mongoUser2;
+    FoodItem foodItem1, foodItem2;
 
     @BeforeEach
     void setUp() {
         mongoUser1 = new MongoUser("1", "user", "pass", "BASIC");
+        mongoUser2 = new MongoUser("2", "user2", "pass", "BASIC");
         foodItem1 = new FoodItem(
                 "1",
                 mongoUser1.id(),
@@ -54,6 +56,16 @@ class FoodItemControllerTest {
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my first food item."
+        );
+        foodItem2 = new FoodItem(
+                "2",
+                mongoUser1.id(),
+                "Food Item 2",
+                null,
+                "Berlin",
+                Instant.parse("2023-03-16T11:14:00Z"),
+                Instant.parse("2023-03-18T11:00:00Z"),
+                "This is my second food item."
         );
     }
 
@@ -128,6 +140,25 @@ class FoodItemControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser
+    void addFoodItem_whenPostingInvalidItem_thenReturn400() throws Exception {
+        mongoUserRepository.save(mongoUser1);
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/food")
+                        .file(new MockMultipartFile("form", null,
+                                "application/json", """
+                                {
+                                "location": "Berlin",
+                                "pickupUntil": "2023-03-16T11:14:00Z",
+                                "consumeUntil": "2023-03-18T11:00:00Z",
+                                "description": "This is my first food item."
+                                }
+                                """.getBytes()))
+                        .with(csrf()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
     void addFoodItem_whenPostingValidItemIncludingPhotoAndSignedIn_thenReturnNewItem() throws Exception {
         when(cloudinary.uploader()).thenReturn(uploader);
         when(uploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg"));
@@ -189,6 +220,13 @@ class FoodItemControllerTest {
 
     @Test
     @DirtiesContext
+    void getFoodItemById_whenIdIsNotInRepo_thenReturn404() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/food/1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DirtiesContext
     @WithMockUser
     void updateFoodItemById_whenIdIsInRepoAndUserIsDonator_thenReturnUpdatedItem() throws Exception {
         mongoUserRepository.save(mongoUser1);
@@ -224,6 +262,28 @@ class FoodItemControllerTest {
 
     @Test
     @DirtiesContext
+    @WithMockUser("user2")
+    void updateFoodItemById_whenUserIsNotDonator_thenReturn401() throws Exception {
+        mongoUserRepository.save(mongoUser1);
+        mongoUserRepository.save(mongoUser2);
+        foodItemRepository.save(foodItem1);
+        mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PUT, "/api/food/1")
+                        .file(new MockMultipartFile("form", null,
+                                "application/json", """
+                                {
+                                "title": "Updated Title",
+                                "location": "New Location",
+                                "pickupUntil": "2023-03-16T11:14:00Z",
+                                "consumeUntil": "2023-03-18T11:00:00Z",
+                                "description": "Description is updated."
+                                }
+                                """.getBytes()))
+                        .with(csrf()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DirtiesContext
     @WithMockUser
     void deletePhotoFromFoodItem_whenEverythingIsValid_thenReturnOk() throws Exception {
         when(cloudinary.uploader()).thenReturn(uploader);
@@ -234,6 +294,30 @@ class FoodItemControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string("ok"));
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void deletePhotoFromFoodItem_whenCloudinaryThrowsException_thenReturn500() throws Exception {
+        when(cloudinary.uploader()).thenReturn(uploader);
+        when(uploader.destroy(any(), anyMap())).thenThrow(IOException.class);
+        mongoUserRepository.save(mongoUser1);
+        foodItemRepository.save(foodItem1);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/food/1/photo")
+                        .with(csrf()))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void deletePhotoFromFoodItem_whenFoodItemHasNoImage_thenReturn400() throws Exception {
+        mongoUserRepository.save(mongoUser1);
+        foodItemRepository.save(foodItem2);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/food/2/photo")
+                        .with(csrf()))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
