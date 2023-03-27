@@ -9,9 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.InputMismatchException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -36,19 +34,19 @@ public class FoodItemService {
 
     private void throwExceptionIfFoodItemDTORequestIsNotValid(FoodItemDTORequest foodItemDTORequest) {
         if (foodItemDTORequest.title() == null || foodItemDTORequest.title().isBlank()) {
-            throw new InputMismatchException("Title must not be blank");
+            throw new FoodItemExceptionInputDataMissing("Title must not be blank");
         }
         if (foodItemDTORequest.location() == null || foodItemDTORequest.location().isBlank()) {
-            throw new InputMismatchException("Location must not be blank");
+            throw new FoodItemExceptionInputDataMissing("Location must not be blank");
         }
         if (foodItemDTORequest.pickupUntil() == null) {
-            throw new InputMismatchException("Pickup until must not be blank");
+            throw new FoodItemExceptionInputDataMissing("Pickup until must not be blank");
         }
         if (foodItemDTORequest.consumeUntil() == null) {
-            throw new InputMismatchException("Consume until must not be blank");
+            throw new FoodItemExceptionInputDataMissing("Consume until must not be blank");
         }
         if (foodItemDTORequest.description() == null || foodItemDTORequest.description().isBlank()) {
-            throw new InputMismatchException("Description must not be blank");
+            throw new FoodItemExceptionInputDataMissing("Description must not be blank");
         }
     }
 
@@ -58,7 +56,7 @@ public class FoodItemService {
             try {
                 photoUri = photoService.uploadPhoto(photo);
             } catch (IOException e) {
-                throw new InputMismatchException("The photo upload didn't work: " + e.getMessage());
+                throw new FoodItemExceptionPhotoAction("The photo upload didn't work: " + e.getMessage());
             }
         } else {
             photoUri = null;
@@ -96,7 +94,7 @@ public class FoodItemService {
 
     public FoodItemDTOResponse getFoodItemById(String id) {
         FoodItem foodItem = foodItemRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("The task with the id " + id + " doesn't exist."));
+                .orElseThrow(() -> new FoodItemExceptionNotFound("The food item with the id " + id + " doesn't exist."));
 
         return foodItemDTOResponseFromFoodItem(foodItem);
     }
@@ -106,7 +104,7 @@ public class FoodItemService {
         FoodItemDTOResponse oldFoodItem = getFoodItemById(id);
 
         if (!oldFoodItem.donator().id().equals(userId)) {
-            throw new SecurityException("You may only edit you own items!");
+            throw new FoodItemExceptionAuthorization("You may only edit you own items!");
         }
         throwExceptionIfFoodItemDTORequestIsNotValid(foodItemDTORequest);
 
@@ -136,17 +134,17 @@ public class FoodItemService {
         FoodItemDTOResponse foodItem = getFoodItemById(foodItemId);
 
         if (!foodItem.donator().id().equals(userId)) {
-            throw new SecurityException("You may only edit you own items!");
+            throw new FoodItemExceptionAuthorization("You may only edit you own items!");
         }
         if (foodItem.photoUri() == null || foodItem.photoUri().isBlank()) {
-            throw new NoSuchElementException("The selected food item doesn't have an image!");
+            throw new FoodItemExceptionDataMismatch("The selected food item doesn't have an image!");
         }
 
         String result;
         try {
             result = photoService.deletePhoto(foodItem.photoUri());
         } catch (IOException e) {
-            throw new InputMismatchException("The photo deletion didn't work: " + e.getMessage());
+            throw new FoodItemExceptionPhotoAction("The photo deletion didn't work: " + e.getMessage());
         }
 
         foodItemRepository.save(new FoodItem(
