@@ -1,4 +1,4 @@
-import {Link, Navigate, useLocation, useParams} from "react-router-dom";
+import {Link, useLocation, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import "./FoodItemDetailsPage.css";
@@ -21,17 +21,15 @@ export default function FoodItemDetailsPage() {
     }, [id, setAppIsLoading]);
 
     if (!foodItem) {
-        // TODO: DOESNT WORK
         if (appIsLoading === 0) {
-            return <Navigate to={"/"}/>;
+            return (
+                <main>
+                    <h1>Sorry, this food item doesn't seem to exist 😢</h1>
+                </main>
+            );
         } else {
             return <></>;
         }
-        // return (
-        //     <main>
-        //         <h1>Sorry, this food item doesn't seem to exist 😢</h1>
-        //     </main>
-        // );
     }
 
     return (
