@@ -14,6 +14,7 @@ import LoadingScreen from "./modal/LoadingScreen";
 import FoodItemDetailsPage from "./page/FoodItemDetailsPage";
 import FoodItemEditPage from "./page/FoodItemEditPage";
 import HeaderBarAndFullScreenNav from "./page/HeaderBarAndFullScreenNav";
+import {Toaster} from "react-hot-toast";
 
 axios.interceptors.request.use(config => {
     if (["put", "post", "delete"].includes(config.method || "")) {
@@ -50,6 +51,7 @@ function App() {
                         <Route path={"/signup"} element={<UserSignUpPage/>}/>
                         <Route path={"/login"} element={<UserLogInPage/>}/>
                     </Routes>
+                    <Toaster/>
                 </UserContext.Provider>
             </SetAppIsLoadingContext.Provider>
         </div>
