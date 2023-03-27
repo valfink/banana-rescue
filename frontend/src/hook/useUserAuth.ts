@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {User} from "../model/User";
 import axios from "axios";
 import {useLocation, useNavigate} from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     const [user, setUser] = useState<User | undefined>(undefined);
@@ -21,12 +22,15 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
         const url = "/api/users",
             data = {username, password};
         return axios.post(url, data)
-            .then(() => {
-                return;
+            .then((res) => {
+                const signedUpUser = res.data as User;
+                toast.success(`Successfully signed up as ${signedUpUser.username} 🤗`);
             })
             .catch(err => {
                 console.error(err);
-                return Promise.reject(err.response.data.error || err.response.data.message);
+                const errorMsg = err.response.data.error || err.response.data.message;
+                toast.error(`Could not sign up 😱\n${errorMsg}`);
+                return Promise.reject(errorMsg);
             })
             .finally(() => {
                 setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
@@ -40,11 +44,15 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
             config = {headers: {Authorization: `Basic ${window.btoa(btoaString)}`}};
         return axios.post(url, {}, config)
             .then(res => {
-                setUser(res.data);
+                const loggedInUser = res.data as User;
+                setUser(loggedInUser);
+                toast.success(`Successfully logged in as ${loggedInUser.username} 🤗`);
             })
             .catch(err => {
                 console.error(err);
-                return Promise.reject(err.response.data.error || err.response.data.message);
+                const errorMsg = err.response.data.error || err.response.data.message;
+                toast.error(`Could not log in 😱\n${errorMsg}`);
+                return Promise.reject(errorMsg);
             })
             .finally(() => {
                 setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
@@ -57,10 +65,13 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
         return axios.post(url)
             .then(() => {
                 setUser(undefined);
+                toast.success("Successfully logged out 🤗");
             })
             .catch(err => {
                 console.error(err);
-                return Promise.reject(err.response.data.error || err.response.data.message);
+                const errorMsg = err.response.data.error || err.response.data.message;
+                toast.error(`Could not log out 😱\n${errorMsg}`);
+                return Promise.reject(errorMsg);
             })
             .finally(() => {
                 setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
