@@ -41,7 +41,6 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
         return axios.post(url, {}, config)
             .then(res => {
                 setUser(res.data);
-                return;
             })
             .catch(err => {
                 console.error(err);
@@ -58,7 +57,6 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
         return axios.post(url)
             .then(() => {
                 setUser(undefined);
-                return;
             })
             .catch(err => {
                 console.error(err);
