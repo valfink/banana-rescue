@@ -34,19 +34,19 @@ public class FoodItemService {
 
     private void throwExceptionIfFoodItemDTORequestIsNotValid(FoodItemDTORequest foodItemDTORequest) {
         if (foodItemDTORequest.title() == null || foodItemDTORequest.title().isBlank()) {
-            throw new FoodItemExceptionInputDataMissing("Title must not be blank");
+            throw new FoodItemExceptionBadInputData("Title must not be blank");
         }
         if (foodItemDTORequest.location() == null || foodItemDTORequest.location().isBlank()) {
-            throw new FoodItemExceptionInputDataMissing("Location must not be blank");
+            throw new FoodItemExceptionBadInputData("Location must not be blank");
         }
         if (foodItemDTORequest.pickupUntil() == null) {
-            throw new FoodItemExceptionInputDataMissing("Pickup until must not be blank");
+            throw new FoodItemExceptionBadInputData("Pickup until must not be blank");
         }
         if (foodItemDTORequest.consumeUntil() == null) {
-            throw new FoodItemExceptionInputDataMissing("Consume until must not be blank");
+            throw new FoodItemExceptionBadInputData("Consume until must not be blank");
         }
         if (foodItemDTORequest.description() == null || foodItemDTORequest.description().isBlank()) {
-            throw new FoodItemExceptionInputDataMissing("Description must not be blank");
+            throw new FoodItemExceptionBadInputData("Description must not be blank");
         }
     }
 
