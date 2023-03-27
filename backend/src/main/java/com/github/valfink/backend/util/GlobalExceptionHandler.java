@@ -25,51 +25,51 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(FoodItemExceptionAuthorization.class)
-    public ResponseEntity handleFoodItemExceptionAuthorization(FoodItemExceptionAuthorization exception) {
+    public ResponseEntity<Map<String, Object>> handleFoodItemExceptionAuthorization(FoodItemExceptionAuthorization exception) {
         Map<String, Object> responseBody = createResponseBody(exception.getMessage());
 
-        return new ResponseEntity(responseBody, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(FoodItemExceptionBadInputData.class)
-    public ResponseEntity handleFoodItemExceptionBadInputData(FoodItemExceptionBadInputData exception) {
+    public ResponseEntity<Map<String, Object>> handleFoodItemExceptionBadInputData(FoodItemExceptionBadInputData exception) {
         Map<String, Object> responseBody = createResponseBody(exception.getMessage());
 
-        return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(FoodItemExceptionDataMismatch.class)
-    public ResponseEntity handleFoodItemExceptionDataMismatch(FoodItemExceptionDataMismatch exception) {
+    public ResponseEntity<Map<String, Object>> handleFoodItemExceptionDataMismatch(FoodItemExceptionDataMismatch exception) {
         Map<String, Object> responseBody = createResponseBody(exception.getMessage());
 
-        return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(FoodItemExceptionNotFound.class)
-    public ResponseEntity handleFoodItemExceptionNotFound(FoodItemExceptionNotFound exception) {
+    public ResponseEntity<Map<String, Object>> handleFoodItemExceptionNotFound(FoodItemExceptionNotFound exception) {
         Map<String, Object> responseBody = createResponseBody(exception.getMessage());
 
-        return new ResponseEntity(responseBody, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(FoodItemExceptionPhotoAction.class)
-    public ResponseEntity handleFoodItemExceptionPhotoAction(FoodItemExceptionPhotoAction exception) {
+    public ResponseEntity<Map<String, Object>> handleFoodItemExceptionPhotoAction(FoodItemExceptionPhotoAction exception) {
         Map<String, Object> responseBody = createResponseBody(exception.getMessage());
 
-        return new ResponseEntity(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MongoUserExceptionBadInputData.class)
-    public ResponseEntity handleMongoUserExceptionBadInputData(MongoUserExceptionBadInputData exception) {
+    public ResponseEntity<Map<String, Object>> handleMongoUserExceptionBadInputData(MongoUserExceptionBadInputData exception) {
         Map<String, Object> responseBody = createResponseBody(exception.getMessage());
 
-        return new ResponseEntity(responseBody, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MongoUserExceptionNotFound.class)
-    public ResponseEntity handleMongoUserExceptionNotFound(MongoUserExceptionNotFound exception) {
+    public ResponseEntity<Map<String, Object>> handleMongoUserExceptionNotFound(MongoUserExceptionNotFound exception) {
         Map<String, Object> responseBody = createResponseBody(exception.getMessage());
 
-        return new ResponseEntity(responseBody, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
     }
 }
