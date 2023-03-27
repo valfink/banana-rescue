@@ -2,7 +2,8 @@ import "./DeletionWarningScreen.css";
 import Modal from 'react-modal';
 
 type DeletionWarningScreenProps = {
-    itemName: string;
+    itemDescriptor: string;
+    itemName?: string;
     modalIsOpen: boolean;
     closeModal: () => void;
     deleteItem: () => void;
@@ -15,11 +16,12 @@ export default function DeletionWarningScreen(props: DeletionWarningScreenProps)
             isOpen={props.modalIsOpen}
             bodyOpenClassName={"has-open-modal"}
             htmlOpenClassName={"has-open-modal"}
-            className={"modal delete-image-warning"}
+            className={"modal deletion-warning"}
         >
             <h1>ATTENTION</h1>
             <h2>
-                Do you want to delete the {props.itemName}?<br/>
+                Do you want to delete the {props.itemDescriptor}?<br/>
+                {props.itemName && <center>{props.itemName}</center>}
                 This cannot be undone!
             </h2>
             <section className={"buttons"}>

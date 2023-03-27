@@ -120,7 +120,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
         <form onSubmit={handleFormSubmit}>
             {props.action === "edit" &&
                 <DeletionWarningScreen closeModal={handleCloseModalClick} deleteItem={handleDeletePhotoClick}
-                                       modalIsOpen={showDeletePhotoWarning} itemName={"photo"}/>}
+                                       modalIsOpen={showDeletePhotoWarning} itemDescriptor={"photo"}/>}
             {formError && <div className={"form-error"}>Error: {formError}</div>}
             <main>
                 <div className={"input-with-icon"}>
