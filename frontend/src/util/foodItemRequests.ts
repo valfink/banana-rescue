@@ -17,7 +17,7 @@ export async function fetchAllFoodItems(setAppIsLoading: React.Dispatch<React.Se
     } catch (err: any) {
         console.error(err);
         const errorMsg = err.response.data.error || err.response.data.message;
-        toast.error(`Could not fetch food items 😢\n${errorMsg}`);
+        toast.error(`Could not fetch food items 😱\n${errorMsg}`);
         return Promise.reject(errorMsg);
     } finally {
         setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
@@ -36,7 +36,7 @@ export async function fetchSingleFoodItem(id: string | undefined, setAppIsLoadin
     } catch (err: any) {
         console.error(err);
         const errorMsg = err.response.data.error || err.response.data.message;
-        toast.error(`Could not fetch food item 😢\n${errorMsg}`);
+        toast.error(`Could not fetch food item 😱\n${errorMsg}`);
         return Promise.reject(errorMsg);
     } finally {
         setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
@@ -57,7 +57,7 @@ export async function postNewFoodItem(formData: FoodItemFormData, photo: File | 
     } catch (err: any) {
         console.error(err);
         const errorMsg = err.response.data.error || err.response.data.message;
-        toast.error(`Could not post food item 😢\n${errorMsg}`);
+        toast.error(`Could not add food item 😱\n${errorMsg}`);
         return Promise.reject(errorMsg);
     } finally {
         setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
@@ -78,7 +78,7 @@ export async function updateFoodItem(id: string, formData: FoodItemFormData, pho
     } catch (err: any) {
         console.error(err);
         const errorMsg = err.response.data.error || err.response.data.message;
-        toast.error(`Could not update food item 😢\n${errorMsg}`);
+        toast.error(`Could not update food item 😱\n${errorMsg}`);
         return Promise.reject(errorMsg);
     } finally {
         setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
@@ -95,7 +95,7 @@ export async function deletePhotoFromFoodItem(id: string | undefined, setAppIsLo
     } catch (err: any) {
         console.error(err);
         const errorMsg = err.response.data.error || err.response.data.message;
-        toast.error(`Could not delete photo from food item 😢\n${errorMsg}`);
+        toast.error(`Could not delete photo from food item 😱\n${errorMsg}`);
         return Promise.reject(errorMsg);
     } finally {
         setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
