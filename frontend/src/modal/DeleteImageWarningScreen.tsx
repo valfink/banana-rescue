@@ -22,7 +22,7 @@ export default function DeleteImageWarningScreen(props: DeleteImageWarningScreen
                 This cannot be undone!
             </h2>
             <section className={"buttons"}>
-                <button className={"danger"} onClick={props.deletePhoto}>Yes, delete it!</button>
+                <button className={"danger-button"} onClick={props.deletePhoto}>Yes, delete it!</button>
                 <button className={"secondary-button"} onClick={props.closeModal}>Cancel</button>
             </section>
         </Modal>

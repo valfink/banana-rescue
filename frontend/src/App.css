@@ -137,7 +137,7 @@ button[type=submit] {
     padding-left: 1.8rem;
 }
 
-.danger {
+.danger-button {
     background-color: var(--danger-bg);
     border-color: var(--danger-bg);
     color: var(--bright-bg);
