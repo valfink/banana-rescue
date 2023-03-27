@@ -1,13 +1,14 @@
 import "./DeleteImageWarningScreen.css";
 import Modal from 'react-modal';
 
-type DeleteImageWarningScreenProps = {
+type DeletionWarningScreenProps = {
+    itemName: string;
     modalIsOpen: boolean;
     closeModal: () => void;
-    deletePhoto: () => void;
+    deleteItem: () => void;
 }
 
-export default function DeleteImageWarningScreen(props: DeleteImageWarningScreenProps) {
+export default function DeletionWarningScreen(props: DeletionWarningScreenProps) {
     Modal.setAppElement('#root');
     return (
         <Modal
@@ -18,11 +19,11 @@ export default function DeleteImageWarningScreen(props: DeleteImageWarningScreen
         >
             <h1>ATTENTION</h1>
             <h2>
-                Do you want to delete the image?<br/>
+                Do you want to delete the {props.itemName}?<br/>
                 This cannot be undone!
             </h2>
             <section className={"buttons"}>
-                <button className={"danger-button"} onClick={props.deletePhoto}>Yes, delete it!</button>
+                <button className={"danger-button"} onClick={props.deleteItem}>Yes, delete it!</button>
                 <button className={"secondary-button"} onClick={props.closeModal}>Cancel</button>
             </section>
         </Modal>

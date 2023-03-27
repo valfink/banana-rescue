@@ -9,7 +9,7 @@ import {deletePhotoFromFoodItem, postNewFoodItem, updateFoodItem} from "../util/
 import {FoodItem} from "../model/FoodItem";
 import moment from "moment";
 import "./FoodItemForm.css";
-import DeleteImageWarningScreen from "../modal/DeleteImageWarningScreen";
+import DeletionWarningScreen from "../modal/DeletionWarningScreen";
 
 type FoodItemFormProps = {
     action: "add" | "edit";
@@ -28,7 +28,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     const [photo, setPhoto] = useState<File | null>(null)
     const [oldPhotoUri, setOldPhotoUri] = useState<string | undefined>(props.oldFoodItem?.photoUri);
     const [formError, setFormError] = useState("");
-    const [showDeleteImageWarning, setShowDeleteImageWarning] = useState(false);
+    const [showDeletePhotoWarning, setShowDeletePhotoWarning] = useState(false);
     const navigate = useNavigate();
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
@@ -67,7 +67,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     }
 
     function handleClickOldImage() {
-        setShowDeleteImageWarning(true);
+        setShowDeletePhotoWarning(true);
     }
 
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
@@ -100,7 +100,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     }
 
     function handleCloseModalClick() {
-        setShowDeleteImageWarning(false);
+        setShowDeletePhotoWarning(false);
     }
 
     function handleDeletePhotoClick() {
@@ -108,7 +108,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
             .then(() => setOldPhotoUri(undefined))
             .catch(setFormError)
             .finally(() => {
-                setShowDeleteImageWarning(false)
+                setShowDeletePhotoWarning(false)
             });
     }
 
@@ -119,8 +119,8 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     return (
         <form onSubmit={handleFormSubmit}>
             {props.action === "edit" &&
-                <DeleteImageWarningScreen closeModal={handleCloseModalClick} deletePhoto={handleDeletePhotoClick}
-                                          modalIsOpen={showDeleteImageWarning}/>}
+                <DeletionWarningScreen closeModal={handleCloseModalClick} deleteItem={handleDeletePhotoClick}
+                                       modalIsOpen={showDeletePhotoWarning} itemName={"photo"}/>}
             {formError && <div className={"form-error"}>Error: {formError}</div>}
             <main>
                 <div className={"input-with-icon"}>
