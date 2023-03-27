@@ -160,4 +160,17 @@ public class FoodItemService {
 
         return result;
     }
+
+    public FoodItemDTOResponse deleteFoodItemById(String foodItemId, Principal principal) {
+        String userId = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName()).id();
+        FoodItemDTOResponse foodItem = getFoodItemById(foodItemId);
+
+        if (!foodItem.donator().id().equals(userId)) {
+            throw new FoodItemExceptionAuthorization("You may only delete you own items!");
+        }
+
+        foodItemRepository.deleteById(foodItemId);
+
+        return foodItem;
+    }
 }
