@@ -20,19 +20,24 @@ export default function HeaderBar(props: HeaderBarProps) {
         props.setShowNavBar(showNavBar => !showNavBar);
     }
 
+    function closeNavBarIfOpen() {
+        props.setShowNavBar(false);
+    }
+
     return (
         <section className={"header-bar" + (props.displayShadow ? " with-shadow" : "")}>
-            {navBarBackLink ?
-                <Link to={navBarBackLink} state={location.state.oldState}><FontAwesomeIcon icon={faArrowLeft}/></Link> :
-                <span className={"cursor-pointer"} onClick={handleShowNavBarClick}><FontAwesomeIcon
+            {navBarBackLink
+                ? <Link to={navBarBackLink} state={location.state.oldState}><FontAwesomeIcon icon={faArrowLeft}/></Link>
+                : <span className={"cursor-pointer"} onClick={handleShowNavBarClick}><FontAwesomeIcon
                     icon={faBars}/></span>}
-            <span><FontAwesomeIcon icon={faTruckMedical}/> Banana Rescue</span>
+            <Link to={"/"} onClick={closeNavBarIfOpen}><FontAwesomeIcon icon={faTruckMedical}/> Banana Rescue</Link>
             {user ?
                 <span onClick={logOutUser} className={"cursor-pointer"}>
                     <FontAwesomeIcon icon={loggedInUser}/>
                 </span>
                 :
-                <Link to={"/login"} state={{navBarBackLink: location.pathname, oldState: location.state}}>
+                <Link to={"/login"} state={{navBarBackLink: location.pathname, oldState: location.state}}
+                      onClick={closeNavBarIfOpen}>
                     <FontAwesomeIcon icon={loggedOutUser} className={"not-logged-in"}/>
                 </Link>
             }
