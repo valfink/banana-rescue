@@ -351,7 +351,7 @@ class FoodItemControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser("user2")
-    void deleteFoodItemById_whenUserIsNotDonator_thenReturn401() throws Exception {
+    void deleteFoodItemById_whenUserIsNotDonator_thenReturn403() throws Exception {
         when(cloudinary.uploader()).thenReturn(uploader);
         when(uploader.destroy(any(), anyMap())).thenReturn(Map.of("result", "ok"));
         mongoUserRepository.save(mongoUser1);
@@ -359,6 +359,6 @@ class FoodItemControllerTest {
         foodItemRepository.save(foodItem1);
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/food/1")
                         .with(csrf()))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }
