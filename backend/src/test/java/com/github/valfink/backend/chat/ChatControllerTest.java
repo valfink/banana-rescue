@@ -83,4 +83,36 @@ class ChatControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(chat1.id()));
     }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser("user2")
+    void getChatById_whenUserIsParticipant_thenReturnChat() throws Exception {
+        chatRepository.save(chat1);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/chats/" + chat1.id()))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                        "id": "c1",
+                        "foodItem": {
+                            "id": "f1",
+                            "donator": {
+                                "id": "u1",
+                                "username": "user"
+                                },
+                            "title": "Food Item 1",
+                            "photoUri": "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg",
+                            "location": "Berlin",
+                            "pickupUntil": "2023-03-16T11:14:00Z",
+                            "consumeUntil": "2023-03-18T11:00:00Z",
+                            "description": "This is my first food item."
+                            },
+                        "candidate": {
+                            "id": "u2",
+                            "username": "user2"
+                            },
+                        "messages": []
+                        }
+                        """));
+    }
 }
