@@ -1,15 +1,15 @@
 import React, {ChangeEvent, FormEvent, useContext, useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCamera, faLocationDot, faQuoteLeft, faTrainSubway, faUtensils} from '@fortawesome/free-solid-svg-icons';
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {UserContext, UserContextType} from "../context/UserContext";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import {FoodItemFormData} from "../model/FoodItemFormData";
-import {deletePhotoFromFoodItem, postNewFoodItem, updateFoodItem} from "../util/foodItemRequests";
+import {deleteFoodItem, deletePhotoFromFoodItem, postNewFoodItem, updateFoodItem} from "../util/foodItemRequests";
 import {FoodItem} from "../model/FoodItem";
 import moment from "moment";
 import "./FoodItemForm.css";
-import DeleteImageWarningScreen from "../modal/DeleteImageWarningScreen";
+import DeletionWarningScreen from "../modal/DeletionWarningScreen";
 
 type FoodItemFormProps = {
     action: "add" | "edit";
@@ -28,8 +28,10 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     const [photo, setPhoto] = useState<File | null>(null)
     const [oldPhotoUri, setOldPhotoUri] = useState<string | undefined>(props.oldFoodItem?.photoUri);
     const [formError, setFormError] = useState("");
-    const [showDeleteImageWarning, setShowDeleteImageWarning] = useState(false);
+    const [showDeletePhotoModal, setShowDeletePhotoModal] = useState(false);
+    const [showDeleteFoodItemModal, setShowDeleteFoodItemModal] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
 
@@ -66,10 +68,6 @@ export default function FoodItemForm(props: FoodItemFormProps) {
         }
     }
 
-    function handleClickOldImage() {
-        setShowDeleteImageWarning(true);
-    }
-
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setFormError("");
@@ -99,8 +97,12 @@ export default function FoodItemForm(props: FoodItemFormProps) {
         }
     }
 
-    function handleCloseModalClick() {
-        setShowDeleteImageWarning(false);
+    function handleClickOldImage() {
+        setShowDeletePhotoModal(true);
+    }
+
+    function handleCloseDeletePhotoModalClick() {
+        setShowDeletePhotoModal(false);
     }
 
     function handleDeletePhotoClick() {
@@ -108,7 +110,25 @@ export default function FoodItemForm(props: FoodItemFormProps) {
             .then(() => setOldPhotoUri(undefined))
             .catch(setFormError)
             .finally(() => {
-                setShowDeleteImageWarning(false)
+                setShowDeletePhotoModal(false)
+            });
+    }
+
+    function handleDeleteButtonClick() {
+        setShowDeleteFoodItemModal(true);
+    }
+
+    function handleCloseDeleteFoodItemModalClick() {
+        setShowDeleteFoodItemModal(false);
+    }
+
+    function handleDeleteFoodItemClick() {
+        deleteFoodItem(props.oldFoodItem?.id || "", setAppIsLoading)
+            .then(() => {
+                navigate("/");
+            })
+            .finally(() => {
+                setShowDeleteFoodItemModal(false)
             });
     }
 
@@ -119,8 +139,15 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     return (
         <form onSubmit={handleFormSubmit}>
             {props.action === "edit" &&
-                <DeleteImageWarningScreen closeModal={handleCloseModalClick} deletePhoto={handleDeletePhotoClick}
-                                          modalIsOpen={showDeleteImageWarning}/>}
+                <>
+                    <DeletionWarningScreen itemDescriptor={"photo"} modalIsOpen={showDeletePhotoModal}
+                                           closeModal={handleCloseDeletePhotoModalClick}
+                                           deleteItem={handleDeletePhotoClick}/>
+                    <DeletionWarningScreen itemDescriptor={"food item"} modalIsOpen={showDeleteFoodItemModal}
+                                           closeModal={handleCloseDeleteFoodItemModalClick}
+                                           deleteItem={handleDeleteFoodItemClick}
+                                           itemName={props.oldFoodItem?.title}/>
+                </>}
             {formError && <div className={"form-error"}>Error: {formError}</div>}
             <main>
                 <div className={"input-with-icon"}>
@@ -162,11 +189,20 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                 <textarea name={"description"} placeholder={"Description & Comments"} value={formData.description}
                           required={true} onChange={handleInputChange}/>
             </main>
-            <button type={"submit"}>
-                {props.action === "add" ? "Add Item" : "Update Item"}
-            </button>
-            <Link to={props.action === "add" ? "/" : `/food/${props.oldFoodItem?.id}`}
-                  className={"secondary-button"}>Cancel</Link>
+            {props.action === "add"
+                ? <>
+                    <button type={"submit"}>Add Item</button>
+                    <Link to={location.state.navBarBackLink || "/"} state={location.state.oldState}
+                          className={"secondary-button"}>Cancel</Link>
+                </>
+                : <>
+                    <button type={"submit"}>Update Item</button>
+                    <button type={"button"} className={"danger-button"} onClick={handleDeleteButtonClick}>Delete Item
+                    </button>
+                    <Link to={location.state.navBarBackLink || `/food/${props.oldFoodItem?.id}`}
+                          state={location.state.oldState} className={"secondary-button"}>Cancel</Link>
+                </>
+            }
         </form>
     );
 }

@@ -319,4 +319,46 @@ class FoodItemControllerTest {
                         .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void deleteFoodItemById_whenEverythingIsValid_thenReturnOk() throws Exception {
+        when(cloudinary.uploader()).thenReturn(uploader);
+        when(uploader.destroy(any(), anyMap())).thenReturn(Map.of("result", "ok"));
+        mongoUserRepository.save(mongoUser1);
+        foodItemRepository.save(foodItem1);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/food/1")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                            "id": "1",
+                            "title": "Food Item 1",
+                            "photoUri": "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg",
+                            "location": "Berlin",
+                            "pickupUntil": "2023-03-16T11:14:00Z",
+                            "consumeUntil": "2023-03-18T11:00:00Z",
+                            "description": "This is my first food item.",
+                            "donator": {
+                                "id": "1",
+                                "username": "user"
+                            }
+                        }
+                        """));
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser("user2")
+    void deleteFoodItemById_whenUserIsNotDonator_thenReturn403() throws Exception {
+        when(cloudinary.uploader()).thenReturn(uploader);
+        when(uploader.destroy(any(), anyMap())).thenReturn(Map.of("result", "ok"));
+        mongoUserRepository.save(mongoUser1);
+        mongoUserRepository.save(new MongoUser("2", "user2", "pass", "BASIC"));
+        foodItemRepository.save(foodItem1);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/food/1")
+                        .with(csrf()))
+                .andExpect(status().isForbidden());
+    }
 }

@@ -261,4 +261,48 @@ class FoodItemServiceTest {
         // WHEN & THEN
         assertThrows(FoodItemExceptionPhotoAction.class, () -> foodItemService.deletePhotoFromFoodItem(id, principal));
     }
+
+    @Test
+    void deleteFoodItemById_whenItemExistsAndBelongsToPrincipal_thenReturnDeletedItem() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
+        when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(foodItem1));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(mongoUserDTOResponse1);
+
+        // WHEN
+        FoodItemDTOResponse expected = foodItemDTOResponse1;
+        FoodItemDTOResponse actual = foodItemService.deleteFoodItemById(foodItem1.id(), principal);
+
+        // THEN
+        assertEquals(expected, actual);
+        verify(foodItemRepository).deleteById(foodItem1.id());
+    }
+
+    @Test
+    void deleteFoodItemById_whenUserIsNotDonator_thenThrowException() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(new MongoUserDTOResponse("2", "other user"));
+        when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(foodItem1));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(mongoUserDTOResponse1);
+        String id = foodItem1.id();
+
+        // WHEN & THEN
+        assertThrows(FoodItemExceptionAuthorization.class, () -> foodItemService.deleteFoodItemById(id, principal));
+    }
+
+    @Test
+    void deleteFoodItemById_whenCloudinaryThrowsException_thenThrowException() throws IOException {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
+        when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(foodItem1));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(mongoUserDTOResponse1);
+        when(photoService.deletePhoto(foodItem1.photoUri())).thenThrow(IOException.class);
+        String id = foodItem1.id();
+
+        // WHEN & THEN
+        assertThrows(FoodItemExceptionPhotoAction.class, () -> foodItemService.deleteFoodItemById(id, principal));
+    }
 }
