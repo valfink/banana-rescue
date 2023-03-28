@@ -7,8 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public record Chat(
         @Id
         String id,
-        String donatorId,
-        String candidateId,
-        String foodItemId
+        String foodItemId,
+        String candidateId
 ) {
 }
