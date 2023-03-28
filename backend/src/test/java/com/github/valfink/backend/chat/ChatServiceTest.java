@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.security.Principal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,10 +20,11 @@ import static org.mockito.Mockito.*;
 class ChatServiceTest {
     ChatService chatService;
     ChatRepository chatRepository;
+    ChatMessageRepository chatMessageRepository;
     MongoUserService mongoUserService;
     FoodItemService foodItemService;
     IdService idService;
-    MongoUserDTOResponse mongoUserDTOResponse1, mongoUserDTOResponse2;
+    MongoUserDTOResponse mongoUserDTOResponse1, mongoUserDTOResponse2, mongoUserDTOResponse3;
     FoodItemDTOResponse foodItemDTOResponse1;
     Principal principal;
     Chat chat1;
@@ -30,14 +32,16 @@ class ChatServiceTest {
     @BeforeEach
     void setUp() {
         chatRepository = mock(ChatRepository.class);
+        chatMessageRepository = mock(ChatMessageRepository.class);
         mongoUserService = mock(MongoUserService.class);
         foodItemService = mock(FoodItemService.class);
         idService = mock(IdService.class);
-        chatService = new ChatService(chatRepository, mongoUserService, foodItemService, idService);
+        chatService = new ChatService(chatRepository, chatMessageRepository, mongoUserService, foodItemService, idService);
         principal = mock(Principal.class);
 
         mongoUserDTOResponse1 = new MongoUserDTOResponse("u1", "user");
         mongoUserDTOResponse2 = new MongoUserDTOResponse("u2", "user2");
+        mongoUserDTOResponse3 = new MongoUserDTOResponse("u3", "user3");
         foodItemDTOResponse1 = new FoodItemDTOResponse(
                 "f1",
                 mongoUserDTOResponse1,
@@ -96,5 +100,44 @@ class ChatServiceTest {
         // THEN
         assertEquals(expected, actual);
         verify(chatRepository).save(chat1);
+    }
+
+    @Test
+    void getChatById_whenChatDoesNotExist_thenThrowException() {
+        // GIVEN
+        when(chatRepository.findById("1")).thenReturn(Optional.empty());
+
+        // WHEN & THEN
+        assertThrows(ChatExceptionNotFound.class, () -> chatService.getChatById("1", principal));
+    }
+
+    @Test
+    void getChatById_whenUserIsNotParticipant_thenThrowException() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse3.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse3.username())).thenReturn(mongoUserDTOResponse3);
+        when(chatRepository.findById(chat1.id())).thenReturn(Optional.of(chat1));
+        when(foodItemService.getFoodItemById(foodItemDTOResponse1.id())).thenReturn(foodItemDTOResponse1);
+        String chatId = chat1.id();
+
+        // WHEN & THEN
+        assertThrows(ChatExceptionAuthorization.class, () -> chatService.getChatById(chatId, principal));
+    }
+
+    @Test
+    void getChatById_whenUserIsParticipant_thenReturnChat() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse2.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse2.username())).thenReturn(mongoUserDTOResponse2);
+        when(chatRepository.findById(chat1.id())).thenReturn(Optional.of(chat1));
+        when(foodItemService.getFoodItemById(foodItemDTOResponse1.id())).thenReturn(foodItemDTOResponse1);
+        when(mongoUserService.getMongoUserDTOResponseById(mongoUserDTOResponse2.id())).thenReturn(mongoUserDTOResponse2);
+
+        // WHEN
+        ChatDTOResponse expected = new ChatDTOResponse(chat1.id(), foodItemDTOResponse1, mongoUserDTOResponse2, new ArrayList<>());
+        ChatDTOResponse actual = chatService.getChatById(chat1.id(), principal);
+
+        // THEN
+        assertEquals(expected, actual);
     }
 }
