@@ -1,5 +1,10 @@
 .single-message.from-me {
     text-align: right;
+    margin-left: 3rem;
+}
+
+.single-message:not(.from-me) {
+    margin-right: 3rem;
 }
 
 .message-content {
