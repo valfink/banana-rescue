@@ -76,8 +76,8 @@ class ChatServiceTest {
         when(chatMessageRepository.getChatMessagesByChatId(chat1.id())).thenReturn(new ArrayList<>());
 
         // WHEN
-        ChatDTOResponse expected = new ChatDTOResponse(chat1.id(), foodItemDTOResponse1, mongoUserDTOResponse2, new ArrayList<>());
-        ChatDTOResponse actual = chatService.startNewOrReturnExistingChat(foodItemDTOResponse1.id(), principal);
+        String expected = chat1.id();
+        String actual = chatService.startNewOrReturnExistingChat(foodItemDTOResponse1.id(), principal);
 
         // THEN
         assertEquals(expected, actual);
@@ -95,8 +95,8 @@ class ChatServiceTest {
         when(chatMessageRepository.getChatMessagesByChatId(chat1.id())).thenReturn(new ArrayList<>());
 
         // WHEN
-        ChatDTOResponse expected = new ChatDTOResponse(chat1.id(), foodItemDTOResponse1, mongoUserDTOResponse2, new ArrayList<>());
-        ChatDTOResponse actual = chatService.startNewOrReturnExistingChat(foodItemDTOResponse1.id(), principal);
+        String expected = chat1.id();
+        String actual = chatService.startNewOrReturnExistingChat(foodItemDTOResponse1.id(), principal);
 
         // THEN
         assertEquals(expected, actual);
