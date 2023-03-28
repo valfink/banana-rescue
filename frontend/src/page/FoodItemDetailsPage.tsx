@@ -7,6 +7,8 @@ import {deleteFoodItem, fetchSingleFoodItem} from "../util/foodItemRequests";
 import {FoodItem} from "../model/FoodItem";
 import {UserContext, UserContextType} from "../context/UserContext";
 import DeletionWarningScreen from "../modal/DeletionWarningScreen";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function FoodItemDetailsPage() {
     const {id} = useParams();
@@ -41,6 +43,17 @@ export default function FoodItemDetailsPage() {
             });
     }
 
+    function handleWriteAMessageClick() {
+        axios.post(`/api/chats?foodItemId=${foodItem?.id}`)
+            .then(res => {
+                toast.success(`Chat successfully created 🤗\nChat id: ${res.data}`);
+            })
+            .catch(err => {
+                console.error(err);
+                toast.error(`Could not start a chat 😱\n${err.response.data.error || err.response.data.message}`);
+            })
+    }
+
     if (!foodItem) {
         if (appIsLoading === 0) {
             return (
@@ -67,14 +80,17 @@ export default function FoodItemDetailsPage() {
                         <li><strong>Comment:</strong> {foodItem.description}</li>
                     </ul>
                 </main>
-                {user?.id === foodItem.donator.id &&
-                    <>
+                {user?.id === foodItem.donator.id
+                    ? <>
                         <Link to={`/food/${foodItem.id}/edit`} className={"primary-button"}
                               state={{navBarBackLink: pathname, oldState: state}}>Edit Item</Link>
                         <button className={"danger-button"} onClick={handleDeleteButtonClick}>Delete Item</button>
                         <DeletionWarningScreen closeModal={handleCloseModalClick} deleteItem={handleDeleteItemClick}
                                                modalIsOpen={showDeleteFoodItemModal} itemDescriptor={"food item"}
                                                itemName={foodItem.title}/>
+                    </>
+                    : <>
+                        <button onClick={handleWriteAMessageClick} disabled={!user}>Write a message</button>
                     </>}
             </section>
         </section>
