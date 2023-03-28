@@ -1,5 +1,6 @@
 package com.github.valfink.backend.util;
 
+import com.github.valfink.backend.chat.ChatExceptionAuthorization;
 import com.github.valfink.backend.fooditem.*;
 import com.github.valfink.backend.mongouser.MongoUserExceptionBadInputData;
 import com.github.valfink.backend.mongouser.MongoUserExceptionNotFound;
@@ -71,5 +72,12 @@ public class GlobalExceptionHandler {
         Map<String, Object> responseBody = createResponseBody(exception.getMessage());
 
         return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ChatExceptionAuthorization.class)
+    public ResponseEntity<Map<String, Object>> handleChatExceptionAuthorization(ChatExceptionAuthorization exception) {
+        Map<String, Object> responseBody = createResponseBody(exception.getMessage());
+
+        return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);
     }
 }

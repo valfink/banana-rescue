@@ -69,6 +69,10 @@ input, textarea, input::file-selector-button, button, .input-replacement, .form-
     background-color: var(--bright-bg);
 }
 
+button[disabled] {
+    opacity: 0.5;
+}
+
 form img {
     padding: 0;
 }
