@@ -1,0 +1,20 @@
+.chat-view {
+    overflow: auto;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.chat-infos {
+    transition: box-shadow 0.1s;
+}
+
+.chat-infos .food-item-card {
+    border-radius: 0;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: end;
+}
