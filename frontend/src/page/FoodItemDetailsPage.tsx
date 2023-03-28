@@ -44,14 +44,18 @@ export default function FoodItemDetailsPage() {
     }
 
     function handleWriteAMessageClick() {
+        setAppIsLoading(oldValue => oldValue + 1);
         axios.post(`/api/chats?foodItemId=${foodItem?.id}`)
             .then(res => {
-                toast.success(`Chat successfully created 🤗\nChat id: ${res.data}`);
+                navigate(`/chats/${res.data}`, {state: {navBarBackLink: pathname, oldState: state}});
             })
             .catch(err => {
                 console.error(err);
                 toast.error(`Could not start a chat 😱\n${err.response.data.error || err.response.data.message}`);
             })
+            .finally(() => {
+                setAppIsLoading(oldValue => oldValue - 1);
+            });
     }
 
     if (!foodItem) {
