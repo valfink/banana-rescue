@@ -16,5 +16,7 @@
     flex-grow: 1;
     display: flex;
     flex-flow: column nowrap;
-    justify-content: end;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem;
 }
