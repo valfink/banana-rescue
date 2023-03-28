@@ -27,7 +27,8 @@ public class ChatService {
             throw new ChatExceptionAuthorization("You may not start a chat about your own item!");
         }
 
-        Chat chat = chatRepository.getChatByFoodItemIdAndCandidateId(foodItemId, candidate.id())
+        Chat chat = chatRepository
+                .getChatByFoodItemIdAndCandidateId(foodItemId, candidate.id())
                 .orElse(chatRepository.save(new Chat(
                         idService.generateId(),
                         foodItemId,
