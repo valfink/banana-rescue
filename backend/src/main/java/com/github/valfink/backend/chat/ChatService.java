@@ -14,7 +14,6 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class ChatService {
     private final ChatRepository chatRepository;
-    private final ChatMessageRepository chatMessageRepository;
     private final MongoUserService mongoUserService;
     private final FoodItemService foodItemService;
     private final IdService idService;

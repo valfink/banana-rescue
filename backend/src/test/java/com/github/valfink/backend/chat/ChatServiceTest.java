@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import java.security.Principal;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +19,6 @@ import static org.mockito.Mockito.*;
 class ChatServiceTest {
     ChatService chatService;
     ChatRepository chatRepository;
-    ChatMessageRepository chatMessageRepository;
     MongoUserService mongoUserService;
     FoodItemService foodItemService;
     IdService idService;
@@ -32,11 +30,10 @@ class ChatServiceTest {
     @BeforeEach
     void setUp() {
         chatRepository = mock(ChatRepository.class);
-        chatMessageRepository = mock(ChatMessageRepository.class);
         mongoUserService = mock(MongoUserService.class);
         foodItemService = mock(FoodItemService.class);
         idService = mock(IdService.class);
-        chatService = new ChatService(chatRepository, chatMessageRepository, mongoUserService, foodItemService, idService);
+        chatService = new ChatService(chatRepository, mongoUserService, foodItemService, idService);
         principal = mock(Principal.class);
 
         mongoUserDTOResponse1 = new MongoUserDTOResponse("u1", "user");
@@ -73,7 +70,6 @@ class ChatServiceTest {
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse2.username())).thenReturn(mongoUserDTOResponse2);
         when(foodItemService.getFoodItemById(foodItemDTOResponse1.id())).thenReturn(foodItemDTOResponse1);
         when(chatRepository.getChatByFoodItemIdAndCandidateId(foodItemDTOResponse1.id(), mongoUserDTOResponse2.id())).thenReturn(Optional.of(chat1));
-        when(chatMessageRepository.getChatMessagesByChatId(chat1.id())).thenReturn(new ArrayList<>());
 
         // WHEN
         String expected = chat1.id();
@@ -92,7 +88,6 @@ class ChatServiceTest {
         when(chatRepository.getChatByFoodItemIdAndCandidateId(foodItemDTOResponse1.id(), mongoUserDTOResponse2.id())).thenReturn(Optional.empty());
         when(idService.generateId()).thenReturn(chat1.id());
         when(chatRepository.save(chat1)).thenReturn(chat1);
-        when(chatMessageRepository.getChatMessagesByChatId(chat1.id())).thenReturn(new ArrayList<>());
 
         // WHEN
         String expected = chat1.id();
