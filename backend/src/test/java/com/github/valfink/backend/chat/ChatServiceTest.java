@@ -60,7 +60,7 @@ class ChatServiceTest {
         String foodItemId = foodItemDTOResponse1.id();
 
         // WHEN & THEN
-        assertThrows(ChatExceptionAuthorization.class, () -> chatService.startNewOrReturnExistingChat(foodItemId, principal));
+        assertThrows(ChatExceptionAuthorization.class, () -> chatService.startNewChatOrReturnExistingChatId(foodItemId, principal));
     }
 
     @Test
@@ -73,7 +73,7 @@ class ChatServiceTest {
 
         // WHEN
         String expected = chat1.id();
-        String actual = chatService.startNewOrReturnExistingChat(foodItemDTOResponse1.id(), principal);
+        String actual = chatService.startNewChatOrReturnExistingChatId(foodItemDTOResponse1.id(), principal);
 
         // THEN
         assertEquals(expected, actual);
@@ -91,7 +91,7 @@ class ChatServiceTest {
 
         // WHEN
         String expected = chat1.id();
-        String actual = chatService.startNewOrReturnExistingChat(foodItemDTOResponse1.id(), principal);
+        String actual = chatService.startNewChatOrReturnExistingChatId(foodItemDTOResponse1.id(), principal);
 
         // THEN
         assertEquals(expected, actual);

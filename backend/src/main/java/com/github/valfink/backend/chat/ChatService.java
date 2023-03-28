@@ -18,7 +18,7 @@ public class ChatService {
     private final FoodItemService foodItemService;
     private final IdService idService;
 
-    public String startNewOrReturnExistingChat(String foodItemId, Principal principal) {
+    public String startNewChatOrReturnExistingChatId(String foodItemId, Principal principal) {
         MongoUserDTOResponse candidate = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
         FoodItemDTOResponse foodItem = foodItemService.getFoodItemById(foodItemId);
 

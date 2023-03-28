@@ -15,7 +15,7 @@ public class ChatController {
     private final ChatService chatService;
 
     @PostMapping
-    public String startNewOrReturnExistingChat(@RequestParam String foodItemId, Principal principal) {
-        return chatService.startNewOrReturnExistingChat(foodItemId, principal);
+    public String startNewChatOrReturnExistingChatId(@RequestParam String foodItemId, Principal principal) {
+        return chatService.startNewChatOrReturnExistingChatId(foodItemId, principal);
     }
 }
