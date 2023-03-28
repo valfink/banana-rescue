@@ -14,6 +14,7 @@ export default function UserForm(props: UserFormProps) {
     const [password, setPassword] = useState("");
     const [formError, setFormError] = useState("");
     const navigate = useNavigate();
+    const location = useLocation();
     const successMessage = useLocation().state?.successMessage || "";
     const {user, signUpUser, logInUser} = useContext(UserContext) as UserContextType;
 
@@ -26,9 +27,8 @@ export default function UserForm(props: UserFormProps) {
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setFormError("");
-        let navigateTo = window.sessionStorage.getItem("signInRedirect") || "/",
+        let navigateTo = location.state.redirectAfterLogIn || "/",
             navigateOptions = {state: {}};
-        window.sessionStorage.removeItem("signInRedirect");
         if (props.action === "signup") {
             navigateTo = "/login";
             navigateOptions.state = {successMessage: "Successfully registered."};
@@ -49,11 +49,9 @@ export default function UserForm(props: UserFormProps) {
 
     useEffect(() => {
         if (user) {
-            const navigateTo = window.sessionStorage.getItem("signInRedirect") || "/";
-            window.sessionStorage.removeItem("signInRedirect");
-            navigate(navigateTo);
+            navigate(location.state.redirectAfterLogIn || "/");
         }
-    }, [navigate, user]);
+    }, [location.state.redirectAfterLogIn, navigate, user]);
 
     return (
         <form onSubmit={handleFormSubmit}>

@@ -9,7 +9,7 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
     const [isLoading, setIsLoading] = useState(false);
     const [doRedirect, setDoRedirect] = useState(false);
     const navigate = useNavigate();
-    const {pathname} = useLocation();
+    const location = useLocation();
 
     function redirectIfNotSignedIn() {
         if (!user) {
@@ -47,6 +47,9 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
                 const loggedInUser = res.data as User;
                 setUser(loggedInUser);
                 toast.success(`Successfully logged in as ${loggedInUser.username} 🤗`);
+                if (location.state.redirectAfterLogIn) {
+                    navigate(location.state.redirectAfterLogIn);
+                }
             })
             .catch(err => {
                 console.error(err);
@@ -94,12 +97,11 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
     useEffect(() => {
         if (doRedirect && !isLoading) {
             if (!user) {
-                window.sessionStorage.setItem("signInRedirect", pathname || "/");
-                navigate("/login");
+                navigate("/login", {state: {redirectAfterLogIn: location.pathname}});
             }
             setDoRedirect(false);
         }
-    }, [doRedirect, isLoading, user, navigate, pathname])
+    }, [doRedirect, isLoading, user, navigate, location.pathname])
 
     return {user, redirectIfNotSignedIn, signUpUser, logInUser, logOutUser};
 }
