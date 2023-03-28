@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.Instant;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -32,6 +33,7 @@ class ChatControllerTest {
     FoodItemRepository foodItemRepository;
     MongoUser mongoUser1, mongoUser2;
     FoodItem foodItem1;
+    Chat chat1;
 
     @BeforeEach
     void setUp() {
@@ -50,6 +52,7 @@ class ChatControllerTest {
         mongoUserRepository.save(mongoUser1);
         mongoUserRepository.save(mongoUser2);
         foodItemRepository.save(foodItem1);
+        chat1 = new Chat("c1", foodItem1.id(), mongoUser2.id());
     }
 
     @Test
@@ -68,5 +71,16 @@ class ChatControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/chats?foodItemId=" + foodItem1.id())
                         .with(csrf()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser("user2")
+    void startNewOrReturnExistingChat_whenUserIsNotDonatorAndChatExists_thenReturnExistingChat() throws Exception {
+        chatRepository.save(chat1);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/chats?foodItemId=" + foodItem1.id())
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(chat1.id()));
     }
 }
