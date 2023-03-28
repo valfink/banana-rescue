@@ -29,10 +29,10 @@ public class ChatService {
 
         Chat chat = chatRepository
                 .getChatByFoodItemIdAndCandidateId(foodItemId, candidate.id())
-                .orElse(chatRepository.save(new Chat(
-                        idService.generateId(),
-                        foodItemId,
-                        candidate.id()))
+                .orElseGet(() -> chatRepository.save(
+                        new Chat(idService.generateId(),
+                                foodItemId,
+                                candidate.id()))
                 );
         return chat.id();
     }
