@@ -7,4 +7,3 @@ public record Chat(
         String foodItemId
 ) {
 }
-
