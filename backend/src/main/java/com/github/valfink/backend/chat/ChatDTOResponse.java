@@ -7,9 +7,8 @@ import java.util.List;
 
 public record ChatDTOResponse(
         String id,
-        MongoUserDTOResponse donator,
-        MongoUserDTOResponse candidate,
         FoodItemDTOResponse foodItem,
+        MongoUserDTOResponse candidate,
         List<ChatMessage> messages
 ) {
 }

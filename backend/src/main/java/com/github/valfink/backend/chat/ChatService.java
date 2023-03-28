@@ -19,16 +19,6 @@ public class ChatService {
     private final FoodItemService foodItemService;
     private final IdService idService;
 
-    private ChatDTOResponse chatDTOResponseFromChatFoodItemAndCandidate(Chat chat, FoodItemDTOResponse foodItem, MongoUserDTOResponse candidate) {
-        return new ChatDTOResponse(
-                chat.id(),
-                foodItem.donator(),
-                candidate,
-                foodItem,
-                chatMessageRepository.getChatMessagesByChatId(chat.id())
-        );
-    }
-
     public ChatDTOResponse startNewOrReturnExistingChat(String foodItemId, Principal principal) {
         MongoUserDTOResponse candidate = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
         FoodItemDTOResponse foodItem = foodItemService.getFoodItemById(foodItemId);
@@ -40,11 +30,15 @@ public class ChatService {
         Chat chat = chatRepository.getChatByFoodItemIdAndCandidateId(foodItemId, candidate.id())
                 .orElse(chatRepository.save(new Chat(
                         idService.generateId(),
-                        foodItem.donator().id(),
-                        candidate.id(),
-                        foodItemId))
+                        foodItemId,
+                        candidate.id()))
                 );
 
-        return chatDTOResponseFromChatFoodItemAndCandidate(chat, foodItem, candidate);
+        return new ChatDTOResponse(
+                chat.id(),
+                foodItem,
+                candidate,
+                chatMessageRepository.getChatMessagesByChatId(chat.id())
+        );
     }
 }

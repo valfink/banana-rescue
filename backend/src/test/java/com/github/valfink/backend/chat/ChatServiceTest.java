@@ -51,7 +51,7 @@ class ChatServiceTest {
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my first food item."
         );
-        chat1 = new Chat("c1", mongoUserDTOResponse1.id(), mongoUserDTOResponse2.id(), foodItemDTOResponse1.id());
+        chat1 = new Chat("c1", foodItemDTOResponse1.id(), mongoUserDTOResponse2.id());
     }
 
     @Test
@@ -76,7 +76,7 @@ class ChatServiceTest {
         when(chatMessageRepository.getChatMessagesByChatId(chat1.id())).thenReturn(new ArrayList<>());
 
         // WHEN
-        ChatDTOResponse expected = new ChatDTOResponse(chat1.id(), mongoUserDTOResponse1, mongoUserDTOResponse2, foodItemDTOResponse1, new ArrayList<>());
+        ChatDTOResponse expected = new ChatDTOResponse(chat1.id(), foodItemDTOResponse1, mongoUserDTOResponse2, new ArrayList<>());
         ChatDTOResponse actual = chatService.startNewOrReturnExistingChat(foodItemDTOResponse1.id(), principal);
 
         // THEN
@@ -95,7 +95,7 @@ class ChatServiceTest {
         when(chatMessageRepository.getChatMessagesByChatId(chat1.id())).thenReturn(new ArrayList<>());
 
         // WHEN
-        ChatDTOResponse expected = new ChatDTOResponse(chat1.id(), mongoUserDTOResponse1, mongoUserDTOResponse2, foodItemDTOResponse1, new ArrayList<>());
+        ChatDTOResponse expected = new ChatDTOResponse(chat1.id(), foodItemDTOResponse1, mongoUserDTOResponse2, new ArrayList<>());
         ChatDTOResponse actual = chatService.startNewOrReturnExistingChat(foodItemDTOResponse1.id(), principal);
 
         // THEN
