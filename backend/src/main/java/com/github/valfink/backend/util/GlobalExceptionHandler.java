@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleFoodItemExceptionAuthorization(FoodItemExceptionAuthorization exception) {
         Map<String, Object> responseBody = createResponseBody(exception.getMessage());
 
-        return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(FoodItemExceptionBadInputData.class)
