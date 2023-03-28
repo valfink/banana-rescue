@@ -6,6 +6,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import FoodItemCard from "../component/FoodItemCard";
 import "./ChatDetailsPage.css";
+import ChatMessageCard from "../component/ChatMessageCard";
 
 export default function ChatDetailsPage() {
     const {id} = useParams();
@@ -42,6 +43,8 @@ export default function ChatDetailsPage() {
         }
     }
 
+    const chatCards = chat.messages.map(message => <ChatMessageCard key={message.id} message={message}/>);
+
     return (
         <>
             <main className={"chat-view"} onScroll={handleChatScroll}>
@@ -49,9 +52,8 @@ export default function ChatDetailsPage() {
                     <FoodItemCard foodItem={chat.foodItem} compactView={true}/>
                 </header>
                 <main className={"chat-messages"}>
-                    <p>CHAT</p>
-                    <p>CHAT</p>
-                    <p>CHAT</p>
+                    {chatCards}
+                    {chatCards.length === 0 && <h2>No messages yet...</h2>}
                 </main>
             </main>
         </>
