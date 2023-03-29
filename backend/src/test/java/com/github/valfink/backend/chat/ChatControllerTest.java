@@ -28,12 +28,15 @@ class ChatControllerTest {
     @Autowired
     ChatRepository chatRepository;
     @Autowired
+    ChatMessageRepository chatMessageRepository;
+    @Autowired
     MongoUserRepository mongoUserRepository;
     @Autowired
     FoodItemRepository foodItemRepository;
     MongoUser mongoUser1, mongoUser2;
     FoodItem foodItem1;
     Chat chat1;
+    ChatMessage chatMessage1;
 
     @BeforeEach
     void setUp() {
@@ -53,6 +56,7 @@ class ChatControllerTest {
         mongoUserRepository.save(mongoUser2);
         foodItemRepository.save(foodItem1);
         chat1 = new Chat("c1", foodItem1.id(), mongoUser2.id());
+        chatMessage1 = new ChatMessage("cm1", chat1.id(), "u2", Instant.parse("2023-03-15T11:00:00Z"), "Hey there!");
     }
 
     @Test
@@ -89,6 +93,7 @@ class ChatControllerTest {
     @WithMockUser("user2")
     void getChatById_whenUserIsParticipant_thenReturnChat() throws Exception {
         chatRepository.save(chat1);
+        chatMessageRepository.save(chatMessage1);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/chats/" + chat1.id()))
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
@@ -111,8 +116,24 @@ class ChatControllerTest {
                             "id": "u2",
                             "username": "user2"
                             },
-                        "messages": []
+                        "messages": [
+                            {
+                            "id": "cm1",
+                            "chatId": "c1",
+                            "senderId": "u2",
+                            "timestamp": "2023-03-15T11:00:00Z",
+                            "content": "Hey there!"
+                            }
+                        ]
                         }
                         """));
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void getChatById_whenChatIsNotInRepo_thenReturn404() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/chats/12345"))
+                .andExpect(status().isNotFound());
     }
 }
