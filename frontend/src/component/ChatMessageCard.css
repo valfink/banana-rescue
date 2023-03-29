@@ -22,12 +22,12 @@
 }
 
 .single-message:not(.from-me):after {
-    left: 7%;
+    left: 1rem;
     border-left: 0;
 }
 
 .single-message.from-me:after {
-    right: 7%;
+    right: 1rem;
     border-right: 0;
 }
 
@@ -43,4 +43,5 @@
     text-align: justify;
     background-color: var(--bright-bg);
     color: var(--dark-accent);
+    min-width: 1.5rem;
 }
