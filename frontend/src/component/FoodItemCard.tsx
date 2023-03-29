@@ -25,7 +25,7 @@ export default function FoodItemCard(props: FoodItemCardProps) {
 
     return (
         <article className={"food-item-card"}>
-            <main>
+            <section>
                 <h2>{props.foodItem.title}</h2>
                 <ul>
                     <li><strong>Pickup until:</strong> {moment(props.foodItem.pickupUntil).calendar()}</li>
@@ -33,7 +33,7 @@ export default function FoodItemCard(props: FoodItemCardProps) {
                     <li><strong>Location:</strong> {props.foodItem.location}</li>
                 </ul>
                 {!props.compactView && foodItemActionButtons}
-            </main>
+            </section>
             {props.foodItem.photoUri && <aside style={{backgroundImage: `url(${props.foodItem.photoUri})`}}/>}
         </article>
     );

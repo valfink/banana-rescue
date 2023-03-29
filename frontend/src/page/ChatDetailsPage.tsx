@@ -46,16 +46,14 @@ export default function ChatDetailsPage() {
     const chatCards = chat.messages.map(message => <ChatMessageCard key={message.id} message={message}/>);
 
     return (
-        <>
-            <main className={"chat-view"} onScroll={handleChatScroll}>
-                <header className={"app-header chat-infos" + (chatContentIsScrolled ? " with-shadow" : "")}>
-                    <FoodItemCard foodItem={chat.foodItem} compactView={true}/>
-                </header>
-                <main className={"chat-messages"}>
-                    {chatCards}
-                    {chatCards.length === 0 && <h2>No messages yet...</h2>}
-                </main>
-            </main>
-        </>
+        <main className={"chat-view"} onScroll={handleChatScroll}>
+            <header className={"app-header chat-infos" + (chatContentIsScrolled ? " with-shadow" : "")}>
+                <FoodItemCard foodItem={chat.foodItem} compactView={true}/>
+            </header>
+            <section className={"chat-messages"}>
+                {chatCards}
+                {chatCards.length === 0 && <h2>No messages yet...</h2>}
+            </section>
+        </main>
     );
 }

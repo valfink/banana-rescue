@@ -149,7 +149,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                                            itemName={props.oldFoodItem?.title}/>
                 </>}
             {formError && <div className={"form-error"}>Error: {formError}</div>}
-            <main>
+            <section>
                 <div className={"input-with-icon"}>
                     <FontAwesomeIcon icon={faQuoteLeft}/>
                     <input type={"text"} name={"title"} placeholder={"Title"} required={true} value={formData.title}
@@ -188,7 +188,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                 </div>
                 <textarea name={"description"} placeholder={"Description & Comments"} value={formData.description}
                           required={true} onChange={handleInputChange}/>
-            </main>
+            </section>
             {props.action === "add"
                 ? <>
                     <button type={"submit"}>Add Item</button>
