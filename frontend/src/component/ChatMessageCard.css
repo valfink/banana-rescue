@@ -18,6 +18,7 @@
 .single-message.from-me {
     text-align: right;
     margin-left: 3rem;
+    --dark-accent: var(--success-bg);
 }
 
 .single-message:not(.from-me):after {
@@ -39,4 +40,7 @@
     padding: 0.5rem;
     border: 0.2rem solid var(--dark-accent);
     border-radius: 1rem;
+    text-align: justify;
+    background-color: var(--bright-bg);
+    color: var(--dark-accent);
 }

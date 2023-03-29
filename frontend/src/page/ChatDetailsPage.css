@@ -20,3 +20,12 @@
     gap: 0.5rem;
     padding: 1rem;
 }
+
+.new-message-bar {
+    flex-flow: row;
+    gap: 0.5rem
+}
+
+.new-message-bar input {
+    flex-grow: 1;
+}

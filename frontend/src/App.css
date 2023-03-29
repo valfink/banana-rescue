@@ -19,7 +19,7 @@
     flex-flow: column nowrap;
 }
 
-.App > *:not(header) {
+.App > *:not(header, footer) {
     flex-grow: 1;
 }
 
