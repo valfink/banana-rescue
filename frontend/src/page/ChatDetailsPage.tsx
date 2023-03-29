@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import React, {ChangeEvent, FormEvent, useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, FormEvent, useContext, useEffect, useRef, useState} from "react";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import {Chat} from "../model/Chat";
 import axios from "axios";
@@ -22,56 +22,51 @@ export default function ChatDetailsPage() {
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
 
     // TODO: In Hook oder Util auslagern!
-    const connectToStompChat = useCallback(() => {
-        if (id) {
-            console.log("Trying to connect");
-            console.log(`Chat ID: ${id}`);
-            const newClient = new Client({
-                brokerURL: 'ws://localhost:8080/api/ws/chat',
-                onConnect: () => {
-                    console.log("CONNECTED");
-                    newClient.subscribe(`/topic/chat/${id}`, message => {
-                            console.log(`Receive message`);
-                            const newMessage = JSON.parse(message.body) as ChatMessage;
-                            setChat(chat => {
-                                // TODO: Ist das der beste Weg gegen doppelte Ergebnisse im Dev-Mode?
-                                if (chat && !chat.messages.some(message => message.id === newMessage.id)) {
-                                    return {
-                                        ...chat,
-                                        messages: [
-                                            ...chat.messages,
-                                            newMessage
-                                        ]
-                                    }
-                                }
-                                return chat;
-                            });
-                        }
-                    );
-                },
-            });
-            newClient.activate();
-            setClient(newClient);
-        }
-    }, [id]);
 
     useEffect(() => {
         redirectIfNotSignedIn();
     }, [redirectIfNotSignedIn]);
 
     useEffect(() => {
+        if (id) {
+            const chatClient = new Client();
+            chatClient.configure({
+                brokerURL: 'ws://localhost:8080/api/ws/chat',
+                onConnect: () => {
+                    chatClient.subscribe(`/topic/chat/${id}`, message => {
+                            const newMessage = JSON.parse(message.body) as ChatMessage;
+                            setChat(chat => chat && {
+                                ...chat,
+                                messages: [
+                                    ...chat.messages,
+                                    newMessage
+                                ]
+                            });
+                        }
+                    );
+                }
+            });
+            chatClient.activate();
+            setClient(chatClient);
+
+            return () => {
+                chatClient.deactivate();
+            }
+        }
+    }, [id])
+
+    useEffect(() => {
         setAppIsLoading(oldValue => oldValue + 1);
         axios.get(`/api/chats/${id}`)
             .then(res => res.data)
             .then(setChat)
-            .then(connectToStompChat)
             .catch(err => {
                 toast.error(`Could not fetch chat 😱\n${err.response.data.error || err.response.data.message}`);
             })
             .finally(() => {
                 setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
             });
-    }, [connectToStompChat, id, setAppIsLoading]);
+    }, [id, setAppIsLoading]);
 
     useEffect(() => {
         scrollRef.current && scrollRef.current.scrollIntoView({behavior: 'smooth', block: 'end'});
@@ -83,8 +78,7 @@ export default function ChatDetailsPage() {
 
     function sendNewMessage(e: FormEvent) {
         e.preventDefault();
-        console.log("Send new message");
-        client.publish({destination: `/api/ws/chat/${chat?.id}`, body: messageDraft});
+        client.publish({destination: `/api/ws/chat/${id}`, body: messageDraft});
         setMessageDraft("");
     }
 
@@ -120,7 +114,7 @@ export default function ChatDetailsPage() {
             <footer>
                 <form className={"new-message-bar"} onSubmit={sendNewMessage}>
                     <input type={"text"} value={messageDraft} onChange={handleChangeMessageDraft}
-                           placeholder={"Type your message here..."}/>
+                           placeholder={"Type your message here..."} autoFocus={true}/>
                     <button>Send</button>
                 </form>
             </footer>
