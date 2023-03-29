@@ -14,11 +14,21 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class ChatService {
     private final ChatRepository chatRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final MongoUserService mongoUserService;
     private final FoodItemService foodItemService;
     private final IdService idService;
 
-    public String startNewOrReturnExistingChat(String foodItemId, Principal principal) {
+    private ChatDTOResponse chatDTOResponseFromChatAndFoodItem(Chat chat, FoodItemDTOResponse foodItem) {
+        return new ChatDTOResponse(
+                chat.id(),
+                foodItem,
+                mongoUserService.getMongoUserDTOResponseById(chat.candidateId()),
+                chatMessageRepository.getChatMessagesByChatId(chat.id())
+        );
+    }
+
+    public String startNewChatOrReturnExistingChatId(String foodItemId, Principal principal) {
         MongoUserDTOResponse candidate = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
         FoodItemDTOResponse foodItem = foodItemService.getFoodItemById(foodItemId);
 
@@ -34,5 +44,18 @@ public class ChatService {
                                 candidate.id()))
                 );
         return chat.id();
+    }
+
+    public ChatDTOResponse getChatById(String chatId, Principal principal) {
+        MongoUserDTOResponse user = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
+        Chat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new ChatExceptionNotFound("The chat with the id " + chatId + " does not exist."));
+        FoodItemDTOResponse foodItem = foodItemService.getFoodItemById(chat.foodItemId());
+
+        if (!foodItem.donator().id().equals(user.id()) && !chat.candidateId().equals(user.id())) {
+            throw new ChatExceptionAuthorization("You are not participant in this chat!");
+        }
+
+        return chatDTOResponseFromChatAndFoodItem(chat, foodItem);
     }
 }

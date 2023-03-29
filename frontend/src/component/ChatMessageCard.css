@@ -1,0 +1,42 @@
+.single-message {
+    position: relative;
+}
+
+.single-message:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border: 0.625em solid transparent;
+    border-top-color: var(--dark-accent);
+    border-bottom: 0;
+    margin-left: -0.312em;
+    margin-bottom: -0.625em;
+}
+
+.single-message.from-me {
+    text-align: right;
+    margin-left: 3rem;
+}
+
+.single-message:not(.from-me):after {
+    left: 7%;
+    border-left: 0;
+}
+
+.single-message.from-me:after {
+    right: 7%;
+    border-right: 0;
+}
+
+.single-message:not(.from-me) {
+    margin-right: 3rem;
+}
+
+.message-content {
+    display: inline-block;
+    padding: 0.5rem;
+    border: 0.2rem solid var(--dark-accent);
+    border-radius: 1rem;
+}

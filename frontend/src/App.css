@@ -44,12 +44,12 @@ a {
     padding: 3rem 0 1rem 0;
 }
 
-.form, form, .input-with-icon, form main {
+.form, form, .input-with-icon, form section {
     display: flex;
     flex-flow: column nowrap;
 }
 
-form main {
+form section {
     flex-grow: 1;
     gap: 1rem;
 }

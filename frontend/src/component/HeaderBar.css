@@ -3,11 +3,13 @@
     transition: box-shadow 0.1s;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 2rem;
+    height: 3rem;
     padding: 0.5rem 1rem;
 }
 
-.header-bar.with-shadow {
+.app-header:only-of-type .header-bar.with-shadow, .app-header.with-shadow {
     box-shadow: 0 0.2rem 0.5rem;
 }
 

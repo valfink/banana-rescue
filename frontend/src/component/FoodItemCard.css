@@ -3,7 +3,8 @@
     border-radius: 0.5rem;
     display: flex;
 }
-.food-item-card main {
+
+.food-item-card section {
     flex-basis: 60%;
     padding: 0.2rem 0.3rem 0.3rem 0.3rem;
 }

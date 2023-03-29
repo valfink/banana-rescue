@@ -1,4 +1,4 @@
-.food-item-gallery section {
+.food-item-gallery > section {
     display: flex;
     flex-flow: column;
     gap: 1.5rem;
