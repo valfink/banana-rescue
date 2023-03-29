@@ -15,14 +15,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic");
         // TODO: Authentifizierung bei Subscription auf Topic!
-        config.setApplicationDestinationPrefixes("/app");
+        config.setApplicationDestinationPrefixes("/api/ws");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
-                .addEndpoint("/api/ws")
+                .addEndpoint("/api/ws/chat")
                 .setAllowedOrigins("*");
-        // .withSockJS(); ?
+        // TODO: .withSockJS(); ?
     }
+    // TODO: Authentication - https://stackoverflow.com/questions/53244720/spring-websocket-stomp-exception-handling
 }
