@@ -1,8 +1,6 @@
 import {useParams} from "react-router-dom";
 import React, {ChangeEvent, FormEvent, useContext, useEffect, useRef, useState} from "react";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
-import axios from "axios";
-import toast from "react-hot-toast";
 import FoodItemCard from "../component/FoodItemCard";
 import "./ChatDetailsPage.css";
 import ChatMessageCard from "../component/ChatMessageCard";
@@ -12,7 +10,7 @@ import useChat from "../hook/useChat";
 export default function ChatDetailsPage() {
     const {id} = useParams();
     const {appIsLoading, setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
-    const {chat, setChat, sendNewMessage} = useChat(id);
+    const {chat, sendNewMessage} = useChat(id, setAppIsLoading);
     const [chatContentIsScrolled, setChatContentIsScrolled] = useState(false);
     const [messageDraft, setMessageDraft] = useState("");
     const scrollRef = useRef<HTMLSpanElement>(null);
@@ -22,18 +20,6 @@ export default function ChatDetailsPage() {
         redirectIfNotSignedIn();
     }, [redirectIfNotSignedIn]);
 
-    useEffect(() => {
-        setAppIsLoading(oldValue => oldValue + 1);
-        axios.get(`/api/chats/${id}`)
-            .then(res => res.data)
-            .then(setChat)
-            .catch(err => {
-                toast.error(`Could not fetch chat 😱\n${err.response.data.error || err.response.data.message}`);
-            })
-            .finally(() => {
-                setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
-            });
-    }, [id, setChat, setAppIsLoading]);
 
     useEffect(() => {
         scrollRef.current && scrollRef.current.scrollIntoView({behavior: 'smooth', block: 'end'});

@@ -1,19 +1,34 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Chat} from "../model/Chat";
 import {Client} from "@stomp/stompjs";
 import {ChatMessage} from "../model/ChatMessage";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-export default function useChat(id: string | undefined) {
+export default function useChat(chatId: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     const [chat, setChat] = useState<Chat | undefined>(undefined);
     const [client, setClient] = useState(new Client());
+    const API_BROKER_URL = 'ws://localhost:8080/api/ws/chat';
+    const API_SUBSCRIPTION_URL = `/topic/chat/${chatId}`;
+    const API_PUBLISH_URL = `/api/ws/chat/${chatId}`;
 
     useEffect(() => {
-        if (id) {
+        if (chatId) {
+            setAppIsLoading(oldValue => oldValue + 1);
+            axios.get(`/api/chats/${chatId}`)
+                .then(res => res.data)
+                .then(setChat)
+                .catch(err => {
+                    toast.error(`Could not fetch chat 😱\n${err.response.data.error || err.response.data.message}`);
+                })
+                .finally(() => {
+                    setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
+                });
             const chatClient = new Client();
             chatClient.configure({
-                brokerURL: 'ws://localhost:8080/api/ws/chat',
+                brokerURL: API_BROKER_URL,
                 onConnect: () => {
-                    chatClient.subscribe(`/topic/chat/${id}`, message => {
+                    chatClient.subscribe(API_SUBSCRIPTION_URL, message => {
                             const newMessage = JSON.parse(message.body) as ChatMessage;
                             setChat(chat => chat && {
                                 ...chat,
@@ -33,11 +48,11 @@ export default function useChat(id: string | undefined) {
                 chatClient.deactivate();
             }
         }
-    }, [id])
+    }, [API_SUBSCRIPTION_URL, chatId, setAppIsLoading])
 
     function sendNewMessage(message: string) {
-        client.publish({destination: `/api/ws/chat/${id}`, body: message});
+        client.publish({destination: API_PUBLISH_URL, body: message});
     }
 
-    return {chat, setChat, sendNewMessage}
+    return {chat, sendNewMessage}
 }
