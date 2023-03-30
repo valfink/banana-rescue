@@ -72,7 +72,7 @@ export default function FoodItemDetailsPage() {
 
     return (
         <section className={"food-item-details"}>
-            {foodItem.photoUri && <header style={{backgroundImage: `url(${foodItem.photoUri})`}}/>}
+            <header style={{backgroundImage: `url(${foodItem.photoUri || "/surprise-food.jpg"})`}}/>
             <section>
                 <main>
                     <h1>{foodItem.title}</h1>

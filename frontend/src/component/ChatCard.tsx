@@ -28,7 +28,7 @@ export default function ChatCard(props: ChatCardProps) {
                 <Link to={`/chats/${props.chat.id}`} className={"primary-button"}
                       state={{navBarBackLink: pathname}}>Chat</Link>
             </section>
-            {props.chat.foodItem.photoUri && <aside style={{backgroundImage: `url(${props.chat.foodItem.photoUri})`}}/>}
+            <aside style={{backgroundImage: `url(${props.chat.foodItem.photoUri || "/surprise-food.jpg"})`}}/>
         </article>
     );
 }

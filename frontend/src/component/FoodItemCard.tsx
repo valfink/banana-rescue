@@ -34,7 +34,7 @@ export default function FoodItemCard(props: FoodItemCardProps) {
                 </ul>
                 {!props.compactView && foodItemActionButtons}
             </section>
-            {props.foodItem.photoUri && <aside style={{backgroundImage: `url(${props.foodItem.photoUri})`}}/>}
+            <aside style={{backgroundImage: `url(${props.foodItem.photoUri || "/surprise-food.jpg"})`}}/>
         </article>
     );
 }
