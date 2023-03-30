@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -67,6 +68,7 @@ public class ChatService {
         return chatRepository.getChatsByCandidateIdOrDonatorId(user.id(), user.id())
                 .stream()
                 .map(this::chatDTOResponseFromChat)
+                .sorted(Comparator.comparing(ChatDTOResponse::getLastUpdate).reversed())
                 .toList();
     }
 
