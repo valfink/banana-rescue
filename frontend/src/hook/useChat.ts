@@ -54,5 +54,19 @@ export default function useChat(chatId: string | undefined, setAppIsLoading: Rea
         client.publish({destination: API_PUBLISH_URL, body: message});
     }
 
-    return {chat, sendNewMessage}
+    function startNewChat(foodItemId: string) {
+        setAppIsLoading(oldValue => oldValue + 1);
+        return axios.post(`/api/chats?foodItemId=${foodItemId}`)
+            .then(res => res.data)
+            .catch(err => {
+                console.error(err);
+                toast.error(`Could not start a chat 😱\n${err.response.data.error || err.response.data.message}`);
+                return Promise.reject(err);
+            })
+            .finally(() => {
+                setAppIsLoading(oldValue => oldValue - 1);
+            });
+    }
+
+    return {chat, sendNewMessage, startNewChat}
 }

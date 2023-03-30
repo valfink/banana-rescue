@@ -7,8 +7,7 @@ import {deleteFoodItem, fetchSingleFoodItem} from "../util/foodItemRequests";
 import {FoodItem} from "../model/FoodItem";
 import {UserContext, UserContextType} from "../context/UserContext";
 import DeletionWarningScreen from "../modal/DeletionWarningScreen";
-import axios from "axios";
-import toast from "react-hot-toast";
+import useChat from "../hook/useChat";
 
 export default function FoodItemDetailsPage() {
     const {id} = useParams();
@@ -18,6 +17,7 @@ export default function FoodItemDetailsPage() {
     const {pathname, state} = useLocation();
     const [showDeleteFoodItemModal, setShowDeleteFoodItemModal] = useState(false);
     const navigate = useNavigate();
+    const {startNewChat} = useChat(undefined, setAppIsLoading);
 
     useEffect(() => {
         fetchSingleFoodItem(id, setAppIsLoading)
@@ -44,18 +44,12 @@ export default function FoodItemDetailsPage() {
     }
 
     function handleWriteAMessageClick() {
-        setAppIsLoading(oldValue => oldValue + 1);
-        axios.post(`/api/chats?foodItemId=${foodItem?.id}`)
-            .then(res => {
-                navigate(`/chats/${res.data}`, {state: {navBarBackLink: pathname, oldState: state}});
-            })
-            .catch(err => {
-                console.error(err);
-                toast.error(`Could not start a chat 😱\n${err.response.data.error || err.response.data.message}`);
-            })
-            .finally(() => {
-                setAppIsLoading(oldValue => oldValue - 1);
-            });
+        if (foodItem?.id) {
+            startNewChat(foodItem.id)
+                .then(chatId => {
+                    navigate(`/chats/${chatId}`, {state: {navBarBackLink: pathname, oldState: state}});
+                })
+        }
     }
 
     if (!foodItem) {
