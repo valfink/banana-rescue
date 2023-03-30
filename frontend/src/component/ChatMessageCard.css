@@ -45,6 +45,34 @@
     min-width: 1.5rem;
 }
 
+.from-live-chat {
+    animation: highlight 0.5s cubic-bezier(0.4, 0, 1, 1);
+}
+
+@keyframes highlight {
+    0% {
+        transform: scale(2);
+    }
+    15% {
+        transform: scale(1.6) rotate(20deg);
+    }
+    30% {
+        transform: scale(1.2) rotate(-20deg);
+    }
+    45% {
+        transform: rotate(20deg);
+    }
+    50% {
+        transform: rotate(-10deg);
+    }
+    60% {
+        transform: rotate(10deg);
+    }
+    70% {
+        transform: rotate(-5deg);
+    }
+}
+
 .message-timestamp {
     padding: 0 1rem;
     color: var(--subtle-accent);

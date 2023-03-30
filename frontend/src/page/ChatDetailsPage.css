@@ -1,5 +1,5 @@
 .chat-view {
-    overflow: auto;
+    overflow: hidden auto;
     display: flex;
     flex-flow: column nowrap;
 }

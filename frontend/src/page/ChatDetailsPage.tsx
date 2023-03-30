@@ -22,7 +22,7 @@ export default function ChatDetailsPage() {
 
 
     useEffect(() => {
-        scrollRef.current && scrollRef.current.scrollIntoView({behavior: 'smooth', block: 'end'});
+        scrollRef.current && scrollRef.current.scrollIntoView({block: 'end'});
     }, [chat]);
 
     function handleChatScroll(e: React.UIEvent) {
