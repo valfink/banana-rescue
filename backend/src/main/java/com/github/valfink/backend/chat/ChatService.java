@@ -39,7 +39,7 @@ public class ChatService {
                 chat.id(),
                 foodItemService.getFoodItemById(chat.foodItemId()),
                 mongoUserService.getMongoUserDTOResponseById(chat.candidateId()),
-                chatMessageRepository.getChatMessagesByChatId(chat.id())
+                chatMessageRepository.getChatMessagesByChatIdOrderByTimestampAsc(chat.id())
         );
     }
 
