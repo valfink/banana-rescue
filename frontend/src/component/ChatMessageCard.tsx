@@ -13,7 +13,7 @@ export default function ChatMessageCard(props: ChatMessageCardProps) {
 
     return (
         <article className={"single-message" + (user?.id === props.message.senderId ? " from-me" : "")}>
-            <section className={"message-content"}>
+            <section className={"message-content" + (props.message.comesFromLiveChat ? " from-live-chat" : "")}>
                 {props.message.content}
             </section>
             <section className={"message-timestamp"}>{moment(props.message.timestamp).fromNow()}</section>
