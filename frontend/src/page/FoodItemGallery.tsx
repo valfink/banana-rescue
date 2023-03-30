@@ -20,7 +20,7 @@ export default function FoodItemGallery() {
     }
 
     return (
-        <main className={"food-item-gallery"}>
+        <main className={"item-gallery"}>
             <h1>All Items</h1>
             <section>
                 {foodItems.map(e => <FoodItemCard key={e.id} foodItem={e}/>)}
