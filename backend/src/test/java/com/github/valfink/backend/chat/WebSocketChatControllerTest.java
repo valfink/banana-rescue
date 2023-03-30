@@ -80,7 +80,7 @@ class WebSocketChatControllerTest {
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my first food item."
         );
-        chat1 = new Chat("c1", foodItem1.id(), mongoUser2_participant.id());
+        chat1 = new Chat("c1", foodItem1.id(), mongoUser2_participant.id(), mongoUser1_participant.id());
         chatMessage1 = new ChatMessage("cm1", chat1.id(), "u2", Instant.parse("2023-03-15T11:00:00Z"), "Hey there!");
         mongoUserRepository.save(mongoUser1_participant);
         mongoUserRepository.save(mongoUser2_participant);

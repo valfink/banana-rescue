@@ -55,7 +55,7 @@ class ChatControllerTest {
         mongoUserRepository.save(mongoUser1);
         mongoUserRepository.save(mongoUser2);
         foodItemRepository.save(foodItem1);
-        chat1 = new Chat("c1", foodItem1.id(), mongoUser2.id());
+        chat1 = new Chat("c1", foodItem1.id(), mongoUser2.id(), mongoUser1.id());
         chatMessage1 = new ChatMessage("cm1", chat1.id(), "u2", Instant.parse("2023-03-15T11:00:00Z"), "Hey there!");
     }
 

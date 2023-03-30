@@ -56,7 +56,7 @@ class ChatServiceTest {
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my first food item."
         );
-        chat1 = new Chat("c1", foodItemDTOResponse1.id(), mongoUserDTOResponse2.id());
+        chat1 = new Chat("c1", foodItemDTOResponse1.id(), mongoUserDTOResponse2.id(), mongoUserDTOResponse1.id());
         chatMessage1 = new ChatMessage("cm1", chat1.id(), mongoUserDTOResponse2.id(), Instant.parse("2023-03-14T11:14:00Z"), "Hello!");
     }
 
