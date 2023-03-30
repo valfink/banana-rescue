@@ -33,6 +33,9 @@ export default function ChatGallery() {
             <h1>My Chats</h1>
             <section>
                 {chats.map(chat => <ChatCard key={chat.id} chat={chat}/>)}
+                {chats.length === 0 && <article className={"item-card chat-item"}>
+                    <section><h2>No chats to display (yet) 😢</h2></section>
+                </article>}
             </section>
         </main>
     );
