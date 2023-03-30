@@ -24,7 +24,7 @@ export default function FoodItemCard(props: FoodItemCardProps) {
     );
 
     return (
-        <article className={"food-item-card"}>
+        <article className={"item-card"}>
             <section>
                 <h2>{props.foodItem.title}</h2>
                 <ul>
