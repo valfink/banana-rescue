@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -55,9 +56,18 @@ public class ChatService {
                 .orElseGet(() -> chatRepository.save(
                         new Chat(idService.generateId(),
                                 foodItemId,
-                                candidate.id()))
+                                candidate.id(),
+                                foodItem.donator().id()))
                 );
         return chat.id();
+    }
+
+    public List<ChatDTOResponse> getMyChats(Principal principal) {
+        MongoUserDTOResponse user = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
+        return chatRepository.getChatsByCandidateIdOrDonatorId(user.id(), user.id())
+                .stream()
+                .map(this::chatDTOResponseFromChat)
+                .toList();
     }
 
     public ChatDTOResponse getChatById(String chatId, Principal principal) {
