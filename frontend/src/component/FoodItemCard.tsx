@@ -6,7 +6,7 @@ import {useContext} from "react";
 import {UserContext, UserContextType} from "../context/UserContext";
 
 type FoodItemCardProps = {
-    foodItem: FoodItem
+    foodItem: FoodItem;
     compactView?: boolean;
 }
 
