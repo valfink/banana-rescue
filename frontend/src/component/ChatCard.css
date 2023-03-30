@@ -1,0 +1,19 @@
+.item-card.chat-item h4 {
+    margin: 0.2rem 0;
+    font-weight: normal;
+}
+
+.item-card.chat-item section {
+    overflow: hidden;
+}
+
+.item-card.chat-item q {
+    display: block;
+    height: 3rem;
+    margin: 0.5rem 0 1rem 0;
+}
+
+.item-card.chat-item q:empty::before {
+    content: "No messages yet";
+    color: var(--subtle-accent);
+}
