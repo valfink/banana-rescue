@@ -156,6 +156,7 @@ class WebSocketChatControllerTest {
         assertThrows(TimeoutException.class, () -> completableFuture2.get(1, TimeUnit.SECONDS));
 
         stompSession1.send("/api/ws/chat/" + chat1.id(), chatMessage1.content());
+        // TODO: Keine Ahnung warum der Test funktioniert. Im Browser kann ich die Nachrichten mitlesen, wenn ich eingeloggt bin und die Chat ID kenne, aber nicht Teilnehmer vom Chat bin
         assertThrows(TimeoutException.class, () -> completableFuture2.get(1, TimeUnit.SECONDS));
         ChatMessage actual = completableFuture1.get(1, TimeUnit.SECONDS);
         assertEquals(chatMessage1, actual);
