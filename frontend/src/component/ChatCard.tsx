@@ -15,10 +15,6 @@ export default function ChatCard(props: ChatCardProps) {
     const truncatedMessage = lastMessage.length > 65 ? lastMessage.substring(0, 65) + "…" : lastMessage;
     const {pathname} = useLocation();
 
-    console.log(`Message count: ${props.chat.messages.length}`)
-    props.chat.messages.length > 0 && console.log(`First message: ${props.chat.messages[0].content}`);
-    props.chat.messages.length > 0 && console.log(`Last message: ${props.chat.messages[props.chat.messages.length - 1].content}`);
-
     return (
         <article className={"item-card chat-item"}>
             <section>
