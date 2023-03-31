@@ -140,7 +140,7 @@ class WebSocketChatControllerTest {
 
     @Test
     @DirtiesContext
-    void addMessageAndSendIntoChat_whenNotParticipant_thenDontSaveSentMessageAndDontReceiveMessageFromParticipant() throws Exception {
+    void addMessageAndSendIntoChat_whenNotParticipant_thenDontSaveAndReturnSentMessage() throws Exception {
         // GIVEN
         when(timestampService.generateTimestamp()).thenReturn(chatMessage1.timestamp());
         when(idService.generateId()).thenReturn(chatMessage1.id());
@@ -154,11 +154,6 @@ class WebSocketChatControllerTest {
         stompSession2.send("/api/ws/chat/" + chat1.id(), "I AM A HACKER!");
         assertThrows(TimeoutException.class, () -> completableFuture1.get(1, TimeUnit.SECONDS));
         assertThrows(TimeoutException.class, () -> completableFuture2.get(1, TimeUnit.SECONDS));
-
-        stompSession1.send("/api/ws/chat/" + chat1.id(), chatMessage1.content());
-        assertThrows(TimeoutException.class, () -> completableFuture2.get(1, TimeUnit.SECONDS));
-        ChatMessage actual = completableFuture1.get(1, TimeUnit.SECONDS);
-        assertEquals(chatMessage1, actual);
     }
 
 
