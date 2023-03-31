@@ -5,6 +5,7 @@ import com.github.valfink.backend.fooditem.FoodItemService;
 import com.github.valfink.backend.mongouser.MongoUserDTOResponse;
 import com.github.valfink.backend.mongouser.MongoUserService;
 import com.github.valfink.backend.util.IdService;
+import com.github.valfink.backend.util.TimestampService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,10 +25,12 @@ class ChatServiceTest {
     MongoUserService mongoUserService;
     FoodItemService foodItemService;
     IdService idService;
+    TimestampService timestampService;
     MongoUserDTOResponse mongoUserDTOResponse1, mongoUserDTOResponse2, mongoUserDTOResponse3;
     FoodItemDTOResponse foodItemDTOResponse1;
     Principal principal;
     Chat chat1;
+    ChatMessage chatMessage1;
 
     @BeforeEach
     void setUp() {
@@ -36,7 +39,8 @@ class ChatServiceTest {
         mongoUserService = mock(MongoUserService.class);
         foodItemService = mock(FoodItemService.class);
         idService = mock(IdService.class);
-        chatService = new ChatService(chatRepository, chatMessageRepository, mongoUserService, foodItemService, idService);
+        timestampService = mock(TimestampService.class);
+        chatService = new ChatService(chatRepository, chatMessageRepository, mongoUserService, foodItemService, idService, timestampService);
         principal = mock(Principal.class);
 
         mongoUserDTOResponse1 = new MongoUserDTOResponse("u1", "user");
@@ -53,6 +57,7 @@ class ChatServiceTest {
                 "This is my first food item."
         );
         chat1 = new Chat("c1", foodItemDTOResponse1.id(), mongoUserDTOResponse2.id());
+        chatMessage1 = new ChatMessage("cm1", chat1.id(), mongoUserDTOResponse2.id(), Instant.parse("2023-03-14T11:14:00Z"), "Hello!");
     }
 
     @Test
@@ -139,5 +144,25 @@ class ChatServiceTest {
 
         // THEN
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void addMessageAndSendIntoChat_whenUserIsParticipant_thenReturnSavedMessage() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse2.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse2.username())).thenReturn(mongoUserDTOResponse2);
+        when(chatRepository.findById(chat1.id())).thenReturn(Optional.of(chat1));
+        when(foodItemService.getFoodItemById(foodItemDTOResponse1.id())).thenReturn(foodItemDTOResponse1);
+        when(idService.generateId()).thenReturn(chatMessage1.id());
+        when(timestampService.generateTimestamp()).thenReturn(chatMessage1.timestamp());
+        when(chatMessageRepository.save(chatMessage1)).thenReturn(chatMessage1);
+
+        // WHEN
+        ChatMessage expected = chatMessage1;
+        ChatMessage actual = chatService.addMessageAndSendIntoChat(chatMessage1.content(), chatMessage1.chatId(), principal);
+
+        // THEN
+        assertEquals(expected, actual);
+        verify(chatMessageRepository).save(any(ChatMessage.class));
     }
 }

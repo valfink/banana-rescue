@@ -5,22 +5,24 @@ import com.github.valfink.backend.chat.ChatExceptionNotFound;
 import com.github.valfink.backend.fooditem.*;
 import com.github.valfink.backend.mongouser.MongoUserExceptionBadInputData;
 import com.github.valfink.backend.mongouser.MongoUserExceptionNotFound;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+    private final TimestampService timestampService;
 
-    private static Map<String, Object> createResponseBody(String errorMessage) {
+    private Map<String, Object> createResponseBody(String errorMessage) {
         Map<String, Object> responseBody = new LinkedHashMap<>();
 
-        responseBody.put("timestamp", Instant.now());
+        responseBody.put("timestamp", timestampService.generateTimestamp());
         responseBody.put("error", errorMessage);
 
         return responseBody;
