@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 export default function useChat(chatId: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     const [chat, setChat] = useState<Chat | undefined>(undefined);
     const [client, setClient] = useState(new Client());
-    const API_BROKER_URL = 'ws://localhost:8080/api/ws/chat';
+    const API_BROKER_URL = `ws://${window.location.hostname}:8080/api/ws/chat`;
     const API_SUBSCRIPTION_URL = `/topic/chat/${chatId}`;
     const API_PUBLISH_URL = `/api/ws/chat/${chatId}`;
 
@@ -49,7 +49,7 @@ export default function useChat(chatId: string | undefined, setAppIsLoading: Rea
                 chatClient.deactivate();
             }
         }
-    }, [API_SUBSCRIPTION_URL, chatId, setAppIsLoading])
+    }, [API_BROKER_URL, API_SUBSCRIPTION_URL, chatId, setAppIsLoading])
 
     function sendNewMessage(message: string) {
         client.publish({destination: API_PUBLISH_URL, body: message});
