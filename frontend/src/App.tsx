@@ -16,6 +16,7 @@ import FoodItemEditPage from "./page/FoodItemEditPage";
 import HeaderBarAndFullScreenNav from "./page/HeaderBarAndFullScreenNav";
 import {Toaster} from "react-hot-toast";
 import ChatDetailsPage from "./page/ChatDetailsPage";
+import ChatGallery from "./page/ChatGallery";
 
 axios.interceptors.request.use(config => {
     if (["put", "post", "delete"].includes(config.method || "")) {
@@ -52,6 +53,7 @@ function App() {
                         <Route path={"/add-food"} element={<FoodItemAddPage/>}/>
                         <Route path={"/signup"} element={<UserSignUpPage/>}/>
                         <Route path={"/login"} element={<UserLogInPage/>}/>
+                        <Route path={"/chats"} element={<ChatGallery/>}/>
                         <Route path={"/chats/:id"} element={<ChatDetailsPage/>}/>
                     </Routes>
                     <Toaster/>

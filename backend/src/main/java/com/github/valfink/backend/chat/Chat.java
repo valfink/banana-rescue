@@ -8,6 +8,7 @@ public record Chat(
         @Id
         String id,
         String foodItemId,
-        String candidateId
+        String candidateId,
+        String donatorId
 ) {
 }

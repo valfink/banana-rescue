@@ -20,12 +20,12 @@ export default function FoodItemGallery() {
     }
 
     return (
-        <main className={"food-item-gallery"}>
+        <main className={"item-gallery"}>
             <h1>All Items</h1>
             <section>
                 {foodItems.map(e => <FoodItemCard key={e.id} foodItem={e}/>)}
                 {foodItems.length === 0 &&
-                    <article className={"food-item-card"}><h2>No items to display 😢</h2></article>
+                    <article className={"item-card"}><h2>No items to display 😢</h2></article>
                 }
             </section>
         </main>

@@ -1,25 +1,25 @@
-.food-item-card {
+.item-card {
     background-color: var(--bright-bg);
     border-radius: 0.5rem;
     display: flex;
 }
 
-.food-item-card section {
+.item-card section {
     flex-basis: 60%;
     padding: 0.2rem 0.3rem 0.3rem 0.3rem;
 }
 
-.food-item-card h2 {
+.item-card h2 {
     margin: 0;
 }
 
-.food-item-card ul {
+.item-card ul {
     list-style: none;
     padding: 0;
     margin: 0.5rem 0;
 }
 
-.food-item-card a {
+.item-card a {
     display: block;
     max-width: 8rem;
     text-decoration: none;
@@ -28,13 +28,13 @@
     margin-bottom: 0.3rem;
 }
 
-.food-item-card a:hover, .food-item-card a:active {
+.item-card a:hover, .item-card a:active {
     border-color: var(--bright-bg);
     color: var(--bright-bg);
     background-color: var(--dark-accent);
 }
 
-.food-item-card aside {
+.item-card aside {
     flex-basis: 40%;
     background-size: cover;
     background-position: center;

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,7 +57,7 @@ class ChatServiceTest {
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my first food item."
         );
-        chat1 = new Chat("c1", foodItemDTOResponse1.id(), mongoUserDTOResponse2.id());
+        chat1 = new Chat("c1", foodItemDTOResponse1.id(), mongoUserDTOResponse2.id(), mongoUserDTOResponse1.id());
         chatMessage1 = new ChatMessage("cm1", chat1.id(), mongoUserDTOResponse2.id(), Instant.parse("2023-03-14T11:14:00Z"), "Hello!");
     }
 
@@ -164,5 +165,37 @@ class ChatServiceTest {
         // THEN
         assertEquals(expected, actual);
         verify(chatMessageRepository).save(any(ChatMessage.class));
+    }
+
+    @Test
+    void getMyChats_whenUserHasOneChat_thenReturnListOfIt() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse2.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse2.username())).thenReturn(mongoUserDTOResponse2);
+        when(chatRepository.getChatsByCandidateIdOrDonatorId(mongoUserDTOResponse2.id(), mongoUserDTOResponse2.id())).thenReturn(List.of(chat1));
+        when(foodItemService.getFoodItemById(foodItemDTOResponse1.id())).thenReturn(foodItemDTOResponse1);
+        when(mongoUserService.getMongoUserDTOResponseById(mongoUserDTOResponse2.id())).thenReturn(mongoUserDTOResponse2);
+
+        // WHEN
+        List<ChatDTOResponse> expected = List.of(new ChatDTOResponse(chat1.id(), foodItemDTOResponse1, mongoUserDTOResponse2, List.of()));
+        List<ChatDTOResponse> actual = chatService.getMyChats(principal);
+
+        // THEN
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getMyChats_whenUserHasNoChat_thenReturnEmptyList() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse2.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse2.username())).thenReturn(mongoUserDTOResponse2);
+        when(chatRepository.getChatsByCandidateIdOrDonatorId(mongoUserDTOResponse2.id(), mongoUserDTOResponse2.id())).thenReturn(List.of());
+
+        // WHEN
+        List<ChatDTOResponse> expected = List.of();
+        List<ChatDTOResponse> actual = chatService.getMyChats(principal);
+
+        // THEN
+        assertEquals(expected, actual);
     }
 }

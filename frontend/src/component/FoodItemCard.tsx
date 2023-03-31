@@ -6,7 +6,7 @@ import {useContext} from "react";
 import {UserContext, UserContextType} from "../context/UserContext";
 
 type FoodItemCardProps = {
-    foodItem: FoodItem
+    foodItem: FoodItem;
     compactView?: boolean;
 }
 
@@ -24,7 +24,7 @@ export default function FoodItemCard(props: FoodItemCardProps) {
     );
 
     return (
-        <article className={"food-item-card"}>
+        <article className={"item-card"}>
             <section>
                 <h2>{props.foodItem.title}</h2>
                 <ul>
@@ -34,7 +34,7 @@ export default function FoodItemCard(props: FoodItemCardProps) {
                 </ul>
                 {!props.compactView && foodItemActionButtons}
             </section>
-            {props.foodItem.photoUri && <aside style={{backgroundImage: `url(${props.foodItem.photoUri})`}}/>}
+            <aside style={{backgroundImage: `url(${props.foodItem.photoUri || "/surprise-food.jpg"})`}}/>
         </article>
     );
 }

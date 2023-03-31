@@ -30,13 +30,14 @@ export default function useChat(chatId: string | undefined, setAppIsLoading: Rea
                 onConnect: () => {
                     chatClient.subscribe(API_SUBSCRIPTION_URL, message => {
                             const newMessage = JSON.parse(message.body) as ChatMessage;
-                            setChat(chat => chat && {
-                                ...chat,
-                                messages: [
-                                    ...chat.messages,
-                                    newMessage
-                                ]
-                            });
+                            newMessage.comesFromLiveChat = true;
+                        setChat(chat => chat && {
+                            ...chat,
+                            messages: [
+                                ...chat.messages,
+                                newMessage
+                            ]
+                        });
                         }
                     );
                 }
@@ -54,5 +55,19 @@ export default function useChat(chatId: string | undefined, setAppIsLoading: Rea
         client.publish({destination: API_PUBLISH_URL, body: message});
     }
 
-    return {chat, sendNewMessage}
+    function startNewChat(foodItemId: string) {
+        setAppIsLoading(oldValue => oldValue + 1);
+        return axios.post(`/api/chats?foodItemId=${foodItemId}`)
+            .then(res => res.data)
+            .catch(err => {
+                console.error(err);
+                toast.error(`Could not start a chat 😱\n${err.response.data.error || err.response.data.message}`);
+                return Promise.reject(err);
+            })
+            .finally(() => {
+                setAppIsLoading(oldValue => oldValue - 1);
+            });
+    }
+
+    return {chat, sendNewMessage, startNewChat}
 }
