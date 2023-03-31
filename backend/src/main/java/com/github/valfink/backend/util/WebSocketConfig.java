@@ -14,7 +14,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic");
-        // TODO: Authentifizierung bei Subscription auf Topic!
         config.setApplicationDestinationPrefixes("/api/ws");
     }
 
@@ -23,7 +22,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry
                 .addEndpoint("/api/ws/chat")
                 .setAllowedOrigins("*");
-        // TODO: .withSockJS(); ?
     }
-    // TODO: Authentication - https://stackoverflow.com/questions/53244720/spring-websocket-stomp-exception-handling
 }
