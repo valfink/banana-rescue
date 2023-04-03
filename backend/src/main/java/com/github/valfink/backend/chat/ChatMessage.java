@@ -11,7 +11,6 @@ public record ChatMessage(
         String id,
         String chatId,
         String senderId,
-        String recipientId,
         Instant timestamp,
         String content
 ) {
