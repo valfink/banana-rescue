@@ -17,6 +17,7 @@ import HeaderBarAndFullScreenNav from "./page/HeaderBarAndFullScreenNav";
 import {Toaster} from "react-hot-toast";
 import ChatDetailsPage from "./page/ChatDetailsPage";
 import ChatGallery from "./page/ChatGallery";
+import Div100vh from "react-div-100vh";
 
 axios.interceptors.request.use(config => {
     if (["put", "post", "delete"].includes(config.method || "")) {
@@ -40,7 +41,7 @@ function App() {
     }
 
     return (
-        <div className="App" onScroll={handleAppScroll}>
+        <Div100vh className="App" onScroll={handleAppScroll}>
             <AppIsLoadingContext.Provider value={loadingContext}>
                 <UserContext.Provider value={useUserAuth(setAppIsLoading)}>
                     {appIsLoading !== 0 && <LoadingScreen/>}
@@ -59,7 +60,7 @@ function App() {
                     <Toaster/>
                 </UserContext.Provider>
             </AppIsLoadingContext.Provider>
-        </div>
+        </Div100vh>
     );
 }
 
