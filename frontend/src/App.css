@@ -164,3 +164,28 @@ button[type=submit]:last-of-type {
 .cursor-pointer {
     cursor: pointer;
 }
+
+.actionable-toast {
+    min-width: 90%;
+}
+
+.actionable-toast div[role=status] {
+    flex-flow: column nowrap;
+}
+
+.actionable-toast h4 {
+    margin: 0;
+}
+
+.actionable-toast section {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 1rem;
+}
+
+.actionable-toast button, .actionable-toast a {
+    padding: 0.2rem;
+    flex-basis: 1rem;
+    flex-grow: 1;
+}
