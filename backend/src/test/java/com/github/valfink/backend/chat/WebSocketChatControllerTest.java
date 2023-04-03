@@ -49,7 +49,7 @@ class WebSocketChatControllerTest {
     MongoUser mongoUser1_participant, mongoUser2_participant, mongoUser3_hacker;
     FoodItem foodItem1;
     Chat chat1;
-    ChatMessage chatMessage1;
+    ChatMessage chatMessage1, chatMessage2;
     @LocalServerPort
     private int port;
     WebSocketStompClient stompClient;
@@ -87,6 +87,12 @@ class WebSocketChatControllerTest {
                 mongoUser2_participant.id(),
                 Instant.parse("2023-03-15T11:00:00Z"),
                 "Hey there!");
+        chatMessage2 = new ChatMessage(
+                "cm2",
+                chat1.id(),
+                mongoUser1_participant.id(),
+                Instant.parse("2023-03-15T12:00:00Z"),
+                "Hello again!");
         mongoUserRepository.save(mongoUser1_participant);
         mongoUserRepository.save(mongoUser2_participant);
         mongoUserRepository.save(mongoUser3_hacker);
@@ -149,8 +155,8 @@ class WebSocketChatControllerTest {
     @DirtiesContext
     void addMessageAndSendIntoChat_whenNotParticipant_thenDontSaveAndReturnSentMessageAndDontShowMessageFromLegitUser() throws Exception {
         // GIVEN
-        when(timestampService.generateTimestamp()).thenReturn(chatMessage1.timestamp());
-        when(idService.generateId()).thenReturn(chatMessage1.id());
+        when(timestampService.generateTimestamp()).thenReturn(chatMessage2.timestamp());
+        when(idService.generateId()).thenReturn(chatMessage2.id());
 
         // WHEN & THEN
         stompSession1 = connectToChatAsUser(mongoUser1_participant);
@@ -165,12 +171,12 @@ class WebSocketChatControllerTest {
         assertThrows(TimeoutException.class, () -> completableFuture2.get(1, TimeUnit.SECONDS));
         assertThrows(TimeoutException.class, () -> completableFuture3.get(1, TimeUnit.SECONDS));
 
-        stompSession2.send("/api/ws/chat/" + chat1.id(), chatMessage1.content());
+        stompSession1.send("/api/ws/chat/" + chat1.id(), chatMessage2.content());
         ChatMessage actual1 = completableFuture1.get(1, TimeUnit.SECONDS);
         ChatMessage actual2 = completableFuture2.get(1, TimeUnit.SECONDS);
         assertThrows(TimeoutException.class, () -> completableFuture3.get(1, TimeUnit.SECONDS));
-        assertEquals(chatMessage1, actual1);
-        assertEquals(chatMessage1, actual2);
+        assertEquals(chatMessage2, actual1);
+        assertEquals(chatMessage2, actual2);
     }
 
 
