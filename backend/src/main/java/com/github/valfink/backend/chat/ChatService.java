@@ -80,19 +80,23 @@ public class ChatService {
         return chatDTOResponseFromChat(chat);
     }
 
-    public ChatMessage addMessageAndSendToUsers(String message, String chatId, Principal principal) {
+    public ChatMessageDTOResponseWS addMessageAndReturnDTO(String message, String chatId, Principal principal) {
         MongoUserDTOResponse sender = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
         Chat chat = checkIfUserIsInChatAndReturnChat(chatId, sender);
         String recipientId = Objects.equals(chat.donatorId(), sender.id()) ? chat.candidateId() : chat.donatorId();
+        MongoUserDTOResponse recipient = mongoUserService.getMongoUserDTOResponseById(recipientId);
 
-        ChatMessage chatMessage = new ChatMessage(
+        ChatMessage chatMessage = chatMessageRepository.save(new ChatMessage(
                 idService.generateId(),
                 chatId,
                 sender.id(),
-                recipientId,
                 timestampService.generateTimestamp(),
-                message);
+                message));
 
-        return chatMessageRepository.save(chatMessage);
+        return new ChatMessageDTOResponseWS(
+                chatMessage,
+                sender,
+                recipient
+        );
     }
 }
