@@ -8,9 +8,9 @@ import toast from "react-hot-toast";
 export default function useChat(chatId: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     const [chat, setChat] = useState<Chat | undefined>(undefined);
     const [client, setClient] = useState(new Client());
-    const API_BROKER_URL = `ws://${window.location.hostname}:8080/api/ws/chat`;
-    const API_SUBSCRIPTION_URL = `/topic/chat/${chatId}`;
-    const API_PUBLISH_URL = `/api/ws/chat/${chatId}`;
+    const API_BROKER_URL = `${window.location.protocol === "http:" ? 'ws' : 'wss'}://${window.location.hostname}:8080/api/ws/chat`;
+    const API_SUBSCRIPTION_ENDPOINT = "/user/queue";
+    const API_PUBLISH_ENDPOINT = `/api/ws/chat/${chatId}`;
 
     useEffect(() => {
         if (chatId) {
@@ -28,16 +28,16 @@ export default function useChat(chatId: string | undefined, setAppIsLoading: Rea
             chatClient.configure({
                 brokerURL: API_BROKER_URL,
                 onConnect: () => {
-                    chatClient.subscribe(API_SUBSCRIPTION_URL, message => {
+                    chatClient.subscribe(API_SUBSCRIPTION_ENDPOINT, message => {
                             const newMessage = JSON.parse(message.body) as ChatMessage;
                             newMessage.comesFromLiveChat = true;
-                        setChat(chat => chat && {
-                            ...chat,
-                            messages: [
-                                ...chat.messages,
-                                newMessage
-                            ]
-                        });
+                            setChat(chat => chat && {
+                                ...chat,
+                                messages: [
+                                    ...chat.messages,
+                                    newMessage
+                                ]
+                            });
                         }
                     );
                 }
@@ -49,10 +49,10 @@ export default function useChat(chatId: string | undefined, setAppIsLoading: Rea
                 chatClient.deactivate();
             }
         }
-    }, [API_BROKER_URL, API_SUBSCRIPTION_URL, chatId, setAppIsLoading])
+    }, [API_BROKER_URL, API_SUBSCRIPTION_ENDPOINT, chatId, setAppIsLoading])
 
     function sendNewMessage(message: string) {
-        client.publish({destination: API_PUBLISH_URL, body: message});
+        client.publish({destination: API_PUBLISH_ENDPOINT, body: message});
     }
 
     function startNewChat(foodItemId: string) {
