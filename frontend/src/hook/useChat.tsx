@@ -4,13 +4,16 @@ import {Client} from "@stomp/stompjs";
 import {ChatMessage} from "../model/ChatMessage";
 import axios from "axios";
 import toast from "react-hot-toast";
+import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Link} from "react-router-dom";
 
 export default function useChat(chatId: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
-    const [chat, setChat] = useState<Chat | undefined>(undefined);
-    const [client, setClient] = useState(new Client());
     const API_BROKER_URL = `${window.location.protocol === "http:" ? 'ws' : 'wss'}://${window.location.hostname}:8080/api/ws/chat`;
     const API_SUBSCRIPTION_ENDPOINT = "/user/queue";
     const API_PUBLISH_ENDPOINT = `/api/ws/chat/${chatId}`;
+    const [chat, setChat] = useState<Chat | undefined>(undefined);
+    const [client, setClient] = useState(new Client());
 
     useEffect(() => {
         if (chatId) {
@@ -30,14 +33,37 @@ export default function useChat(chatId: string | undefined, setAppIsLoading: Rea
                 onConnect: () => {
                     chatClient.subscribe(API_SUBSCRIPTION_ENDPOINT, message => {
                             const newMessage = JSON.parse(message.body) as ChatMessage;
-                            newMessage.comesFromLiveChat = true;
-                            setChat(chat => chat && {
-                                ...chat,
-                                messages: [
-                                    ...chat.messages,
-                                    newMessage
-                                ]
-                            });
+                            if (newMessage.chatId === chatId) {
+                                newMessage.comesFromLiveChat = true;
+                                setChat(chat => chat && {
+                                    ...chat,
+                                    messages: [
+                                        ...chat.messages,
+                                        newMessage
+                                    ]
+                                });
+                            } else {
+                                toast((t) => (
+                                        <>
+                                            <h4>Message in another chat</h4>
+                                            You received a message in another chat.<br/>Would you like to go there now to read
+                                            it?
+                                            <section>
+                                                <Link to={`/chats/${newMessage.chatId}`} onClick={() => toast.dismiss(t.id)}
+                                                      className={"primary-button"}>Read message</Link>
+                                                <button className={"secondary-button"} onClick={() => toast.dismiss(t.id)}>Stay
+                                                    here
+                                                </button>
+                                            </section>
+                                        </>
+                                    ),
+                                    {
+                                        icon: <FontAwesomeIcon icon={faEnvelope}/>,
+                                        duration: Infinity,
+                                        className: "actionable-toast"
+                                    }
+                                );
+                            }
                         }
                     );
                 }
