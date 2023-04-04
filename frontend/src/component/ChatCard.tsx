@@ -17,12 +17,13 @@ export default function ChatCard(props: ChatCardProps) {
     const navigate = useNavigate();
 
     return (
-        <article className={"item-card chat-item"} onClick={() => navigate(`/chats/${props.chat.id}`, {
-            state: {
-                navBarBackLink: location.pathname,
-                oldState: location.state
-            }
-        })}>
+        <article className={"item-card chat-item" + (props.chat.hasUnreadMessages ? " has-unread-messages" : "")}
+                 onClick={() => navigate(`/chats/${props.chat.id}`, {
+                     state: {
+                         navBarBackLink: location.pathname,
+                         oldState: location.state
+                     }
+                 })}>
             <section>
                 <h2>{props.chat.foodItem.title}</h2>
                 <h4>Chat with <strong>{conversationalPartner}</strong></h4>

@@ -12,7 +12,8 @@ export default function ChatMessageCard(props: ChatMessageCardProps) {
     const {user} = useContext(UserContext) as UserContextType;
 
     return (
-        <article className={"single-message" + (user?.id === props.message.senderId ? " from-me" : "")}>
+        <article
+            className={"single-message" + (user?.id === props.message.senderId ? " from-me" : (props.message.isUnread ? " unread" : ""))}>
             <section className={"message-content" + (props.message.comesFromLiveChat ? " from-live-chat" : "")}>
                 {props.message.content}
             </section>
