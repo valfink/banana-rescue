@@ -12,7 +12,7 @@ export default function ChatCard(props: ChatCardProps) {
     const {user} = useContext(UserContext) as UserContextType;
     const conversationalPartner = user?.id === props.chat.candidate.id ? props.chat.foodItem.donator.username : props.chat.candidate.username;
     const lastMessage = props.chat.messages.length > 0 ? props.chat.messages[props.chat.messages.length - 1].content : "";
-    const truncatedMessage = lastMessage.length > 65 ? lastMessage.substring(0, 65) + "…" : lastMessage;
+    const truncatedMessage = lastMessage.length > 30 ? lastMessage.substring(0, 30) + "…" : lastMessage;
     const location = useLocation();
     const navigate = useNavigate();
 
