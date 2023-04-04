@@ -91,7 +91,8 @@ public class ChatService {
                 chatId,
                 sender.id(),
                 timestampService.generateTimestamp(),
-                message));
+                message,
+                true));
 
         return new ChatMessageDTOResponseWS(
                 chatMessage,

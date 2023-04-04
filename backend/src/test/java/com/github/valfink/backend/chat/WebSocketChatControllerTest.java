@@ -86,13 +86,15 @@ class WebSocketChatControllerTest {
                 chat1.id(),
                 mongoUser2_participant.id(),
                 Instant.parse("2023-03-15T11:00:00Z"),
-                "Hey there!");
+                "Hey there!",
+                true);
         chatMessage2 = new ChatMessage(
                 "cm2",
                 chat1.id(),
                 mongoUser1_participant.id(),
                 Instant.parse("2023-03-15T12:00:00Z"),
-                "Hello again!");
+                "Hello again!",
+                true);
         mongoUserRepository.save(mongoUser1_participant);
         mongoUserRepository.save(mongoUser2_participant);
         mongoUserRepository.save(mongoUser3_hacker);
