@@ -9,7 +9,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Link} from "react-router-dom";
 
 export default function useChat(chatId: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
-    const API_BROKER_URL = `${window.location.protocol === "http:" ? 'ws' : 'wss'}://${window.location.hostname}:8080/api/ws/chat`;
+    const API_BROKER_URL = `ws://${window.location.hostname}:8080/api/ws/chat`;
     const API_SUBSCRIPTION_ENDPOINT = "/user/queue";
     const API_PUBLISH_ENDPOINT = `/api/ws/chat/${chatId}`;
     const [chat, setChat] = useState<Chat | undefined>(undefined);
