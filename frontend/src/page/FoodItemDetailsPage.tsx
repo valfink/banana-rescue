@@ -17,7 +17,7 @@ export default function FoodItemDetailsPage() {
     const {pathname, state} = useLocation();
     const [showDeleteFoodItemModal, setShowDeleteFoodItemModal] = useState(false);
     const navigate = useNavigate();
-    const {startNewChat} = useChat(undefined, setAppIsLoading);
+    const {startNewChat} = useChat(undefined, user, setAppIsLoading);
 
     useEffect(() => {
         fetchSingleFoodItem(id, setAppIsLoading)
