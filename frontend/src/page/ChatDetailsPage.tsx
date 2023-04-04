@@ -11,7 +11,7 @@ export default function ChatDetailsPage() {
     const {id} = useParams();
     const {appIsLoading, setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
     const {user, redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
-    const {chat, sendNewMessage, markMessagesAsRead} = useChat(id, user, setAppIsLoading);
+    const {chat, sendNewMessage, markAllUnreadMessagesAsRead} = useChat(id, user, setAppIsLoading);
     const [chatContentIsScrolled, setChatContentIsScrolled] = useState(false);
     const [messageDraft, setMessageDraft] = useState("");
     const scrollRef = useRef<HTMLSpanElement>(null);
@@ -27,11 +27,11 @@ export default function ChatDetailsPage() {
     }, [chat]);
 
     useEffect(() => {
-        const timeOut = setTimeout(() => markMessagesAsRead(), 5_000);
+        const timeOut = setTimeout(markAllUnreadMessagesAsRead, 5_000);
         return () => {
             clearTimeout(timeOut);
         }
-    }, [markMessagesAsRead]);
+    }, [markAllUnreadMessagesAsRead]);
 
     function handleChatScroll(e: React.UIEvent) {
         setChatContentIsScrolled(e.currentTarget.scrollTop > 0);
@@ -39,7 +39,7 @@ export default function ChatDetailsPage() {
 
     function handleChangeMessageDraft(e: ChangeEvent<HTMLInputElement>) {
         setMessageDraft(e.target.value);
-        markMessagesAsRead();
+        markAllUnreadMessagesAsRead();
     }
 
     function handleFormSubmit(e: FormEvent) {
