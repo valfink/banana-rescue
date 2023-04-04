@@ -12,6 +12,7 @@ public record ChatMessage(
         String chatId,
         String senderId,
         Instant timestamp,
-        String content
+        String content,
+        boolean isUnread
 ) {
 }
