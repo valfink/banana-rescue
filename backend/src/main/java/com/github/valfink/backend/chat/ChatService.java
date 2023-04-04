@@ -90,6 +90,7 @@ public class ChatService {
                 idService.generateId(),
                 chatId,
                 sender.id(),
+                recipientId,
                 timestampService.generateTimestamp(),
                 message,
                 true));

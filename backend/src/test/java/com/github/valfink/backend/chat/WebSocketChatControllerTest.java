@@ -85,6 +85,7 @@ class WebSocketChatControllerTest {
                 "cm1",
                 chat1.id(),
                 mongoUser2_participant.id(),
+                mongoUser1_participant.id(),
                 Instant.parse("2023-03-15T11:00:00Z"),
                 "Hey there!",
                 true);
@@ -92,6 +93,7 @@ class WebSocketChatControllerTest {
                 "cm2",
                 chat1.id(),
                 mongoUser1_participant.id(),
+                mongoUser2_participant.id(),
                 Instant.parse("2023-03-15T12:00:00Z"),
                 "Hello again!",
                 true);
