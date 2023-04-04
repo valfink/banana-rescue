@@ -43,6 +43,9 @@ export default function useChat(chatId: string | undefined, user: User | undefin
                                         newMessage
                                     ]
                                 });
+                                if (newMessage.senderId !== user?.id) {
+                                    setTimeout(() => markSingleMessageAsRead(newMessage.id), 5_000);
+                                }
                             } else {
                                 toast((t) => (
                                         <>
@@ -76,7 +79,7 @@ export default function useChat(chatId: string | undefined, user: User | undefin
                 chatClient.deactivate();
             }
         }
-    }, [API_BROKER_URL, API_SUBSCRIPTION_ENDPOINT, chatId, setAppIsLoading])
+    }, [API_BROKER_URL, API_SUBSCRIPTION_ENDPOINT, chatId, setAppIsLoading, user?.id])
 
     function sendNewMessage(message: string) {
         client.publish({destination: API_PUBLISH_ENDPOINT, body: message});
@@ -96,24 +99,26 @@ export default function useChat(chatId: string | undefined, user: User | undefin
             });
     }
 
-    function markMessagesAsRead() {
+    function markAllUnreadMessagesAsRead() {
         if (chat && user) {
             chat.messages
                 .filter(message => message.isUnread && message.senderId !== user.id)
-                .forEach(message => {
-                    axios.put(`/api/chats/read/${message.id}`)
-                        .then(response => response.data as ChatMessage)
-                        .then(readMessage => setChat(chat => chat && ({
-                            ...chat,
-                            messages: chat.messages.map(message => message.id !== readMessage.id ? message : readMessage),
-                            hasUnreadMessages: false
-                        })))
-                        .catch(err => {
-                            toast.error(`Could not mark message as read 😱\n${err.response.data.error || err.response.data.message}`);
-                        })
-                })
+                .forEach(message => markSingleMessageAsRead(message.id))
         }
     }
 
-    return {chat, sendNewMessage, startNewChat, markMessagesAsRead}
+    function markSingleMessageAsRead(messageId: string) {
+        axios.put(`/api/chats/read/${messageId}`)
+            .then(response => response.data as ChatMessage)
+            .then(readMessage => setChat(chat => chat && ({
+                ...chat,
+                messages: chat.messages.map(message => message.id !== readMessage.id ? message : readMessage),
+                hasUnreadMessages: false
+            })))
+            .catch(err => {
+                toast.error(`Could not mark message as read 😱\n${err.response.data.error || err.response.data.message}`);
+            })
+    }
+
+    return {chat, sendNewMessage, startNewChat, markAllUnreadMessagesAsRead}
 }
