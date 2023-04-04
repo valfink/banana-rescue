@@ -146,4 +146,44 @@ class ChatControllerTest {
                         ))
                 ));
     }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void markMessageAsRead_whenUserIsRecipient_thenReturnReadMessage() throws Exception {
+        chatRepository.save(chat1);
+        chatMessageRepository.save(chatMessage1);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/chats/read/" + chatMessage1.id()).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(
+                        new ChatMessage(
+                                chatMessage1.id(),
+                                chatMessage1.chatId(),
+                                chatMessage1.senderId(),
+                                chatMessage1.recipientId(),
+                                chatMessage1.timestamp(),
+                                chatMessage1.content(),
+                                false))));
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser("user2")
+    void markMessageAsRead_whenUserIsNotRecipient_thenReturn403() throws Exception {
+        chatRepository.save(chat1);
+        chatMessageRepository.save(chatMessage1);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/chats/read/" + chatMessage1.id()).with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void markMessageAsRead_whenMessageDoesNotExist_thenReturn404() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/chats/read/" + chatMessage1.id()).with(csrf()))
+                .andExpect(status().isNotFound());
+    }
 }
