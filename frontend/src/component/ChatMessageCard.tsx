@@ -10,10 +10,12 @@ type ChatMessageCardProps = {
 
 export default function ChatMessageCard(props: ChatMessageCardProps) {
     const {user} = useContext(UserContext) as UserContextType;
+    const possiblyFromMe = user?.id === props.message.senderId ? " from-me" : "";
+    const possiblyUnread = user?.id !== props.message.senderId && props.message.isUnread ? " unread" : "";
 
     return (
         <article
-            className={"single-message" + (user?.id === props.message.senderId ? " from-me" : (props.message.isUnread ? " unread" : ""))}>
+            className={"single-message" + possiblyFromMe + possiblyUnread}>
             <section className={"message-content" + (props.message.comesFromLiveChat ? " from-live-chat" : "")}>
                 {props.message.content}
             </section>
