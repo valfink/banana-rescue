@@ -49,14 +49,14 @@ class WebSocketChatControllerTest {
     MongoUser mongoUser1_participant, mongoUser2_participant, mongoUser3_hacker;
     FoodItem foodItem1;
     Chat chat1;
-    ChatMessage chatMessage1;
+    ChatMessage chatMessage1, chatMessage2;
     @LocalServerPort
     private int port;
     WebSocketStompClient stompClient;
-    StompSession stompSession1, stompSession2;
+    StompSession stompSession1, stompSession2, stompSession3;
     String rawPasswordForAllTestUsers;
-    StompFrameHandler stompFrameHandler1, stompFrameHandler2;
-    CompletableFuture<ChatMessage> completableFuture1, completableFuture2;
+    StompFrameHandler stompFrameHandler1, stompFrameHandler2, stompFrameHandler3;
+    CompletableFuture<ChatMessage> completableFuture1, completableFuture2, completableFuture3;
     @Autowired
     ObjectMapper objectMapper;
     @MockBean
@@ -81,7 +81,18 @@ class WebSocketChatControllerTest {
                 "This is my first food item."
         );
         chat1 = new Chat("c1", foodItem1.id(), mongoUser2_participant.id(), mongoUser1_participant.id());
-        chatMessage1 = new ChatMessage("cm1", chat1.id(), "u2", Instant.parse("2023-03-15T11:00:00Z"), "Hey there!");
+        chatMessage1 = new ChatMessage(
+                "cm1",
+                chat1.id(),
+                mongoUser2_participant.id(),
+                Instant.parse("2023-03-15T11:00:00Z"),
+                "Hey there!");
+        chatMessage2 = new ChatMessage(
+                "cm2",
+                chat1.id(),
+                mongoUser1_participant.id(),
+                Instant.parse("2023-03-15T12:00:00Z"),
+                "Hello again!");
         mongoUserRepository.save(mongoUser1_participant);
         mongoUserRepository.save(mongoUser2_participant);
         mongoUserRepository.save(mongoUser3_hacker);
@@ -95,6 +106,8 @@ class WebSocketChatControllerTest {
         stompFrameHandler1 = new ChatMessageStompFrameHandler(completableFuture1);
         completableFuture2 = new CompletableFuture<>();
         stompFrameHandler2 = new ChatMessageStompFrameHandler(completableFuture2);
+        completableFuture3 = new CompletableFuture<>();
+        stompFrameHandler3 = new ChatMessageStompFrameHandler(completableFuture3);
     }
 
     @Test
@@ -106,7 +119,7 @@ class WebSocketChatControllerTest {
 
         // WHEN
         stompSession1 = connectToChatAsUser(mongoUser2_participant);
-        stompSession1.subscribe("/topic/chat/" + chat1.id(), stompFrameHandler1);
+        stompSession1.subscribe("/user/queue", stompFrameHandler1);
         stompSession1.send("/api/ws/chat/" + chat1.id(), chatMessage1.content());
         ChatMessage actual = completableFuture1.get(1, TimeUnit.SECONDS);
 
@@ -130,7 +143,7 @@ class WebSocketChatControllerTest {
     void addMessageAndSendIntoChat_whenSubscribedToWrongChat_thenDontReturnMessage() throws Exception {
         // WHEN
         stompSession1 = connectToChatAsUser(mongoUser2_participant);
-        stompSession1.subscribe("/topic/chat/xxx", stompFrameHandler1);
+        stompSession1.subscribe("/user/queueueueue", stompFrameHandler1);
         stompSession1.send("/api/ws/chat/" + chat1.id(), chatMessage1.content());
 
         // THEN
@@ -140,20 +153,30 @@ class WebSocketChatControllerTest {
 
     @Test
     @DirtiesContext
-    void addMessageAndSendIntoChat_whenNotParticipant_thenDontSaveAndReturnSentMessage() throws Exception {
+    void addMessageAndSendIntoChat_whenNotParticipant_thenDontSaveAndReturnSentMessageAndDontShowMessageFromLegitUser() throws Exception {
         // GIVEN
-        when(timestampService.generateTimestamp()).thenReturn(chatMessage1.timestamp());
-        when(idService.generateId()).thenReturn(chatMessage1.id());
+        when(timestampService.generateTimestamp()).thenReturn(chatMessage2.timestamp());
+        when(idService.generateId()).thenReturn(chatMessage2.id());
 
         // WHEN & THEN
-        stompSession1 = connectToChatAsUser(mongoUser2_participant);
-        stompSession1.subscribe("/topic/chat/" + chat1.id(), stompFrameHandler1);
-        stompSession2 = connectToChatAsUser(mongoUser3_hacker);
-        stompSession2.subscribe("/topic/chat/" + chat1.id(), stompFrameHandler2);
+        stompSession1 = connectToChatAsUser(mongoUser1_participant);
+        stompSession1.subscribe("/user/queue", stompFrameHandler1);
+        stompSession2 = connectToChatAsUser(mongoUser2_participant);
+        stompSession2.subscribe("/user/queue", stompFrameHandler2);
+        stompSession3 = connectToChatAsUser(mongoUser3_hacker);
+        stompSession3.subscribe("/user/queue", stompFrameHandler3);
 
-        stompSession2.send("/api/ws/chat/" + chat1.id(), "I AM A HACKER!");
+        stompSession3.send("/api/ws/chat/" + chat1.id(), "I AM A HACKER!");
         assertThrows(TimeoutException.class, () -> completableFuture1.get(1, TimeUnit.SECONDS));
         assertThrows(TimeoutException.class, () -> completableFuture2.get(1, TimeUnit.SECONDS));
+        assertThrows(TimeoutException.class, () -> completableFuture3.get(1, TimeUnit.SECONDS));
+
+        stompSession1.send("/api/ws/chat/" + chat1.id(), chatMessage2.content());
+        ChatMessage actual1 = completableFuture1.get(1, TimeUnit.SECONDS);
+        ChatMessage actual2 = completableFuture2.get(1, TimeUnit.SECONDS);
+        assertThrows(TimeoutException.class, () -> completableFuture3.get(1, TimeUnit.SECONDS));
+        assertEquals(chatMessage2, actual1);
+        assertEquals(chatMessage2, actual2);
     }
 
 

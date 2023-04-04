@@ -14,6 +14,7 @@ export default function ChatDetailsPage() {
     const [chatContentIsScrolled, setChatContentIsScrolled] = useState(false);
     const [messageDraft, setMessageDraft] = useState("");
     const scrollRef = useRef<HTMLSpanElement>(null);
+    const messageDraftRef = useRef<HTMLInputElement>(null);
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
 
     useEffect(() => {
@@ -35,6 +36,7 @@ export default function ChatDetailsPage() {
 
     function handleFormSubmit(e: FormEvent) {
         e.preventDefault();
+        messageDraftRef.current && messageDraftRef.current.focus();
         sendNewMessage(messageDraft);
         setMessageDraft("");
     }
@@ -67,7 +69,7 @@ export default function ChatDetailsPage() {
             <footer>
                 <form className={"new-message-bar"} onSubmit={handleFormSubmit}>
                     <input type={"text"} value={messageDraft} onChange={handleChangeMessageDraft}
-                           placeholder={"Type your message here..."} autoFocus={true}/>
+                           placeholder={"Type your message here..."} autoFocus={true} ref={messageDraftRef}/>
                     <button>Send</button>
                 </form>
             </footer>

@@ -157,10 +157,11 @@ class ChatServiceTest {
         when(idService.generateId()).thenReturn(chatMessage1.id());
         when(timestampService.generateTimestamp()).thenReturn(chatMessage1.timestamp());
         when(chatMessageRepository.save(chatMessage1)).thenReturn(chatMessage1);
+        when(mongoUserService.getMongoUserDTOResponseById(mongoUserDTOResponse1.id())).thenReturn(mongoUserDTOResponse1);
 
         // WHEN
-        ChatMessage expected = chatMessage1;
-        ChatMessage actual = chatService.addMessageAndSendIntoChat(chatMessage1.content(), chatMessage1.chatId(), principal);
+        ChatMessageDTOResponseWS expected = new ChatMessageDTOResponseWS(chatMessage1, mongoUserDTOResponse2, mongoUserDTOResponse1);
+        ChatMessageDTOResponseWS actual = chatService.addMessageAndReturnDTO(chatMessage1.content(), chatMessage1.chatId(), principal);
 
         // THEN
         assertEquals(expected, actual);

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -79,17 +80,23 @@ public class ChatService {
         return chatDTOResponseFromChat(chat);
     }
 
-    public ChatMessage addMessageAndSendIntoChat(String message, String chatId, Principal principal) {
-        MongoUserDTOResponse user = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
-        checkIfUserIsInChatAndReturnChat(chatId, user);
+    public ChatMessageDTOResponseWS addMessageAndReturnDTO(String message, String chatId, Principal principal) {
+        MongoUserDTOResponse sender = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
+        Chat chat = checkIfUserIsInChatAndReturnChat(chatId, sender);
+        String recipientId = Objects.equals(chat.donatorId(), sender.id()) ? chat.candidateId() : chat.donatorId();
+        MongoUserDTOResponse recipient = mongoUserService.getMongoUserDTOResponseById(recipientId);
 
-        ChatMessage chatMessage = new ChatMessage(
+        ChatMessage chatMessage = chatMessageRepository.save(new ChatMessage(
                 idService.generateId(),
                 chatId,
-                user.id(),
+                sender.id(),
                 timestampService.generateTimestamp(),
-                message);
+                message));
 
-        return chatMessageRepository.save(chatMessage);
+        return new ChatMessageDTOResponseWS(
+                chatMessage,
+                sender,
+                recipient
+        );
     }
 }
