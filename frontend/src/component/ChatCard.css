@@ -26,6 +26,13 @@
     border: 0.1rem solid var(--success-bg);
 }
 
+.item-card.chat-item.has-unread-messages h2 {
+    background-color: var(--success-bg);
+    border-radius: 0.2rem;
+    display: inline-block;
+    padding: 0 0.5rem;
+}
+
 .item-card.chat-item.has-unread-messages q {
     font-weight: bold;
     border: 0.05rem solid var(--dark-accent);
