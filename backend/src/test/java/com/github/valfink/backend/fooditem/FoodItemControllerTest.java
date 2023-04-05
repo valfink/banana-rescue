@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.valfink.backend.mongouser.MongoUser;
 import com.github.valfink.backend.mongouser.MongoUserDTOResponse;
 import com.github.valfink.backend.mongouser.MongoUserRepository;
+import com.github.valfink.backend.util.IdService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,8 @@ import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,6 +42,8 @@ class FoodItemControllerTest {
     FoodItemRepository foodItemRepository;
     @MockBean
     Cloudinary cloudinary;
+    @MockBean
+    IdService idService;
     Uploader uploader = mock(Uploader.class);
     @Autowired
     MongoUserRepository mongoUserRepository;
@@ -47,6 +51,7 @@ class FoodItemControllerTest {
     ObjectMapper objectMapper;
     MongoUser mongoUser1, mongoUser2;
     FoodItem foodItem1, foodItem2;
+    FoodItemDTORequest foodItemDTORequest1, updatedFoodItemDTORequest1;
     FoodItemDTOResponse foodItemDTOResponse1;
 
     @BeforeEach
@@ -72,6 +77,20 @@ class FoodItemControllerTest {
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my second food item."
+        );
+        foodItemDTORequest1 = new FoodItemDTORequest(
+                foodItem1.title(),
+                foodItem1.location(),
+                foodItem1.pickupUntil(),
+                foodItem1.consumeUntil(),
+                foodItem1.description()
+        );
+        updatedFoodItemDTORequest1 = new FoodItemDTORequest(
+                "Updated Title",
+                "New Location",
+                Instant.parse("2023-03-16T11:14:00Z"),
+                Instant.parse("2023-03-18T11:00:00Z"),
+                "Description is updated."
         );
         foodItemDTOResponse1 = new FoodItemDTOResponse(
                 foodItem1.id(),
@@ -100,57 +119,21 @@ class FoodItemControllerTest {
         foodItemRepository.save(foodItem1);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/food"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("""
-                        [
-                            {
-                                "id": "1",
-                                "title": "Food Item 1",
-                                "photoUri": "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg",
-                                "location": "Berlin",
-                                "pickupUntil": "2023-03-16T11:14:00Z",
-                                "consumeUntil": "2023-03-18T11:00:00Z",
-                                "description": "This is my first food item.",
-                                "donator": {
-                                    "id": "1",
-                                    "username": "user"
-                                }
-                            }
-                        ]
-                        """));
+                .andExpect(content().json(objectMapper.writeValueAsString(List.of(foodItemDTOResponse1))));
     }
 
     @Test
     @DirtiesContext
     @WithMockUser
     void addFoodItem_whenPostingValidItemWithoutPhotoAndSignedIn_thenReturnNewItem() throws Exception {
+        when(idService.generateId()).thenReturn(foodItem1.id());
         mongoUserRepository.save(mongoUser1);
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/food")
                         .file(new MockMultipartFile("form", null,
-                                "application/json", """
-                                {
-                                "title": "Food Item 1",
-                                "location": "Berlin",
-                                "pickupUntil": "2023-03-16T11:14:00Z",
-                                "consumeUntil": "2023-03-18T11:00:00Z",
-                                "description": "This is my first food item."
-                                }
-                                """.getBytes()))
+                                "application/json", objectMapper.writeValueAsString(foodItemDTORequest1).getBytes()))
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(content().json("""
-                                {
-                                "title": "Food Item 1",
-                                "location": "Berlin",
-                                "pickupUntil": "2023-03-16T11:14:00Z",
-                                "consumeUntil": "2023-03-18T11:00:00Z",
-                                "description": "This is my first food item.",
-                                "donator": {
-                                    "id": "1",
-                                    "username": "user"
-                                }
-                                }
-                        """))
-                .andExpect(jsonPath("$.id").isNotEmpty());
+                .andExpect(content().json(objectMapper.writeValueAsString(new FoodItemDTOResponse(foodItem1.id(), foodItemDTOResponse1.donator(), foodItem1.title(), null, foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description()))));
     }
 
     @Test
@@ -176,38 +159,17 @@ class FoodItemControllerTest {
     @DirtiesContext
     @WithMockUser
     void addFoodItem_whenPostingValidItemIncludingPhotoAndSignedIn_thenReturnNewItem() throws Exception {
+        when(idService.generateId()).thenReturn(foodItem1.id());
         when(cloudinary.uploader()).thenReturn(uploader);
-        when(uploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg"));
+        when(uploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", foodItem1.photoUri()));
         mongoUserRepository.save(mongoUser1);
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/food")
                         .file(new MockMultipartFile("form", null,
-                                "application/json", """
-                                {
-                                "title": "Food Item 1",
-                                "location": "Berlin",
-                                "pickupUntil": "2023-03-16T11:14:00Z",
-                                "consumeUntil": "2023-03-18T11:00:00Z",
-                                "description": "This is my first food item."
-                                }
-                                """.getBytes()))
+                                "application/json", objectMapper.writeValueAsString(foodItemDTORequest1).getBytes()))
                         .file(new MockMultipartFile("photo", "content".getBytes()))
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(content().json("""
-                                {
-                                "title": "Food Item 1",
-                                "location": "Berlin",
-                                "pickupUntil": "2023-03-16T11:14:00Z",
-                                "consumeUntil": "2023-03-18T11:00:00Z",
-                                "description": "This is my first food item.",
-                                "photoUri": "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg",
-                                "donator": {
-                                    "id": "1",
-                                    "username": "user"
-                                }
-                                }
-                        """))
-                .andExpect(jsonPath("$.id").isNotEmpty());
+                .andExpect(content().json(objectMapper.writeValueAsString(foodItemDTOResponse1)));
     }
 
     @Test
@@ -217,21 +179,7 @@ class FoodItemControllerTest {
         foodItemRepository.save(foodItem1);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/food/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("""
-                        {
-                            "id": "1",
-                            "title": "Food Item 1",
-                            "photoUri": "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg",
-                            "location": "Berlin",
-                            "pickupUntil": "2023-03-16T11:14:00Z",
-                            "consumeUntil": "2023-03-18T11:00:00Z",
-                            "description": "This is my first food item.",
-                            "donator": {
-                                "id": "1",
-                                "username": "user"
-                            }
-                        }
-                        """));
+                .andExpect(content().json(objectMapper.writeValueAsString(foodItemDTOResponse1)));
     }
 
     @Test
@@ -249,15 +197,7 @@ class FoodItemControllerTest {
         foodItemRepository.save(foodItem1);
         mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PUT, "/api/food/1")
                         .file(new MockMultipartFile("form", null,
-                                "application/json", """
-                                {
-                                "title": "Updated Title",
-                                "location": "New Location",
-                                "pickupUntil": "2023-03-16T11:14:00Z",
-                                "consumeUntil": "2023-03-18T11:00:00Z",
-                                "description": "Description is updated."
-                                }
-                                """.getBytes()))
+                                "application/json", objectMapper.writeValueAsString(updatedFoodItemDTORequest1).getBytes()))
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
@@ -285,15 +225,7 @@ class FoodItemControllerTest {
         foodItemRepository.save(foodItem1);
         mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PUT, "/api/food/1")
                         .file(new MockMultipartFile("form", null,
-                                "application/json", """
-                                {
-                                "title": "Updated Title",
-                                "location": "New Location",
-                                "pickupUntil": "2023-03-16T11:14:00Z",
-                                "consumeUntil": "2023-03-18T11:00:00Z",
-                                "description": "Description is updated."
-                                }
-                                """.getBytes()))
+                                "application/json", objectMapper.writeValueAsString(updatedFoodItemDTORequest1).getBytes()))
                         .with(csrf()))
                 .andExpect(status().isForbidden());
     }
@@ -347,21 +279,7 @@ class FoodItemControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/food/1")
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(content().json("""
-                        {
-                            "id": "1",
-                            "title": "Food Item 1",
-                            "photoUri": "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg",
-                            "location": "Berlin",
-                            "pickupUntil": "2023-03-16T11:14:00Z",
-                            "consumeUntil": "2023-03-18T11:00:00Z",
-                            "description": "This is my first food item.",
-                            "donator": {
-                                "id": "1",
-                                "username": "user"
-                            }
-                        }
-                        """));
+                .andExpect(content().json(objectMapper.writeValueAsString(foodItemDTOResponse1)));
     }
 
     @Test
