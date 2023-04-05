@@ -19,6 +19,10 @@
     margin: 0.5rem 0;
 }
 
+.item-card .too-late {
+    color: var(--danger-accent);
+}
+
 .item-card a {
     display: block;
     max-width: 8rem;

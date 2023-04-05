@@ -14,6 +14,8 @@ export default function FoodItemCard(props: FoodItemCardProps) {
     const {user} = useContext(UserContext) as UserContextType;
     const navigate = useNavigate();
     const location = useLocation();
+    const momentPickupUntil = moment(props.foodItem.pickupUntil);
+    const momentConsumeUntil = moment(props.foodItem.consumeUntil);
 
     const foodItemActionButtons = (
         <>
@@ -36,8 +38,10 @@ export default function FoodItemCard(props: FoodItemCardProps) {
             <section>
                 <h2>{props.foodItem.title}</h2>
                 <ul>
-                    <li><strong>Pickup until:</strong> {moment(props.foodItem.pickupUntil).calendar()}</li>
-                    <li><strong>Consume within:</strong> {moment(props.foodItem.consumeUntil).fromNow(true)}</li>
+                    <li className={momentPickupUntil.isBefore() ? "too-late" : ""}><strong>Pickup
+                        until:</strong> {momentPickupUntil.calendar()}</li>
+                    <li className={momentConsumeUntil.isBefore() ? "too-late" : ""}><strong>Consume
+                        within:</strong> {momentConsumeUntil.fromNow(!momentConsumeUntil.isBefore())}</li>
                     <li><strong>Location:</strong> {props.foodItem.location}</li>
                 </ul>
                 {!props.compactView && foodItemActionButtons}
