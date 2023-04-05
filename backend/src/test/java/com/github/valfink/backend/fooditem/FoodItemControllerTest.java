@@ -2,7 +2,9 @@ package com.github.valfink.backend.fooditem;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.valfink.backend.mongouser.MongoUser;
+import com.github.valfink.backend.mongouser.MongoUserDTOResponse;
 import com.github.valfink.backend.mongouser.MongoUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -40,8 +43,11 @@ class FoodItemControllerTest {
     Uploader uploader = mock(Uploader.class);
     @Autowired
     MongoUserRepository mongoUserRepository;
+    @Autowired
+    ObjectMapper objectMapper;
     MongoUser mongoUser1, mongoUser2;
     FoodItem foodItem1, foodItem2;
+    FoodItemDTOResponse foodItemDTOResponse1;
 
     @BeforeEach
     void setUp() {
@@ -66,6 +72,16 @@ class FoodItemControllerTest {
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my second food item."
+        );
+        foodItemDTOResponse1 = new FoodItemDTOResponse(
+                foodItem1.id(),
+                new MongoUserDTOResponse(mongoUser1.id(), mongoUser1.username()),
+                foodItem1.title(),
+                foodItem1.photoUri(),
+                foodItem1.location(),
+                foodItem1.pickupUntil(),
+                foodItem1.consumeUntil(),
+                foodItem1.description()
         );
     }
 
@@ -360,5 +376,16 @@ class FoodItemControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/food/1")
                         .with(csrf()))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void getMyFoodItems_whenUserHasOneItem_thenReturnListOfOneItem() throws Exception {
+        mongoUserRepository.save(mongoUser1);
+        foodItemRepository.save(foodItem1);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/food/my-items"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(List.of(foodItemDTOResponse1))));
     }
 }
