@@ -4,5 +4,6 @@ export type ChatMessage = {
     senderId: string,
     timestamp: string,
     content: string,
+    isUnread: boolean,
     comesFromLiveChat?: boolean
 }

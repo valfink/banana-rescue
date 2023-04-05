@@ -7,9 +7,10 @@ import toast from "react-hot-toast";
 import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Link} from "react-router-dom";
+import {User} from "../model/User";
 
-export default function useChat(chatId: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
-    const API_BROKER_URL = `${window.location.protocol === "http:" ? 'ws' : 'wss'}://${window.location.hostname}:8080/api/ws/chat`;
+export default function useChat(chatId: string | undefined, user: User | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
+    const API_BROKER_URL = `ws://${window.location.hostname}:8080/api/ws/chat`;
     const API_SUBSCRIPTION_ENDPOINT = "/user/queue";
     const API_PUBLISH_ENDPOINT = `/api/ws/chat/${chatId}`;
     const [chat, setChat] = useState<Chat | undefined>(undefined);
@@ -42,6 +43,9 @@ export default function useChat(chatId: string | undefined, setAppIsLoading: Rea
                                         newMessage
                                     ]
                                 });
+                                if (newMessage.senderId !== user?.id) {
+                                    setTimeout(() => markSingleMessageAsRead(newMessage.id), 5_000);
+                                }
                             } else {
                                 toast((t) => (
                                         <>
@@ -75,7 +79,7 @@ export default function useChat(chatId: string | undefined, setAppIsLoading: Rea
                 chatClient.deactivate();
             }
         }
-    }, [API_BROKER_URL, API_SUBSCRIPTION_ENDPOINT, chatId, setAppIsLoading])
+    }, [API_BROKER_URL, API_SUBSCRIPTION_ENDPOINT, chatId, setAppIsLoading, user?.id])
 
     function sendNewMessage(message: string) {
         client.publish({destination: API_PUBLISH_ENDPOINT, body: message});
@@ -95,5 +99,26 @@ export default function useChat(chatId: string | undefined, setAppIsLoading: Rea
             });
     }
 
-    return {chat, sendNewMessage, startNewChat}
+    function markAllUnreadMessagesAsRead() {
+        if (chat && user) {
+            chat.messages
+                .filter(message => message.isUnread && message.senderId !== user.id)
+                .forEach(message => markSingleMessageAsRead(message.id))
+        }
+    }
+
+    function markSingleMessageAsRead(messageId: string) {
+        axios.put(`/api/chats/read/${messageId}`)
+            .then(response => response.data as ChatMessage)
+            .then(readMessage => setChat(chat => chat && ({
+                ...chat,
+                messages: chat.messages.map(message => message.id !== readMessage.id ? message : readMessage),
+                hasUnreadMessages: false
+            })))
+            .catch(err => {
+                toast.error(`Could not mark message as read 😱\n${err.response.data.error || err.response.data.message}`);
+            })
+    }
+
+    return {chat, sendNewMessage, startNewChat, markAllUnreadMessagesAsRead}
 }

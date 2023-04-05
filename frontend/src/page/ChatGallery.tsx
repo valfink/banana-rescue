@@ -5,9 +5,9 @@ import ChatCard from "../component/ChatCard";
 import useMyChats from "../hook/useMyChats";
 
 export default function ChatGallery() {
-    const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
+    const {user, redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
-    const chats = useMyChats(setAppIsLoading);
+    const chats = useMyChats(user, setAppIsLoading);
 
     useEffect(() => {
         redirectIfNotSignedIn();

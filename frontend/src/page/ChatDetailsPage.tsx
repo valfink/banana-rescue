@@ -10,12 +10,12 @@ import useChat from "../hook/useChat";
 export default function ChatDetailsPage() {
     const {id} = useParams();
     const {appIsLoading, setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
-    const {chat, sendNewMessage} = useChat(id, setAppIsLoading);
+    const {user, redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
+    const {chat, sendNewMessage, markAllUnreadMessagesAsRead} = useChat(id, user, setAppIsLoading);
     const [chatContentIsScrolled, setChatContentIsScrolled] = useState(false);
     const [messageDraft, setMessageDraft] = useState("");
     const scrollRef = useRef<HTMLSpanElement>(null);
     const messageDraftRef = useRef<HTMLInputElement>(null);
-    const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
 
     useEffect(() => {
         redirectIfNotSignedIn();
@@ -26,12 +26,20 @@ export default function ChatDetailsPage() {
         scrollRef.current && scrollRef.current.scrollIntoView({block: 'end'});
     }, [chat]);
 
+    useEffect(() => {
+        const timeOut = setTimeout(markAllUnreadMessagesAsRead, 5_000);
+        return () => {
+            clearTimeout(timeOut);
+        }
+    }, [markAllUnreadMessagesAsRead]);
+
     function handleChatScroll(e: React.UIEvent) {
         setChatContentIsScrolled(e.currentTarget.scrollTop > 0);
     }
 
     function handleChangeMessageDraft(e: ChangeEvent<HTMLInputElement>) {
         setMessageDraft(e.target.value);
+        markAllUnreadMessagesAsRead();
     }
 
     function handleFormSubmit(e: FormEvent) {

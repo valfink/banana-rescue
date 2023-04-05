@@ -80,7 +80,7 @@ class ChatControllerTest {
         foodItemRepository.save(foodItem2);
         chat1 = new Chat("c1", foodItem1.id(), mongoUser2.id(), mongoUser1.id());
         chat2 = new Chat("c2", foodItem2.id(), mongoUser1.id(), mongoUser2.id());
-        chatMessage1 = new ChatMessage("cm1", chat1.id(), mongoUser2.id(), Instant.parse("2023-03-15T11:00:00Z"), "Hey there!");
+        chatMessage1 = new ChatMessage("cm1", chat1.id(), mongoUser2.id(), mongoUser1.id(), Instant.parse("2023-03-15T11:00:00Z"), "Hey there!", true);
     }
 
     @Test
@@ -145,5 +145,45 @@ class ChatControllerTest {
                                 new ChatDTOResponse(chat2.id(), foodItemDTOResponse2, mongoUserDTOResponse1, List.of())
                         ))
                 ));
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void markMessageAsRead_whenUserIsRecipient_thenReturnReadMessage() throws Exception {
+        chatRepository.save(chat1);
+        chatMessageRepository.save(chatMessage1);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/chats/read/" + chatMessage1.id()).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(
+                        new ChatMessage(
+                                chatMessage1.id(),
+                                chatMessage1.chatId(),
+                                chatMessage1.senderId(),
+                                chatMessage1.recipientId(),
+                                chatMessage1.timestamp(),
+                                chatMessage1.content(),
+                                false))));
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser("user2")
+    void markMessageAsRead_whenUserIsNotRecipient_thenReturn403() throws Exception {
+        chatRepository.save(chat1);
+        chatMessageRepository.save(chatMessage1);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/chats/read/" + chatMessage1.id()).with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void markMessageAsRead_whenMessageDoesNotExist_thenReturn404() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/chats/read/" + chatMessage1.id()).with(csrf()))
+                .andExpect(status().isNotFound());
     }
 }

@@ -6,5 +6,6 @@ export type Chat = {
     id: string,
     foodItem: FoodItem,
     candidate: User,
-    messages: ChatMessage[]
+    messages: ChatMessage[],
+    hasUnreadMessages?: boolean
 }

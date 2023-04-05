@@ -58,7 +58,7 @@ class ChatServiceTest {
                 "This is my first food item."
         );
         chat1 = new Chat("c1", foodItemDTOResponse1.id(), mongoUserDTOResponse2.id(), mongoUserDTOResponse1.id());
-        chatMessage1 = new ChatMessage("cm1", chat1.id(), mongoUserDTOResponse2.id(), Instant.parse("2023-03-14T11:14:00Z"), "Hello!");
+        chatMessage1 = new ChatMessage("cm1", chat1.id(), mongoUserDTOResponse2.id(), mongoUserDTOResponse1.id(), Instant.parse("2023-03-14T11:14:00Z"), "Hello!", true);
     }
 
     @Test
@@ -198,5 +198,44 @@ class ChatServiceTest {
 
         // THEN
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void markMessageAsRead_whenUserIsRecipient_thenReturnReadMessage() {
+        // GIVEN
+        ChatMessage readMessage = new ChatMessage(chatMessage1.id(), chatMessage1.chatId(), chatMessage1.senderId(), chatMessage1.recipientId(), chatMessage1.timestamp(), chatMessage1.content(), false);
+        when(chatMessageRepository.findById(chatMessage1.id())).thenReturn(Optional.of(chatMessage1));
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
+        when(chatMessageRepository.save(readMessage)).thenReturn(readMessage);
+
+        // WHEN
+        ChatMessage expected = readMessage;
+        ChatMessage actual = chatService.markMessageAsRead(chatMessage1.id(), principal);
+
+        // THEN
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void markMessageAsRead_whenUserIsNotRecipient_thenThrowException() {
+        // GIVEN
+        when(chatMessageRepository.findById(chatMessage1.id())).thenReturn(Optional.of(chatMessage1));
+        when(principal.getName()).thenReturn(mongoUserDTOResponse2.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse2.username())).thenReturn(mongoUserDTOResponse2);
+        String messageId = chatMessage1.id();
+
+        // WHEN & THEN
+        assertThrows(ChatExceptionAuthorization.class, () -> chatService.markMessageAsRead(messageId, principal));
+    }
+
+    @Test
+    void markMessageAsRead_whenMessageDoesNotExist_thenThrowException() {
+        // GIVEN
+        when(chatMessageRepository.findById(chatMessage1.id())).thenReturn(Optional.empty());
+        String messageId = chatMessage1.id();
+
+        // WHEN & THEN
+        assertThrows(ChatExceptionNotFound.class, () -> chatService.markMessageAsRead(messageId, principal));
     }
 }

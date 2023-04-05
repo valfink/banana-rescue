@@ -9,11 +9,31 @@
 
 .item-card.chat-item q {
     display: block;
-    height: 3rem;
+    height: 1.4rem;
     margin: 0.5rem 0 1rem 0;
+    padding: 0.2rem;
+    border-radius: 0.2rem;
+    background-color: var(--dark-bg);
+    overflow: hidden;
 }
 
 .item-card.chat-item q:empty::before {
     content: "No messages yet";
     color: var(--subtle-accent);
+}
+
+.item-card.chat-item.has-unread-messages {
+    border: 0.1rem solid var(--success-bg);
+}
+
+.item-card.chat-item.has-unread-messages h2 {
+    background-color: var(--success-bg);
+    border-radius: 0.2rem;
+    display: inline-block;
+    padding: 0 0.5rem;
+}
+
+.item-card.chat-item.has-unread-messages q {
+    font-weight: bold;
+    border: 0.05rem solid var(--dark-accent);
 }

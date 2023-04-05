@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -103,7 +104,7 @@ public class FoodItemService {
         String userId = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName()).id();
         FoodItemDTOResponse oldFoodItem = getFoodItemById(id);
 
-        if (!oldFoodItem.donator().id().equals(userId)) {
+        if (!Objects.equals(oldFoodItem.donator().id(), userId)) {
             throw new FoodItemExceptionAuthorization("You may only edit you own items!");
         }
         throwExceptionIfFoodItemDTORequestIsNotValid(foodItemDTORequest);
@@ -133,7 +134,7 @@ public class FoodItemService {
         String userId = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName()).id();
         FoodItemDTOResponse foodItem = getFoodItemById(foodItemId);
 
-        if (!foodItem.donator().id().equals(userId)) {
+        if (!Objects.equals(foodItem.donator().id(), userId)) {
             throw new FoodItemExceptionAuthorization("You may only edit your own items!");
         }
         if (foodItem.photoUri() == null || foodItem.photoUri().isBlank()) {
@@ -165,7 +166,7 @@ public class FoodItemService {
         String userId = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName()).id();
         FoodItemDTOResponse foodItem = getFoodItemById(foodItemId);
 
-        if (!foodItem.donator().id().equals(userId)) {
+        if (!Objects.equals(foodItem.donator().id(), userId)) {
             throw new FoodItemExceptionAuthorization("You may only delete you own items!");
         }
 

@@ -29,7 +29,7 @@ public class ChatService {
                 .orElseThrow(() -> new ChatExceptionNotFound("The chat with the id " + chatId + " does not exist."));
         FoodItemDTOResponse foodItem = foodItemService.getFoodItemById(chat.foodItemId());
 
-        if (!foodItem.donator().id().equals(user.id()) && !chat.candidateId().equals(user.id())) {
+        if (!Objects.equals(foodItem.donator().id(), user.id()) && !Objects.equals(chat.candidateId(), user.id())) {
             throw new ChatExceptionAuthorization("You are not participant in this chat!");
         }
 
@@ -49,7 +49,7 @@ public class ChatService {
         MongoUserDTOResponse candidate = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
         FoodItemDTOResponse foodItem = foodItemService.getFoodItemById(foodItemId);
 
-        if (foodItem.donator().id().equals(candidate.id())) {
+        if (Objects.equals(foodItem.donator().id(), candidate.id())) {
             throw new ChatExceptionAuthorization("You may not start a chat about your own item!");
         }
 
@@ -90,13 +90,34 @@ public class ChatService {
                 idService.generateId(),
                 chatId,
                 sender.id(),
+                recipientId,
                 timestampService.generateTimestamp(),
-                message));
+                message,
+                true));
 
         return new ChatMessageDTOResponseWS(
                 chatMessage,
                 sender,
                 recipient
         );
+    }
+
+    public ChatMessage markMessageAsRead(String messageId, Principal principal) {
+        ChatMessage chatMessage = chatMessageRepository.findById(messageId)
+                .orElseThrow(() -> new ChatExceptionNotFound("The chat message with the id " + messageId + " does not exist."));
+        MongoUserDTOResponse user = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
+
+        if (!Objects.equals(chatMessage.recipientId(), user.id())) {
+            throw new ChatExceptionAuthorization("You are not the recipient of this message!");
+        }
+
+        return chatMessageRepository.save(new ChatMessage(
+                chatMessage.id(),
+                chatMessage.chatId(),
+                chatMessage.senderId(),
+                chatMessage.recipientId(),
+                chatMessage.timestamp(),
+                chatMessage.content(),
+                false));
     }
 }

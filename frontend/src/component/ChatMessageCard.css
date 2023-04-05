@@ -1,5 +1,6 @@
 .single-message .message-content {
     position: relative;
+    transition: filter 0.2s linear;
 }
 
 .single-message .message-content:after {
@@ -32,6 +33,11 @@
 
 .single-message:not(.from-me) {
     margin-right: 3rem;
+}
+
+.single-message.unread .message-content, .single-message.unread .message-content:after {
+    font-weight: bold;
+    filter: invert(100%);
 }
 
 .message-content {

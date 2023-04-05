@@ -26,4 +26,9 @@ public class ChatController {
     public ChatDTOResponse getChatById(@PathVariable String id, Principal principal) {
         return chatService.getChatById(id, principal);
     }
+
+    @PutMapping("/read/{messageId}")
+    public ChatMessage markMessageAsRead(@PathVariable String messageId, Principal principal) {
+        return chatService.markMessageAsRead(messageId, principal);
+    }
 }

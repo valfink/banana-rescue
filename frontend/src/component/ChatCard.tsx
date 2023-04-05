@@ -12,17 +12,18 @@ export default function ChatCard(props: ChatCardProps) {
     const {user} = useContext(UserContext) as UserContextType;
     const conversationalPartner = user?.id === props.chat.candidate.id ? props.chat.foodItem.donator.username : props.chat.candidate.username;
     const lastMessage = props.chat.messages.length > 0 ? props.chat.messages[props.chat.messages.length - 1].content : "";
-    const truncatedMessage = lastMessage.length > 65 ? lastMessage.substring(0, 65) + "…" : lastMessage;
+    const truncatedMessage = lastMessage.length > 30 ? lastMessage.substring(0, 30) + "…" : lastMessage;
     const location = useLocation();
     const navigate = useNavigate();
 
     return (
-        <article className={"item-card chat-item"} onClick={() => navigate(`/chats/${props.chat.id}`, {
-            state: {
-                navBarBackLink: location.pathname,
-                oldState: location.state
-            }
-        })}>
+        <article className={"item-card chat-item" + (props.chat.hasUnreadMessages ? " has-unread-messages" : "")}
+                 onClick={() => navigate(`/chats/${props.chat.id}`, {
+                     state: {
+                         navBarBackLink: location.pathname,
+                         oldState: location.state
+                     }
+                 })}>
             <section>
                 <h2>{props.chat.foodItem.title}</h2>
                 <h4>Chat with <strong>{conversationalPartner}</strong></h4>
