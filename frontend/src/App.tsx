@@ -49,6 +49,7 @@ function App() {
                     <Routes>
                         <Route path={"/"} element={<Navigate to={"/food"}/>}/>
                         <Route path={"/food"} element={<FoodItemGallery/>}/>
+                        <Route path={"/food/my-items"} element={<FoodItemGallery showOnlyMyItems={true}/>}/>
                         <Route path={"/food/:id"} element={<FoodItemDetailsPage/>}/>
                         <Route path={"/food/:id/edit"} element={<FoodItemEditPage/>}/>
                         <Route path={"/add-food"} element={<FoodItemAddPage/>}/>
