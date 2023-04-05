@@ -16,15 +16,16 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class FoodItemService {
+    static final FoodItem PLACEHOLDER_FOOD_ITEM = new FoodItem("DELETED", "", "(deleted food item)", "", "", null, null, "This food item has been deleted.");
     private final FoodItemRepository foodItemRepository;
     private final MongoUserService mongoUserService;
     private final IdService idService;
     private final PhotoService photoService;
 
-    private FoodItemDTOResponse foodItemDTOResponseFromFoodItem(FoodItem foodItem) {
+    private FoodItemDTOResponse foodItemDTOResponseFromFoodItem(FoodItem foodItem, boolean returnPlaceholderIfNotFound) {
         return new FoodItemDTOResponse(
                 foodItem.id(),
-                mongoUserService.getMongoUserDTOResponseById(foodItem.donatorId()),
+                mongoUserService.getMongoUserDTOResponseById(foodItem.donatorId(), returnPlaceholderIfNotFound),
                 foodItem.title(),
                 foodItem.photoUri(),
                 foodItem.location(),
@@ -32,6 +33,10 @@ public class FoodItemService {
                 foodItem.consumeUntil(),
                 foodItem.description()
         );
+    }
+
+    private FoodItemDTOResponse foodItemDTOResponseFromFoodItem(FoodItem foodItem) {
+        return foodItemDTOResponseFromFoodItem(foodItem, false);
     }
 
     private void throwExceptionIfFoodItemDTORequestIsNotValid(FoodItemDTORequest foodItemDTORequest) {
@@ -103,11 +108,21 @@ public class FoodItemService {
         return foodItemDTOResponseFromFoodItem(foodItem);
     }
 
-    public FoodItemDTOResponse getFoodItemById(String id) {
-        FoodItem foodItem = foodItemRepository.findById(id)
-                .orElseThrow(() -> new FoodItemExceptionNotFound("The food item with the id " + id + " doesn't exist."));
+    public FoodItemDTOResponse getFoodItemById(String id, boolean returnPlaceholderIfNotFound) {
+        FoodItem foodItem;
+        if (returnPlaceholderIfNotFound) {
+            foodItem = foodItemRepository.findById(id)
+                    .orElse(PLACEHOLDER_FOOD_ITEM);
+        } else {
+            foodItem = foodItemRepository.findById(id)
+                    .orElseThrow(() -> new FoodItemExceptionNotFound("The food item with the id " + id + " doesn't exist."));
+        }
 
-        return foodItemDTOResponseFromFoodItem(foodItem);
+        return foodItemDTOResponseFromFoodItem(foodItem, returnPlaceholderIfNotFound);
+    }
+
+    public FoodItemDTOResponse getFoodItemById(String id) {
+        return getFoodItemById(id, false);
     }
 
     public FoodItemDTOResponse updateFoodItemById(String id, FoodItemDTORequest foodItemDTORequest, MultipartFile photo, Principal principal) {

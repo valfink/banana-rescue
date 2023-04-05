@@ -15,6 +15,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MongoUserService implements UserDetailsService {
+    static final MongoUser PLACEHOLDER_MONGO_USER = new MongoUser("DELETED", "(no user)", "", "");
     private final MongoUserRepository mongoUserRepository;
     private final IdService idService;
     private final PasswordEncoder passwordEncoder;
@@ -64,10 +65,21 @@ public class MongoUserService implements UserDetailsService {
         return mongoUserDTOResponseFromMongoUser(mongoUser);
     }
 
-    public MongoUserDTOResponse getMongoUserDTOResponseById(String id) {
-        MongoUser mongoUser = mongoUserRepository.findById(id)
-                .orElseThrow(() -> new MongoUserExceptionNotFound(MongoUserExceptionNotFound.reasonId(id)));
+    public MongoUserDTOResponse getMongoUserDTOResponseById(String id, boolean returnPlaceholderIfNotFound) {
+        MongoUser mongoUser;
+        if (returnPlaceholderIfNotFound) {
+            mongoUser = mongoUserRepository.findById(id)
+                    .orElse(PLACEHOLDER_MONGO_USER);
+        } else {
+            mongoUser = mongoUserRepository.findById(id)
+                    .orElseThrow(() -> new MongoUserExceptionNotFound(MongoUserExceptionNotFound.reasonId(id)));
+        }
+
         return mongoUserDTOResponseFromMongoUser(mongoUser);
+    }
+
+    public MongoUserDTOResponse getMongoUserDTOResponseById(String id) {
+        return getMongoUserDTOResponseById(id, false);
     }
 
     public MongoUserDTOResponse getMongoUserDTOResponseByUsername(String username) {
