@@ -10,11 +10,19 @@ import {Link} from "react-router-dom";
 import {User} from "../model/User";
 
 export default function useChat(chatId: string | undefined, user: User | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
-    const API_BROKER_URL = `ws://${window.location.hostname}:8080/api/ws/chat`;
+    const API_BROKER_URL = generateBrokerUrl();
     const API_SUBSCRIPTION_ENDPOINT = "/user/queue";
     const API_PUBLISH_ENDPOINT = `/api/ws/chat/${chatId}`;
     const [chat, setChat] = useState<Chat | undefined>(undefined);
     const [client, setClient] = useState(new Client());
+
+    function generateBrokerUrl(): string {
+        if (process.env.NODE_ENV !== 'production') {
+            return "ws://localhost:8080/api/ws/chat";
+        }
+        const scheme = window.location.protocol === "https:" ? "wss" : "ws";
+        return `${scheme}://${window.location.hostname}:${window.location.port}/api/ws/chat`;
+    }
 
     useEffect(() => {
         if (chatId) {
