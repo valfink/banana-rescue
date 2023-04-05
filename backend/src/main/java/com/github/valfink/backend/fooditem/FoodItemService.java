@@ -68,7 +68,7 @@ public class FoodItemService {
     }
 
     public List<FoodItemDTOResponse> getAllFoodItems() {
-        return foodItemRepository.getAllByOrderByPickupUntilDesc()
+        return foodItemRepository.getAllFoodItemsByOrderByPickupUntil()
                 .stream()
                 .map(this::foodItemDTOResponseFromFoodItem)
                 .toList();
@@ -77,7 +77,7 @@ public class FoodItemService {
     public List<FoodItemDTOResponse> getMyFoodItems(Principal principal) {
         MongoUserDTOResponse user = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
 
-        return foodItemRepository.getFoodItemsByDonatorIdOrderByPickupUntilDesc(user.id())
+        return foodItemRepository.getFoodItemsByDonatorIdOrderByPickupUntil(user.id())
                 .stream()
                 .map(this::foodItemDTOResponseFromFoodItem)
                 .toList();

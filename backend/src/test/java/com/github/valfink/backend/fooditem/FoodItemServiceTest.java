@@ -66,7 +66,7 @@ class FoodItemServiceTest {
     @Test
     void getAll_whenRepoReturnsListOfOneItem_thenReturnListOfOneItem() {
         // GIVEN
-        when(foodItemRepository.getAllByOrderByPickupUntilDesc()).thenReturn(new ArrayList<>(List.of(foodItem1)));
+        when(foodItemRepository.getAllFoodItemsByOrderByPickupUntil()).thenReturn(new ArrayList<>(List.of(foodItem1)));
         when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(new MongoUserDTOResponse(foodItem1.donatorId(), "user"));
 
         // WHEN
@@ -311,7 +311,7 @@ class FoodItemServiceTest {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
-        when(foodItemRepository.getFoodItemsByDonatorIdOrderByPickupUntilDesc(mongoUserDTOResponse1.id())).thenReturn(new ArrayList<>(List.of(foodItem1)));
+        when(foodItemRepository.getFoodItemsByDonatorIdOrderByPickupUntil(mongoUserDTOResponse1.id())).thenReturn(new ArrayList<>(List.of(foodItem1)));
         when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(new MongoUserDTOResponse(foodItem1.donatorId(), "user"));
 
         // WHEN
