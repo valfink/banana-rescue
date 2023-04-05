@@ -18,6 +18,11 @@ public class FoodItemController {
         return foodItemService.getAllFoodItems();
     }
 
+    @GetMapping("/my-items")
+    public List<FoodItemDTOResponse> getMyFoodItems(Principal principal) {
+        return foodItemService.getMyFoodItems(principal);
+    }
+
     @PostMapping
     public FoodItemDTOResponse addFoodItem(@RequestPart("form") FoodItemDTORequest foodItemDTORequest, @RequestPart(value = "photo", required = false) MultipartFile photo, Principal principal) {
         return foodItemService.addFoodItem(foodItemDTORequest, photo, principal);

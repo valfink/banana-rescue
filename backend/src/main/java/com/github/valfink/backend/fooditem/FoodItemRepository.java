@@ -7,5 +7,7 @@ import java.util.List;
 
 @Repository
 public interface FoodItemRepository extends MongoRepository<FoodItem, String> {
-    List<FoodItem> getAllByOrderByPickupUntilDesc();
+    List<FoodItem> getAllFoodItemsByOrderByPickupUntil();
+
+    List<FoodItem> getFoodItemsByDonatorIdOrderByPickupUntil(String donatorId);
 }

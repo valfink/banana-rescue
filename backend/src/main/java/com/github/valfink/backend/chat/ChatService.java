@@ -27,9 +27,8 @@ public class ChatService {
     private Chat checkIfUserIsInChatAndReturnChat(String chatId, MongoUserDTOResponse user) {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new ChatExceptionNotFound("The chat with the id " + chatId + " does not exist."));
-        FoodItemDTOResponse foodItem = foodItemService.getFoodItemById(chat.foodItemId());
 
-        if (!Objects.equals(foodItem.donator().id(), user.id()) && !Objects.equals(chat.candidateId(), user.id())) {
+        if (!Objects.equals(chat.donatorId(), user.id()) && !Objects.equals(chat.candidateId(), user.id())) {
             throw new ChatExceptionAuthorization("You are not participant in this chat!");
         }
 
@@ -39,8 +38,8 @@ public class ChatService {
     private ChatDTOResponse chatDTOResponseFromChat(Chat chat) {
         return new ChatDTOResponse(
                 chat.id(),
-                foodItemService.getFoodItemById(chat.foodItemId()),
-                mongoUserService.getMongoUserDTOResponseById(chat.candidateId()),
+                foodItemService.getFoodItemById(chat.foodItemId(), true),
+                mongoUserService.getMongoUserDTOResponseById(chat.candidateId(), true),
                 chatMessageRepository.getChatMessagesByChatIdOrderByTimestampAsc(chat.id())
         );
     }

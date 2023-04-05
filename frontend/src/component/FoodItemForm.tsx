@@ -156,7 +156,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                            onChange={handleInputChange}/>
                 </div>
                 {oldPhotoUri
-                    ? <img className={"old-item-image"} src={oldPhotoUri} alt={"Click to deleteπ"}
+                    ? <img className={"old-item-image"} src={oldPhotoUri} alt={"Click to delete"}
                            onClick={handleClickOldImage}/>
                     : <div className={"input-with-icon"}>
                         <FontAwesomeIcon icon={faCamera}/>
