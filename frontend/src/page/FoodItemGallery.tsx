@@ -25,7 +25,7 @@ export default function FoodItemGallery(props: FoodItemGalleryProps) {
 
     return (
         <main className={"item-gallery"}>
-            <h1>All Items</h1>
+            <h1>{props.showOnlyMyItems ? "My Items" : "All Items"}</h1>
             <section>
                 {foodItems.map(e => <FoodItemCard key={e.id} foodItem={e}/>)}
                 {foodItems.length === 0 &&
