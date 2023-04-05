@@ -305,4 +305,20 @@ class FoodItemServiceTest {
         // WHEN & THEN
         assertThrows(FoodItemExceptionPhotoAction.class, () -> foodItemService.deleteFoodItemById(id, principal));
     }
+
+    @Test
+    void getMyFoodItems_whenUserHasOneItem_thenReturnListOfIt() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
+        when(foodItemRepository.getFoodItemsByDonatorIdOrderByPickupUntilDesc(mongoUserDTOResponse1.id())).thenReturn(new ArrayList<>(List.of(foodItem1)));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId())).thenReturn(new MongoUserDTOResponse(foodItem1.donatorId(), "user"));
+
+        // WHEN
+        List<FoodItemDTOResponse> expected = new ArrayList<>(List.of(foodItemDTOResponse1));
+        List<FoodItemDTOResponse> actual = foodItemService.getMyFoodItems(principal);
+
+        // THEN
+        assertEquals(expected, actual);
+    }
 }

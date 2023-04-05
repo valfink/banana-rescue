@@ -1,5 +1,6 @@
 package com.github.valfink.backend.fooditem;
 
+import com.github.valfink.backend.mongouser.MongoUserDTOResponse;
 import com.github.valfink.backend.mongouser.MongoUserService;
 import com.github.valfink.backend.util.IdService;
 import com.github.valfink.backend.util.PhotoService;
@@ -68,6 +69,15 @@ public class FoodItemService {
 
     public List<FoodItemDTOResponse> getAllFoodItems() {
         return foodItemRepository.getAllByOrderByPickupUntilDesc()
+                .stream()
+                .map(this::foodItemDTOResponseFromFoodItem)
+                .toList();
+    }
+
+    public List<FoodItemDTOResponse> getMyFoodItems(Principal principal) {
+        MongoUserDTOResponse user = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
+
+        return foodItemRepository.getFoodItemsByDonatorIdOrderByPickupUntilDesc(user.id())
                 .stream()
                 .map(this::foodItemDTOResponseFromFoodItem)
                 .toList();
