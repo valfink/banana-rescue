@@ -4,6 +4,7 @@ import "./FoodItemGallery.css";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import {fetchFoodItems} from "../util/foodItemRequests";
 import {FoodItem} from "../model/FoodItem";
+import {UserContext, UserContextType} from "../context/UserContext";
 
 type FoodItemGalleryProps = {
     showOnlyMyItems?: boolean
@@ -12,6 +13,11 @@ type FoodItemGalleryProps = {
 export default function FoodItemGallery(props: FoodItemGalleryProps) {
     const {appIsLoading, setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
     const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
+    const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
+
+    useEffect(() => {
+        props.showOnlyMyItems && redirectIfNotSignedIn();
+    }, [props.showOnlyMyItems, redirectIfNotSignedIn]);
 
     useEffect(() => {
         fetchFoodItems(setAppIsLoading, props.showOnlyMyItems)
