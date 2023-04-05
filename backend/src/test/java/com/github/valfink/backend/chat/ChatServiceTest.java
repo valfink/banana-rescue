@@ -136,8 +136,8 @@ class ChatServiceTest {
         when(principal.getName()).thenReturn(mongoUserDTOResponse2.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse2.username())).thenReturn(mongoUserDTOResponse2);
         when(chatRepository.findById(chat1.id())).thenReturn(Optional.of(chat1));
-        when(foodItemService.getFoodItemById(foodItemDTOResponse1.id())).thenReturn(foodItemDTOResponse1);
-        when(mongoUserService.getMongoUserDTOResponseById(mongoUserDTOResponse2.id())).thenReturn(mongoUserDTOResponse2);
+        when(foodItemService.getFoodItemById(foodItemDTOResponse1.id(), true)).thenReturn(foodItemDTOResponse1);
+        when(mongoUserService.getMongoUserDTOResponseById(mongoUserDTOResponse2.id(), true)).thenReturn(mongoUserDTOResponse2);
 
         // WHEN
         ChatDTOResponse expected = new ChatDTOResponse(chat1.id(), foodItemDTOResponse1, mongoUserDTOResponse2, new ArrayList<>());
@@ -174,8 +174,8 @@ class ChatServiceTest {
         when(principal.getName()).thenReturn(mongoUserDTOResponse2.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse2.username())).thenReturn(mongoUserDTOResponse2);
         when(chatRepository.getChatsByCandidateIdOrDonatorId(mongoUserDTOResponse2.id(), mongoUserDTOResponse2.id())).thenReturn(List.of(chat1));
-        when(foodItemService.getFoodItemById(foodItemDTOResponse1.id())).thenReturn(foodItemDTOResponse1);
-        when(mongoUserService.getMongoUserDTOResponseById(mongoUserDTOResponse2.id())).thenReturn(mongoUserDTOResponse2);
+        when(foodItemService.getFoodItemById(foodItemDTOResponse1.id(), true)).thenReturn(foodItemDTOResponse1);
+        when(mongoUserService.getMongoUserDTOResponseById(mongoUserDTOResponse2.id(), true)).thenReturn(mongoUserDTOResponse2);
 
         // WHEN
         List<ChatDTOResponse> expected = List.of(new ChatDTOResponse(chat1.id(), foodItemDTOResponse1, mongoUserDTOResponse2, List.of()));
