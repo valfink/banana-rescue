@@ -23,6 +23,7 @@ export default function FullScreenNav(props: FullScreenNavProps) {
                      state={{navBarBackLink: location.pathname, oldState: location.state}}>Add Item</NavLink>
             {user ?
                 <>
+                    <NavLink to={"/food/my-items"} className={"secondary-button cursor-pointer"}>My Items</NavLink>
                     <NavLink to={"/chats"} className={"secondary-button cursor-pointer"}>My Chats</NavLink>
                     <button onClick={logOutUser} className={"secondary-button cursor-pointer"}>Log Out</button>
                 </>
