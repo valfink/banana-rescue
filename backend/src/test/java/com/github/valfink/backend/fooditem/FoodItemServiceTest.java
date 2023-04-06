@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ class FoodItemServiceTest {
                 mongoUserDTOResponse1.id(),
                 "Food Item 1",
                 "https://photo.com/1.jpg",
-                new Location("Berlin", new Coordinate(52.5170365, 13.3888599)),
+                new Location("Berlin", new Coordinate(new BigDecimal("52.5170365"), new BigDecimal("13.3888599"))),
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my first food item."
@@ -177,7 +178,7 @@ class FoodItemServiceTest {
     @Test
     void updateFoodItemById_whenIdIsInRepoAndRequestIsValid_thenReturnUpdatedItem() {
         // GIVEN
-        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest("New title", new Location("New location", new Coordinate(0, 0)), foodItem1.pickupUntil(), foodItem1.consumeUntil(), "New description");
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest("New title", new Location("Berlin", new Coordinate(new BigDecimal("52.5170365"), new BigDecimal("13.3888599"))), foodItem1.pickupUntil(), foodItem1.consumeUntil(), "New description");
         FoodItem updatedFoodItem = new FoodItem(foodItem1.id(), foodItem1.donatorId(), foodItemDTORequest.title(), foodItem1.photoUri(), foodItemDTORequest.location(), foodItemDTORequest.pickupUntil(), foodItemDTORequest.consumeUntil(), foodItemDTORequest.description());
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
@@ -196,7 +197,7 @@ class FoodItemServiceTest {
     @Test
     void updateFoodItemById_whenUserIsNotDonator_thenThrowException() {
         // GIVEN
-        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest("New title", new Location("New location", new Coordinate(0, 0)), foodItem1.pickupUntil(), foodItem1.consumeUntil(), "New description");
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest("New title", new Location("Berlin", new Coordinate(new BigDecimal("52.5170365"), new BigDecimal("13.3888599"))), foodItem1.pickupUntil(), foodItem1.consumeUntil(), "New description");
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(new MongoUserDTOResponse("2", "other user"));
         when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(foodItem1));

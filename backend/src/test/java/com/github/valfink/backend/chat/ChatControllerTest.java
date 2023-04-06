@@ -19,6 +19,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -59,7 +60,7 @@ class ChatControllerTest {
                 mongoUser1.id(),
                 "Food Item 1",
                 "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg",
-                new Location("Berlin", new Coordinate(52.5170365, 13.3888599)),
+                new Location("Berlin", new Coordinate(new BigDecimal("52.5170365"), new BigDecimal("13.3888599"))),
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my first food item."
@@ -69,7 +70,7 @@ class ChatControllerTest {
                 mongoUser2.id(),
                 "Food Item 2",
                 "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg",
-                new Location("Wilmersdorf", new Coordinate(52.4871152, 13.3203298)),
+                new Location("Wilmersdorf", new Coordinate(new BigDecimal("52.4871152"), new BigDecimal("13.3203298"))),
                 Instant.parse("2023-03-20T09:00:00Z"),
                 Instant.parse("2023-03-22T09:00:00Z"),
                 "This is another food item."

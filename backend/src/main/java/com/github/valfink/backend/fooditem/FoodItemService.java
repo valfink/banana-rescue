@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +19,16 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class FoodItemService {
-    static final FoodItem PLACEHOLDER_FOOD_ITEM = new FoodItem("DELETED", "", "(deleted food item)", "", new Location("", new Coordinate(0, 0)), null, null, "This food item has been deleted.");
+    static final FoodItem PLACEHOLDER_FOOD_ITEM = new FoodItem(
+            "DELETED",
+            "",
+            "(deleted food item)",
+            "",
+            new Location("", new Coordinate(new BigDecimal("0"), new BigDecimal("0"))),
+            null,
+            null,
+            "This food item has been deleted."
+    );
     private final FoodItemRepository foodItemRepository;
     private final MongoUserService mongoUserService;
     private final IdService idService;
