@@ -2,7 +2,8 @@ import {Location} from "./Location";
 
 export type FoodItemFormData = {
     title: string;
-    location: Location;
+    location?: Location;
+    locationTitle?: string;
     pickupUntil: string;
     consumeUntil: string;
     description: string;
