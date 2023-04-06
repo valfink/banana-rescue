@@ -14,6 +14,16 @@ The backend is written in **Java** using **Spring Boot** with **Spring Security*
 The frontend is written in **TypeScript** using **React**. The styling is all **custom vanilla CSS**.  
 The chat is implemented using **STOMP over WebSocket**.
 
+## Documentation
+
+Please check out
+my [Mock UI](https://www.figma.com/proto/uAzAfoRI7c7ws5HD4tL87N/Banana-Rescue?node-id=6-975&scaling=min-zoom&page-id=0%3A1&starting-point-node-id=2%3A22)
+on Figma used for my MVP!  
+Also there is an overview of my [Models](https://www.figma.com/file/spoKUhcg5Y7VZIhLy2M0dt/Banana-Rescue-Models),
+including JSON representation.  
+And maybe most importantly, here is
+my [API Documentation](https://app.swaggerhub.com/apis-docs/VALENTINFINKE/BananaRescue) on SwaggerHub.
+
 ## Installation & Running
 
 In order to run *BANANA RESCUE* in your environment, you will need to do the following:
