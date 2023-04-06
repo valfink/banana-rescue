@@ -19,6 +19,7 @@ import ChatDetailsPage from "./page/ChatDetailsPage";
 import ChatGallery from "./page/ChatGallery";
 import Div100vh from "react-div-100vh";
 
+axios.defaults.timeout = 5000;
 axios.interceptors.request.use(config => {
     if (["put", "post", "delete"].includes(config.method || "")) {
         return fetch("/api/csrf")
