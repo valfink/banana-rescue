@@ -73,7 +73,7 @@ export default function FoodItemDetailsPage() {
                     <ul>
                         <li><strong>Pickup until:</strong> {moment(foodItem.pickupUntil).calendar()}</li>
                         <li><strong>Consume within:</strong> {moment(foodItem.consumeUntil).fromNow(true)}</li>
-                        <li><strong>Location:</strong> {foodItem.location}</li>
+                        <li><strong>Location:</strong> {foodItem.location.title}</li>
                         <li><strong>Donator:</strong> {foodItem.donator.username}</li>
                         <li><strong>Comment:</strong> {foodItem.description}</li>
                     </ul>

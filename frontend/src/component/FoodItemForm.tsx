@@ -17,9 +17,15 @@ type FoodItemFormProps = {
 }
 
 export default function FoodItemForm(props: FoodItemFormProps) {
-    const initialFormState = {
+    const initialFormState: FoodItemFormData = {
         title: props.oldFoodItem?.title || "",
-        location: props.oldFoodItem?.location || "",
+        location: {
+            title: props.oldFoodItem?.location.title || "",
+            coordinate: {
+                latitude: 0,
+                longitude: 0
+            }
+        },
         pickupUntil: props.oldFoodItem?.pickupUntil ? moment(props.oldFoodItem?.pickupUntil).format("YYYY-MM-DDTHH:mm") : "",
         consumeUntil: props.oldFoodItem?.consumeUntil ? moment(props.oldFoodItem?.consumeUntil).format("YYYY-MM-DDTHH:mm") : "",
         description: props.oldFoodItem?.description || ""
@@ -167,8 +173,8 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                 }
                 <div className={"input-with-icon"}>
                     <FontAwesomeIcon icon={faLocationDot}/>
-                    <input type={"text"} name={"location"} placeholder={"Location"} required={true}
-                           value={formData.location} onChange={handleInputChange}/>
+                    <input type={"text"} name={"location.title"} placeholder={"Location"} required={true}
+                           value={formData.location.title} onChange={handleInputChange}/>
                 </div>
                 <div className={"input-with-icon"}>
                     <FontAwesomeIcon icon={faTrainSubway}/>
