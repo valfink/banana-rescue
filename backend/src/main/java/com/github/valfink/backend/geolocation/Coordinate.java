@@ -1,7 +1,9 @@
 package com.github.valfink.backend.geolocation;
 
+import java.math.BigDecimal;
+
 public record Coordinate(
-        double latitude,
-        double longitude
+        BigDecimal latitude,
+        BigDecimal longitude
 ) {
 }
