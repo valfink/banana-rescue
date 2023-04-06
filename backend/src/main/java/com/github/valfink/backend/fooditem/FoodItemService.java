@@ -1,5 +1,7 @@
 package com.github.valfink.backend.fooditem;
 
+import com.github.valfink.backend.geolocation.Coordinates;
+import com.github.valfink.backend.geolocation.Location;
 import com.github.valfink.backend.mongouser.MongoUserDTOResponse;
 import com.github.valfink.backend.mongouser.MongoUserService;
 import com.github.valfink.backend.util.IdService;
@@ -16,7 +18,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class FoodItemService {
-    static final FoodItem PLACEHOLDER_FOOD_ITEM = new FoodItem("DELETED", "", "(deleted food item)", "", "", null, null, "This food item has been deleted.");
+    static final FoodItem PLACEHOLDER_FOOD_ITEM = new FoodItem("DELETED", "", "(deleted food item)", "", new Location("", new Coordinates(0, 0)), null, null, "This food item has been deleted.");
     private final FoodItemRepository foodItemRepository;
     private final MongoUserService mongoUserService;
     private final IdService idService;
@@ -43,7 +45,8 @@ public class FoodItemService {
         if (foodItemDTORequest.title() == null || foodItemDTORequest.title().isBlank()) {
             throw new FoodItemExceptionBadInputData("Title must not be blank");
         }
-        if (foodItemDTORequest.location() == null || foodItemDTORequest.location().isBlank()) {
+        if (foodItemDTORequest.location() == null || foodItemDTORequest.location().title() == null
+                || foodItemDTORequest.location().title().isBlank() || foodItemDTORequest.location().coordinates() == null) {
             throw new FoodItemExceptionBadInputData("Location must not be blank");
         }
         if (foodItemDTORequest.pickupUntil() == null) {
