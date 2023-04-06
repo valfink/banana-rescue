@@ -21,16 +21,12 @@ type FoodItemFormProps = {
 export default function FoodItemForm(props: FoodItemFormProps) {
     const initialFormState: FoodItemFormData = {
         title: props.oldFoodItem?.title || "",
-        location: {
-            title: props.oldFoodItem?.location.title || "",
-            coordinate: {latitude: 0, longitude: 0}
-        },
+        locationTitle: props.oldFoodItem?.location.title || "",
         pickupUntil: props.oldFoodItem?.pickupUntil ? moment(props.oldFoodItem?.pickupUntil).format("YYYY-MM-DDTHH:mm") : "",
         consumeUntil: props.oldFoodItem?.consumeUntil ? moment(props.oldFoodItem?.consumeUntil).format("YYYY-MM-DDTHH:mm") : "",
         description: props.oldFoodItem?.description || ""
     };
     const [formData, setFormData] = useState<FoodItemFormData>(initialFormState);
-    const [coordinate, setCoordinate] = useState<Coordinate>({latitude: 0, longitude: 0});
     const [photo, setPhoto] = useState<File | null>(null)
     const [oldPhotoUri, setOldPhotoUri] = useState<string | undefined>(props.oldFoodItem?.photoUri);
     const [formError, setFormError] = useState("");
@@ -62,23 +58,10 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     }
 
     function handleInputChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-        setFormData(oldData => {
-            if (e.target.name !== "locationTitle") {
-                oldData = {
-                    ...oldData,
-                    [e.target.name]: e.target.value
-                };
-            } else {
-                oldData = {
-                    ...oldData,
-                    location: {
-                        ...oldData.location,
-                        title: e.target.value
-                    }
-                }
-            }
-            return oldData;
-        })
+        setFormData(oldData => ({
+            ...oldData,
+            [e.target.name]: e.target.value
+        }));
     }
 
     function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
@@ -94,20 +77,22 @@ export default function FoodItemForm(props: FoodItemFormProps) {
         setShowSetCoordinateModal(true);
     }
 
-    function handleSetCoordinateClick(newLatitude: number, newLongitude: number) {
-        setCoordinate({
-            latitude: newLatitude,
-            longitude: newLongitude
-        });
-
-        submitFoodItem();
-    }
-
     function handleCloseSetShowCoordinateModalClick() {
         setShowSetCoordinateModal(false);
     }
 
-    function submitFoodItem() {
+    function submitFoodItem(withCoordinate: Coordinate) {
+        setFormData(formData => {
+            const newData = formData;
+            if (newData.locationTitle) {
+                newData.location = {
+                    title: newData.locationTitle,
+                    coordinate: withCoordinate
+                }
+                delete newData.locationTitle;
+            }
+            return newData;
+        })
         if (props.action === "add") {
             let navigateOptions = {state: {successMessage: "Food item successfully added."}};
 
@@ -183,8 +168,9 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                                            itemName={props.oldFoodItem?.title}/>
                 </>}
             {formError && <div className={"form-error"}>Error: {formError}</div>}
-            <SetCoordinateScreen locationTitle={formData.location.title} modalIsOpen={showSetCoordinateModal}
-                                 closeModal={handleCloseSetShowCoordinateModalClick}/>
+            <SetCoordinateScreen locationTitle={formData.locationTitle || ""} modalIsOpen={showSetCoordinateModal}
+                                 closeModal={handleCloseSetShowCoordinateModalClick}
+                                 submit={submitFoodItem}/>
             <section>
                 <div className={"input-with-icon"}>
                     <FontAwesomeIcon icon={faQuoteLeft}/>
@@ -204,7 +190,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                 <div className={"input-with-icon"}>
                     <FontAwesomeIcon icon={faLocationDot}/>
                     <input type={"text"} name={"locationTitle"} placeholder={"Location"} required={true}
-                           value={formData.location.title} onChange={handleInputChange}/>
+                           value={formData.locationTitle} onChange={handleInputChange}/>
                 </div>
                 <div className={"input-with-icon"}>
                     <FontAwesomeIcon icon={faTrainSubway}/>
