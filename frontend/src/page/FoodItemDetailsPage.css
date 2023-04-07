@@ -1,4 +1,9 @@
-.food-item-details, .food-item-details section {
+.food-item-details {
+    padding-bottom: 0.5rem;
+    overflow: hidden;
+}
+
+.food-item-details, .food-item-details section, .food-item-details main, .food-item-details footer {
     background-color: var(--bright-bg);
     display: flex;
     flex-flow: column nowrap;
@@ -10,28 +15,36 @@
 }
 
 .food-item-details header {
-    flex-basis: 35%;
+    height: 25vh;
     background-size: cover;
     background-position: center;
 }
 
-.food-item-details section {
+.food-item-details main {
     padding: 0 0.5rem;
+    min-height: 0;
+    flex-grow: 1;
 }
 
-.food-item-details section, .food-item-details main {
+.food-item-details footer {
+    margin: 0 0.5rem
+}
+
+.food-item-details section {
     flex-grow: 1;
+    overflow: auto;
+}
+
+.food-item-details h1 {
+    margin: 0;
 }
 
 .food-item-details ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .food-item-details li:not(:first-child) {
-    padding-top: 0.8rem;
-}
-
-.food-item-details a:last-child, .food-item-details button:last-child {
-    margin-bottom: 2rem;
+    padding-top: 0.5rem;
 }

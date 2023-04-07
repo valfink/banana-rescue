@@ -1,4 +1,4 @@
-.deletion-warning {
+.modal {
     height: 100vh;
     background-color: var(--bright-bg);
     z-index: 100;
@@ -6,6 +6,18 @@
     flex-flow: column nowrap;
     gap: 1rem;
     padding: 0 1rem;
+}
+
+.modal .buttons {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    gap: 1rem;
+    padding-bottom: 1rem;
+}
+
+.modal .error {
+    color: var(--danger-accent);
 }
 
 .deletion-warning h1 {
@@ -17,10 +29,7 @@
 }
 
 .deletion-warning .buttons {
-    display: flex;
-    flex-flow: column nowrap;
     flex-grow: 1;
-    justify-content: center;
     gap: 6rem;
 }
 
