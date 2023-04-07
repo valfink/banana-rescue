@@ -28,7 +28,7 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
             })
             .catch(err => {
                 console.error(err);
-                const errorMsg = err.response.data.error || err.response.data.message;
+                const errorMsg = err.response?.data.error || err.response?.data.message || err.message;
                 toast.error(`Could not sign up 😱\n${errorMsg}`);
                 return Promise.reject(errorMsg);
             })
@@ -53,7 +53,7 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
             })
             .catch(err => {
                 console.error(err);
-                const errorMsg = err.response.data.error || err.response.data.message;
+                const errorMsg = err.response?.data.error || err.response?.data.message || err.message;
                 toast.error(`Could not log in 😱\n${errorMsg}`);
                 return Promise.reject(errorMsg);
             })
@@ -72,7 +72,7 @@ export default function useUserAuth(setAppIsLoading: React.Dispatch<React.SetSta
             })
             .catch(err => {
                 console.error(err);
-                const errorMsg = err.response.data.error || err.response.data.message;
+                const errorMsg = err.response?.data.error || err.response?.data.message || err.message;
                 toast.error(`Could not log out 😱\n${errorMsg}`);
                 return Promise.reject(errorMsg);
             })

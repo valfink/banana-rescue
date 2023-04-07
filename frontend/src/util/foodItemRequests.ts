@@ -121,7 +121,7 @@ function createFormDataPayload(formData: FoodItemFormData, photo: File | null) {
 
 function handleRequestError(userMessage: string, err: any) {
     console.error(err);
-    const errorMsg = err.response.data.error || err.response.data.message;
+    const errorMsg = err.response?.data.error || err.response?.data.message || err.message;
     toast.error(`${userMessage} 😱\n${errorMsg}`);
     return Promise.reject(errorMsg);
 }
