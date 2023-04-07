@@ -1,0 +1,6 @@
+.leaflet-container {
+    min-height: 25vh;
+    flex-grow: 1;
+    border-radius: 0.3rem;
+    font-family: inherit;
+}
