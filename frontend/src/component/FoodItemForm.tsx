@@ -82,21 +82,18 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     }
 
     function submitFoodItem(withCoordinate: Coordinate) {
-        setFormData(formData => {
-            const newData = formData;
-            if (newData.locationTitle) {
-                newData.location = {
-                    title: newData.locationTitle,
-                    coordinate: withCoordinate
-                }
-                delete newData.locationTitle;
+        const dataToSubmit: FoodItemFormData = formData;
+        if (dataToSubmit.locationTitle) {
+            dataToSubmit.location = {
+                title: dataToSubmit.locationTitle,
+                coordinate: withCoordinate
             }
-            return newData;
-        })
+            delete dataToSubmit.locationTitle;
+        }
         if (props.action === "add") {
             let navigateOptions = {state: {successMessage: "Food item successfully added."}};
 
-            postNewFoodItem(formData, photo, setAppIsLoading)
+            postNewFoodItem(dataToSubmit, photo, setAppIsLoading)
                 .then(foodItemResponse => {
                     navigate(`/food/${foodItemResponse.id}`, navigateOptions);
                 })
@@ -107,7 +104,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
             } else {
                 let navigateOptions = {state: {successMessage: "Food item successfully updated."}};
 
-                updateFoodItem(props.oldFoodItem.id, formData, photo, setAppIsLoading)
+                updateFoodItem(props.oldFoodItem.id, dataToSubmit, photo, setAppIsLoading)
                     .then(foodItemResponse => {
                         navigate(`/food/${foodItemResponse.id}`, navigateOptions);
                     })
