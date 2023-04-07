@@ -22,15 +22,15 @@ export default function SetCoordinateScreen(props: SetCoordinateScreenProps) {
     useEffect(() => {
         if (props.modalIsOpen && selectedCoordinate.latitude === 0) {
             setAppIsLoading(oldValue => oldValue + 1);
-            axios.get(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=3&q=${props.locationTitle}`)
+            axios.get(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${props.locationTitle}`)
                 .then(res => res.data as OpenStreetMapsSearchResult[])
                 .then((results) => {
                     setSearchResults(results);
-                    setSelectedCoordinate({latitude: searchResults[0].lat, longitude: searchResults[0].lon});
+                    setSelectedCoordinate({latitude: results[0].lat, longitude: results[0].lon});
                 })
                 .catch(err => {
                     console.error(err);
-                    toast.error(`Could not fetch location search results 😱\n${err.response.data.error || err.response.data.message}`);
+                    toast.error(`Could not fetch location search results 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
                 })
                 .finally(() => {
                     setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
@@ -42,6 +42,11 @@ export default function SetCoordinateScreen(props: SetCoordinateScreenProps) {
         props.submit(selectedCoordinate);
     }
 
+    function handleCancelButtonClick() {
+        props.closeModal();
+        setSelectedCoordinate({latitude: 0, longitude: 0});
+    }
+
     return (
         <Modal
             isOpen={props.modalIsOpen}
@@ -51,15 +56,16 @@ export default function SetCoordinateScreen(props: SetCoordinateScreenProps) {
         >
             <h1>Choose Location</h1>
             <h2>
-                Please select the appropriate position for <br/>
+                Please approve the position for <br/>
                 <center>{props.locationTitle}</center>
             </h2>
+            If the position is not correct, please change the location field in the form.
             <ul>
                 {searchResults.map(result => <li key={result.place_id}>{result.display_name}</li>)}
             </ul>
             <section className={"buttons"}>
                 <button className={"primary-button-button"} onClick={handleSubmitButtonClick}>Submit</button>
-                <button className={"secondary-button"} onClick={props.closeModal}>Cancel</button>
+                <button className={"secondary-button"} onClick={handleCancelButtonClick}>Change Location</button>
             </section>
         </Modal>
     );
