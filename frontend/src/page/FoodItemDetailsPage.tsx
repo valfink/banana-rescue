@@ -8,6 +8,7 @@ import {FoodItem} from "../model/FoodItem";
 import {UserContext, UserContextType} from "../context/UserContext";
 import DeletionWarningScreen from "../modal/DeletionWarningScreen";
 import useChat from "../hook/useChat";
+import FoodItemMap from "../component/FoodItemMap";
 
 export default function FoodItemDetailsPage() {
     const {id} = useParams();
@@ -66,8 +67,8 @@ export default function FoodItemDetailsPage() {
 
     return (
         <section className={"food-item-details"}>
-            <header style={{backgroundImage: `url(${foodItem.photoUri || "/surprise-food.jpg"})`}}/>
             <section>
+                <header style={{backgroundImage: `url(${foodItem.photoUri || "/surprise-food.jpg"})`}}/>
                 <main>
                     <h1>{foodItem.title}</h1>
                     <ul>
@@ -77,7 +78,10 @@ export default function FoodItemDetailsPage() {
                         <li><strong>Donator:</strong> {foodItem.donator.username}</li>
                         <li><strong>Comment:</strong> {foodItem.description}</li>
                     </ul>
+                    <FoodItemMap location={foodItem.location}/>
                 </main>
+            </section>
+            <footer>
                 {user?.id === foodItem.donator.id
                     ? <>
                         <Link to={`/food/${foodItem.id}/edit`} className={"primary-button"}
@@ -90,7 +94,7 @@ export default function FoodItemDetailsPage() {
                     : <>
                         <button onClick={handleWriteAMessageClick} disabled={!user}>Write a message</button>
                     </>}
-            </section>
+            </footer>
         </section>
     );
 }
