@@ -119,9 +119,33 @@ class FoodItemServiceTest {
     }
 
     @Test
+    void addFoodItem_whenEmptyTitle_thenThrowException() {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest("", foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
+        // WHEN & THEN
+        assertThrows(FoodItemExceptionBadInputData.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+    }
+
+    @Test
     void addFoodItem_whenNoLocation_thenThrowException() {
         // GIVEN
         FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), null, foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
+        // WHEN & THEN
+        assertThrows(FoodItemExceptionBadInputData.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+    }
+
+    @Test
+    void addFoodItem_whenNoLocationTitle_thenThrowException() {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), new Location(null, new Coordinate(null, null)), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
+        // WHEN & THEN
+        assertThrows(FoodItemExceptionBadInputData.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+    }
+
+    @Test
+    void addFoodItem_whenEmptyLocationTitle_thenThrowException() {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), new Location("", new Coordinate(null, null)), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
         // WHEN & THEN
         assertThrows(FoodItemExceptionBadInputData.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
     }
@@ -244,6 +268,19 @@ class FoodItemServiceTest {
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
         when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(new FoodItem(foodItem1.id(), foodItem1.donatorId(), foodItem1.title(), null, foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description())));
+        when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId(), false)).thenReturn(mongoUserDTOResponse1);
+        String id = foodItem1.id();
+
+        // WHEN & THEN
+        assertThrows(FoodItemExceptionDataMismatch.class, () -> foodItemService.deletePhotoFromFoodItem(id, principal));
+    }
+
+    @Test
+    void deletePhotoFromFoodItem_whenItemImageUriIsBlank_thenThrowException() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
+        when(foodItemRepository.findById(foodItem1.id())).thenReturn(Optional.of(new FoodItem(foodItem1.id(), foodItem1.donatorId(), foodItem1.title(), "", foodItem1.location(), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description())));
         when(mongoUserService.getMongoUserDTOResponseById(foodItem1.donatorId(), false)).thenReturn(mongoUserDTOResponse1);
         String id = foodItem1.id();
 
