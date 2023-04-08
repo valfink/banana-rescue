@@ -12,6 +12,7 @@
 
 .food-item-details h1 {
     font-size: 2rem;
+    margin: 0;
 }
 
 .food-item-details header {
@@ -33,10 +34,6 @@
 .food-item-details section {
     flex-grow: 1;
     overflow: auto;
-}
-
-.food-item-details h1 {
-    margin: 0;
 }
 
 .food-item-details ul {
