@@ -151,6 +151,14 @@ class FoodItemServiceTest {
     }
 
     @Test
+    void addFoodItem_whenNoLocationCoordinate_thenThrowException() {
+        // GIVEN
+        FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), new Location(foodItem1.location().title(), null), foodItem1.pickupUntil(), foodItem1.consumeUntil(), foodItem1.description());
+        // WHEN & THEN
+        assertThrows(FoodItemExceptionBadInputData.class, () -> foodItemService.addFoodItem(foodItemDTORequest, multipartFile, principal));
+    }
+
+    @Test
     void addFoodItem_whenNoPickupUntil_thenThrowException() {
         // GIVEN
         FoodItemDTORequest foodItemDTORequest = new FoodItemDTORequest(foodItem1.title(), foodItem1.location(), null, foodItem1.consumeUntil(), foodItem1.description());
