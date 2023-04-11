@@ -61,7 +61,7 @@ form {
     flex-grow: 1;
 }
 
-input, textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success, form .image, .primary-button, .secondary-button {
+input:not([type="range"]), textarea, input::file-selector-button, button, .input-replacement, .form-error, .form-success, form .image, .primary-button, .secondary-button {
     padding: 0.5rem;
     border: 0.1rem solid var(--dark-accent);
     border-radius: 0.3rem;
