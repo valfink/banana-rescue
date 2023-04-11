@@ -35,7 +35,7 @@ class RadarServiceTest {
     }
 
     @Test
-    void addRadar_whenUserHasNoRadiusYetAndDTOIsValid_thenReturnNewRadarDTO() {
+    void addRadar_whenUserHasNoRadarYetAndDTOIsValid_thenReturnNewRadarDTO() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
