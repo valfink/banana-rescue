@@ -1,5 +1,6 @@
 package com.github.valfink.backend.fooditem;
 
+import com.github.valfink.backend.geolocation.Location;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,7 +13,7 @@ public record FoodItem(
         String donatorId,
         String title,
         String photoUri,
-        String location,
+        Location location,
         Instant pickupUntil,
         Instant consumeUntil,
         String description

@@ -1,5 +1,7 @@
 package com.github.valfink.backend.fooditem;
 
+import com.github.valfink.backend.geolocation.Coordinate;
+import com.github.valfink.backend.geolocation.Location;
 import com.github.valfink.backend.mongouser.MongoUserDTOResponse;
 import com.github.valfink.backend.mongouser.MongoUserService;
 import com.github.valfink.backend.util.IdService;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +19,16 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class FoodItemService {
-    static final FoodItem PLACEHOLDER_FOOD_ITEM = new FoodItem("DELETED", "", "(deleted food item)", "", "", null, null, "This food item has been deleted.");
+    static final FoodItem PLACEHOLDER_FOOD_ITEM = new FoodItem(
+            "DELETED",
+            "",
+            "(deleted food item)",
+            "",
+            new Location("", new Coordinate(new BigDecimal("0"), new BigDecimal("0"))),
+            null,
+            null,
+            "This food item has been deleted."
+    );
     private final FoodItemRepository foodItemRepository;
     private final MongoUserService mongoUserService;
     private final IdService idService;
@@ -43,7 +55,8 @@ public class FoodItemService {
         if (foodItemDTORequest.title() == null || foodItemDTORequest.title().isBlank()) {
             throw new FoodItemExceptionBadInputData("Title must not be blank");
         }
-        if (foodItemDTORequest.location() == null || foodItemDTORequest.location().isBlank()) {
+        if (foodItemDTORequest.location() == null || foodItemDTORequest.location().title() == null
+                || foodItemDTORequest.location().title().isBlank() || foodItemDTORequest.location().coordinate() == null) {
             throw new FoodItemExceptionBadInputData("Location must not be blank");
         }
         if (foodItemDTORequest.pickupUntil() == null) {

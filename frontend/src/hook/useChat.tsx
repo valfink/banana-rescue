@@ -31,7 +31,7 @@ export default function useChat(chatId: string | undefined, user: User | undefin
                 .then(res => res.data)
                 .then(setChat)
                 .catch(err => {
-                    toast.error(`Could not fetch chat 😱\n${err.response.data.error || err.response.data.message}`);
+                    toast.error(`Could not fetch chat 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
                 })
                 .finally(() => {
                     setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
@@ -99,7 +99,7 @@ export default function useChat(chatId: string | undefined, user: User | undefin
             .then(res => res.data)
             .catch(err => {
                 console.error(err);
-                toast.error(`Could not start a chat 😱\n${err.response.data.error || err.response.data.message}`);
+                toast.error(`Could not start a chat 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
                 return Promise.reject(err);
             })
             .finally(() => {
@@ -124,7 +124,7 @@ export default function useChat(chatId: string | undefined, user: User | undefin
                 hasUnreadMessages: false
             })))
             .catch(err => {
-                toast.error(`Could not mark message as read 😱\n${err.response.data.error || err.response.data.message}`);
+                toast.error(`Could not mark message as read 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
             })
     }
 

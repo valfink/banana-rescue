@@ -42,7 +42,7 @@ export default function FoodItemCard(props: FoodItemCardProps) {
                         until:</strong> {momentPickupUntil.calendar()}</li>
                     <li className={momentConsumeUntil.isBefore() ? "too-late" : ""}><strong>Consume
                         within:</strong> {momentConsumeUntil.fromNow(!momentConsumeUntil.isBefore())}</li>
-                    <li><strong>Location:</strong> {props.foodItem.location}</li>
+                    <li><strong>Location:</strong> {props.foodItem.location.title}</li>
                 </ul>
                 {!props.compactView && foodItemActionButtons}
             </section>

@@ -10,6 +10,8 @@ import {FoodItem} from "../model/FoodItem";
 import moment from "moment";
 import "./FoodItemForm.css";
 import DeletionWarningScreen from "../modal/DeletionWarningScreen";
+import SetCoordinateScreen from "../modal/SetCoordinateScreen";
+import {Coordinate} from "../model/Coordinate";
 
 type FoodItemFormProps = {
     action: "add" | "edit";
@@ -17,9 +19,9 @@ type FoodItemFormProps = {
 }
 
 export default function FoodItemForm(props: FoodItemFormProps) {
-    const initialFormState = {
+    const initialFormState: FoodItemFormData = {
         title: props.oldFoodItem?.title || "",
-        location: props.oldFoodItem?.location || "",
+        locationTitle: props.oldFoodItem?.location.title || "",
         pickupUntil: props.oldFoodItem?.pickupUntil ? moment(props.oldFoodItem?.pickupUntil).format("YYYY-MM-DDTHH:mm") : "",
         consumeUntil: props.oldFoodItem?.consumeUntil ? moment(props.oldFoodItem?.consumeUntil).format("YYYY-MM-DDTHH:mm") : "",
         description: props.oldFoodItem?.description || ""
@@ -30,6 +32,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     const [formError, setFormError] = useState("");
     const [showDeletePhotoModal, setShowDeletePhotoModal] = useState(false);
     const [showDeleteFoodItemModal, setShowDeleteFoodItemModal] = useState(false);
+    const [showSetCoordinateModal, setShowSetCoordinateModal] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
@@ -58,7 +61,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
         setFormData(oldData => ({
             ...oldData,
             [e.target.name]: e.target.value
-        }))
+        }));
     }
 
     function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
@@ -71,29 +74,42 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setFormError("");
+        setShowSetCoordinateModal(true);
+    }
 
+    function handleCloseSetShowCoordinateModalClick() {
+        setShowSetCoordinateModal(false);
+    }
+
+    function submitFoodItem(withCoordinate: Coordinate) {
+        const dataToSubmit: FoodItemFormData = formData;
+        if (dataToSubmit.locationTitle) {
+            dataToSubmit.location = {
+                title: dataToSubmit.locationTitle,
+                coordinate: withCoordinate
+            }
+            delete dataToSubmit.locationTitle;
+        }
         if (props.action === "add") {
             let navigateOptions = {state: {successMessage: "Food item successfully added."}};
 
-            postNewFoodItem(formData, photo, setAppIsLoading)
+            postNewFoodItem(dataToSubmit, photo, setAppIsLoading)
                 .then(foodItemResponse => {
                     navigate(`/food/${foodItemResponse.id}`, navigateOptions);
                 })
                 .catch(setFormError);
-
         } else {
             if (!props.oldFoodItem?.id) {
                 setFormError("Id not specified!");
             } else {
                 let navigateOptions = {state: {successMessage: "Food item successfully updated."}};
 
-                updateFoodItem(props.oldFoodItem.id, formData, photo, setAppIsLoading)
+                updateFoodItem(props.oldFoodItem.id, dataToSubmit, photo, setAppIsLoading)
                     .then(foodItemResponse => {
                         navigate(`/food/${foodItemResponse.id}`, navigateOptions);
                     })
                     .catch(setFormError);
             }
-
         }
     }
 
@@ -149,6 +165,9 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                                            itemName={props.oldFoodItem?.title}/>
                 </>}
             {formError && <div className={"form-error"}>Error: {formError}</div>}
+            <SetCoordinateScreen locationTitle={formData.locationTitle || ""} modalIsOpen={showSetCoordinateModal}
+                                 closeModal={handleCloseSetShowCoordinateModalClick}
+                                 submit={submitFoodItem}/>
             <section>
                 <div className={"input-with-icon"}>
                     <FontAwesomeIcon icon={faQuoteLeft}/>
@@ -167,8 +186,8 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                 }
                 <div className={"input-with-icon"}>
                     <FontAwesomeIcon icon={faLocationDot}/>
-                    <input type={"text"} name={"location"} placeholder={"Location"} required={true}
-                           value={formData.location} onChange={handleInputChange}/>
+                    <input type={"text"} name={"locationTitle"} placeholder={"Location"} required={true}
+                           value={formData.locationTitle} onChange={handleInputChange}/>
                 </div>
                 <div className={"input-with-icon"}>
                     <FontAwesomeIcon icon={faTrainSubway}/>

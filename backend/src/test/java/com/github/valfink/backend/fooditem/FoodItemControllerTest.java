@@ -3,6 +3,8 @@ package com.github.valfink.backend.fooditem;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.valfink.backend.geolocation.Coordinate;
+import com.github.valfink.backend.geolocation.Location;
 import com.github.valfink.backend.mongouser.MongoUser;
 import com.github.valfink.backend.mongouser.MongoUserDTOResponse;
 import com.github.valfink.backend.mongouser.MongoUserRepository;
@@ -21,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +66,7 @@ class FoodItemControllerTest {
                 mongoUser1.id(),
                 "Food Item 1",
                 "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg",
-                "Berlin",
+                new Location("Berlin", new Coordinate(new BigDecimal("52.5170365"), new BigDecimal("13.3888599"))),
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my first food item."
@@ -73,7 +76,7 @@ class FoodItemControllerTest {
                 mongoUser1.id(),
                 "Food Item 2",
                 null,
-                "Berlin",
+                new Location("Berlin", new Coordinate(new BigDecimal("52.5170365"), new BigDecimal("13.3888599"))),
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my second food item."
@@ -87,7 +90,7 @@ class FoodItemControllerTest {
         );
         updatedFoodItemDTORequest1 = new FoodItemDTORequest(
                 "Updated Title",
-                "New Location",
+                new Location("New Location", new Coordinate(new BigDecimal("0"), new BigDecimal("0"))),
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "Description is updated."
@@ -204,7 +207,13 @@ class FoodItemControllerTest {
                         {
                         "id": "1",
                         "title": "Updated Title",
-                        "location": "New Location",
+                        "location": {
+                            "title":"New Location",
+                            "coordinate": {
+                                "latitude": 0,
+                                "longitude": 0
+                                }
+                            },
                         "pickupUntil": "2023-03-16T11:14:00Z",
                         "consumeUntil": "2023-03-18T11:00:00Z",
                         "description": "Description is updated.",

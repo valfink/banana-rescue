@@ -2,6 +2,8 @@ package com.github.valfink.backend.chat;
 
 import com.github.valfink.backend.fooditem.FoodItemDTOResponse;
 import com.github.valfink.backend.fooditem.FoodItemService;
+import com.github.valfink.backend.geolocation.Coordinate;
+import com.github.valfink.backend.geolocation.Location;
 import com.github.valfink.backend.mongouser.MongoUserDTOResponse;
 import com.github.valfink.backend.mongouser.MongoUserService;
 import com.github.valfink.backend.util.IdService;
@@ -9,6 +11,7 @@ import com.github.valfink.backend.util.TimestampService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -52,7 +55,7 @@ class ChatServiceTest {
                 mongoUserDTOResponse1,
                 "Food Item 1",
                 "https://res.cloudinary.com/dms477wsv/image/upload/v1679523501/bcqbynehv80oqdxgpdod.jpg",
-                "Berlin",
+                new Location("Berlin", new Coordinate(new BigDecimal("52.5170365"), new BigDecimal("13.3888599"))),
                 Instant.parse("2023-03-16T11:14:00Z"),
                 Instant.parse("2023-03-18T11:00:00Z"),
                 "This is my first food item."

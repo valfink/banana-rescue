@@ -17,7 +17,7 @@ export default function useMyChats(user: User | undefined, setAppIsLoading: Reac
             })).sort((a: Chat, b: Chat) => Number(b.hasUnreadMessages) - Number(a.hasUnreadMessages)))
             .then(setChats)
             .catch(err => {
-                toast.error(`Could not fetch chat list 😱\n${err.response.data.error || err.response.data.message}`);
+                toast.error(`Could not fetch chat list 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
             })
             .finally(() => {
                 setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
