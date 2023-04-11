@@ -5,3 +5,12 @@
 .radar-form section button {
     margin: 0 !important;
 }
+
+.radar-form .buttons-inline {
+    display: flex;
+    gap: 1rem;
+}
+
+.radar-form .buttons-inline button {
+    flex-grow: 1;
+}
