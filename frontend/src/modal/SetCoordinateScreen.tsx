@@ -1,6 +1,6 @@
 import Modal from "react-modal";
 import {Coordinate} from "../model/Coordinate";
-import FoodItemMap from "../component/FoodItemMap";
+import BananaMap from "../component/BananaMap";
 
 type SetCoordinateScreenProps = {
     locationTitle: string;
@@ -32,7 +32,7 @@ export default function SetCoordinateScreen(props: SetCoordinateScreenProps) {
             </h2>
             {!props.error &&
                 <>If the position is not correct, please change the location field in the form.
-                    <FoodItemMap location={{title: props.locationTitle, coordinate: props.coordinate}}/>
+                    <BananaMap location={{title: props.locationTitle, coordinate: props.coordinate}}/>
                     <section className={"buttons"}>
                         <button className={"primary-button-button"} onClick={handleSubmitButtonClick}>Submit</button>
                         <button className={"secondary-button"} onClick={props.closeModal}>Change Location

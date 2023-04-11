@@ -3,12 +3,12 @@ import React, {useEffect} from "react";
 import {Location} from "../model/Location";
 import "./FoodItemMap.css";
 
-type FoodItemMapProps = {
+type BananaMapProps = {
     location: Location;
     radius?: number;
 }
 
-function FoodItemMapController(props: FoodItemMapProps) {
+function BananaMapController(props: BananaMapProps) {
     const map = useMap();
 
     useEffect(() => {
@@ -24,7 +24,7 @@ function FoodItemMapController(props: FoodItemMapProps) {
     return <></>;
 }
 
-export default function FoodItemMap(props: FoodItemMapProps) {
+export default function BananaMap(props: BananaMapProps) {
     if (props.location.coordinate.latitude === 0) {
         return <div className={"leaflet-container"}>Nothing to display yet…</div>;
     }
@@ -32,7 +32,7 @@ export default function FoodItemMap(props: FoodItemMapProps) {
     return (
         <MapContainer center={[props.location.coordinate.latitude, props.location.coordinate.longitude]} zoom={15}
                       scrollWheelZoom={false}>
-            <FoodItemMapController location={props.location} radius={props.radius}/>
+            <BananaMapController location={props.location} radius={props.radius}/>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
