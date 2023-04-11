@@ -17,6 +17,7 @@ export default function useCoordinate(setAppIsLoading: React.Dispatch<React.SetS
                 if (results.length > 0) {
                     setFoundCoordinate({latitude: results[0].lat, longitude: results[0].lon});
                 } else {
+                    setFoundCoordinate({latitude: 0, longitude: 0});
                     setCoordinateError(true);
                 }
             })
