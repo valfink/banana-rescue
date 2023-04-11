@@ -1,25 +1,24 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Coordinate} from "../model/Coordinate";
 import axios from "axios";
 import {OpenStreetMapsSearchResult} from "../model/OpenStreetMapsSearchResult";
 import toast from "react-hot-toast";
 
-export default function useCoordinate(searchString: string, doSearch: boolean, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
+export default function useCoordinate(setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     const [foundCoordinate, setFoundCoordinate] = useState<Coordinate>({latitude: 0, longitude: 0});
     const [error, setError] = useState(false);
 
-    useEffect(() => {
-        if (doSearch) {
-            console.log("SEARCH");
-            console.log("go");
-            setAppIsLoading(oldValue => oldValue + 1);
-            setError(false);
-            axios.get(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${searchString}`)
-                .then(res => res.data as OpenStreetMapsSearchResult[])
-                .then((results) => {
-                    if (results.length > 0) {
-                        setFoundCoordinate({latitude: results[0].lat, longitude: results[0].lon});
-                    } else {
+    function searchForCoordinates(searchString: string) {
+        console.log("SEARCH");
+        console.log("go");
+        setAppIsLoading(oldValue => oldValue + 1);
+        setError(false);
+        axios.get(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${searchString}`)
+            .then(res => res.data as OpenStreetMapsSearchResult[])
+            .then((results) => {
+                if (results.length > 0) {
+                    setFoundCoordinate({latitude: results[0].lat, longitude: results[0].lon});
+                } else {
                         setError(true);
                     }
                 })
@@ -30,8 +29,7 @@ export default function useCoordinate(searchString: string, doSearch: boolean, s
                 .finally(() => {
                     setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
                 });
-        }
-    }, [doSearch, searchString, setAppIsLoading]);
+    }
 
-    return {foundCoordinate, error};
+    return {searchForCoordinates, foundCoordinate, error};
 }
