@@ -211,15 +211,15 @@ export default function FoodItemForm(props: FoodItemFormProps) {
             {props.action === "add"
                 ? <>
                     <button type={"submit"}>Add Item</button>
-                    <Link to={location.state.navBarBackLink || "/"} state={location.state.oldState}
+                    <Link to={location.state?.navBarBackLink || "/"} state={location.state?.oldState}
                           className={"secondary-button"}>Cancel</Link>
                 </>
                 : <>
                     <button type={"submit"}>Update Item</button>
                     <button type={"button"} className={"danger-button"} onClick={handleDeleteButtonClick}>Delete Item
                     </button>
-                    <Link to={location.state.navBarBackLink || `/food/${props.oldFoodItem?.id}`}
-                          state={location.state.oldState} className={"secondary-button"}>Cancel</Link>
+                    <Link to={location.state?.navBarBackLink || `/food/${props.oldFoodItem?.id}`}
+                          state={location.state?.oldState} className={"secondary-button"}>Cancel</Link>
                 </>
             }
         </form>
