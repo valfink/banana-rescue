@@ -30,5 +30,5 @@ export default function useCoordinate(setAppIsLoading: React.Dispatch<React.SetS
                 });
     }
 
-    return {searchForCoordinates, foundCoordinate, coordinateError};
+    return {searchForCoordinates, foundCoordinate, setFoundCoordinate, coordinateError};
 }
