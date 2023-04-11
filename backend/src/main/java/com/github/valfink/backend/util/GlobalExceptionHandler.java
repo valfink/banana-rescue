@@ -5,6 +5,7 @@ import com.github.valfink.backend.chat.ChatExceptionNotFound;
 import com.github.valfink.backend.fooditem.*;
 import com.github.valfink.backend.mongouser.MongoUserExceptionBadInputData;
 import com.github.valfink.backend.mongouser.MongoUserExceptionNotFound;
+import com.github.valfink.backend.radar.RadarExceptionBadInputData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,5 +90,12 @@ public class GlobalExceptionHandler {
         Map<String, Object> responseBody = createResponseBody(exception.getMessage());
 
         return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RadarExceptionBadInputData.class)
+    public ResponseEntity<Map<String, Object>> handleRadarExceptionBadInputData(RadarExceptionBadInputData exception) {
+        Map<String, Object> responseBody = createResponseBody(exception.getMessage());
+
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 }
