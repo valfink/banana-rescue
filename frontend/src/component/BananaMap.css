@@ -1,0 +1,19 @@
+.leaflet-container {
+    min-height: 25vh;
+    flex-grow: 1;
+    border-radius: 0.3rem;
+    font-family: inherit;
+}
+
+.radar-line {
+    animation: scan 10s linear infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+    mask: url("#halfMask");
+}
+
+@keyframes scan {
+    to {
+        transform: rotate(360deg);
+    }
+}
