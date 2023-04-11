@@ -2,7 +2,7 @@ import React, {ChangeEvent, FormEvent, useContext, useEffect, useState} from "re
 import {UserContext, UserContextType} from "../context/UserContext";
 import {Link, useLocation} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCrosshairs} from "@fortawesome/free-solid-svg-icons";
+import {faCrosshairs, faLocationDot, faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import BananaMap from "../component/BananaMap";
 import {Location} from "../model/Location";
 import useCoordinate from "../hook/useCoordinate";
@@ -18,7 +18,7 @@ export default function RadarForm() {
     const [radarCenterSearchText, setRadarCenterSearchText] = useState("");
     const [radius, setRadius] = useState(1000);
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
-    const {searchForCoordinates, foundCoordinate, coordinateError} = useCoordinate(setAppIsLoading);
+    const {searchForCoordinates, foundCoordinate, setFoundCoordinate, coordinateError} = useCoordinate(setAppIsLoading);
     const radarLocation: Location = {title: "My Radar", coordinate: foundCoordinate};
 
     function handleSearchTextInputChange(e: ChangeEvent<HTMLInputElement>) {
@@ -28,6 +28,22 @@ export default function RadarForm() {
     function handleSearchTextSubmit(e: FormEvent) {
         e.preventDefault();
         searchForCoordinates(radarCenterSearchText);
+    }
+
+    function handleUseCurrentPositionClick() {
+        if ("geolocation" in navigator) {
+            setAppIsLoading(oldValue => oldValue + 1);
+            navigator.geolocation.getCurrentPosition(position => {
+                    setFoundCoordinate(position.coords);
+                    setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
+                },
+                err => {
+                    toast.error(`Could not get current position from Browser 😱\n${err.message}`);
+                    setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
+                });
+        } else {
+            toast.error("Can't get current position from Browser 😱");
+        }
     }
 
     function handleRadiusChange(e: ChangeEvent<HTMLInputElement>) {
@@ -60,7 +76,14 @@ export default function RadarForm() {
                         <input type={"text"} placeholder={"Radar Location"} value={radarCenterSearchText}
                                onChange={handleSearchTextInputChange} required/>
                     </div>
-                    <button type={"submit"} className={"secondary-button"}>Search</button>
+                    <div className={"buttons-inline"}>
+                        <button type={"submit"} className={"secondary-button"}>
+                            <FontAwesomeIcon icon={faMagnifyingGlass} aria-label={"Search"}/>
+                        </button>
+                        <button type={"button"} className={"secondary-button"} onClick={handleUseCurrentPositionClick}>
+                            <FontAwesomeIcon icon={faLocationDot} aria-label={"Use current position"}/>
+                        </button>
+                    </div>
                     <input type={"range"} min={500} max={5000} step={100} value={radius} onChange={handleRadiusChange}/>
                     {!coordinateError && <BananaMap location={radarLocation} radius={radius}/>}
                     {coordinateError &&
