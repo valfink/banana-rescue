@@ -4,6 +4,6 @@ import com.github.valfink.backend.geolocation.Coordinate;
 
 public record RadarDTO(
         Coordinate center,
-        int RadiusInMeters
+        int radiusInMeters
 ) {
 }
