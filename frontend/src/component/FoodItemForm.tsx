@@ -82,7 +82,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     }
 
     function submitFoodItem(withCoordinate: Coordinate) {
-        const dataToSubmit: FoodItemFormData = formData;
+        const dataToSubmit: FoodItemFormData = {...formData};
         if (dataToSubmit.locationTitle) {
             dataToSubmit.location = {
                 title: dataToSubmit.locationTitle,
