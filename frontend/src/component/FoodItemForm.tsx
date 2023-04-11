@@ -11,7 +11,7 @@ import moment from "moment";
 import "./FoodItemForm.css";
 import DeletionWarningScreen from "../modal/DeletionWarningScreen";
 import SetCoordinateScreen from "../modal/SetCoordinateScreen";
-import {Coordinate} from "../model/Coordinate";
+import useCoordinate from "../hook/useCoordinate";
 
 type FoodItemFormProps = {
     action: "add" | "edit";
@@ -37,6 +37,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     const location = useLocation();
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
+    const {searchForCoordinates, foundCoordinate, coordinateError} = useCoordinate(setAppIsLoading);
 
     function setInputTypeToDateOrTime(e: React.FocusEvent<HTMLInputElement>) {
         if (e.target.dataset.hasFocus === "false") {
@@ -74,6 +75,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setFormError("");
+        searchForCoordinates(formData.locationTitle || "");
         setShowSetCoordinateModal(true);
     }
 
@@ -81,12 +83,12 @@ export default function FoodItemForm(props: FoodItemFormProps) {
         setShowSetCoordinateModal(false);
     }
 
-    function submitFoodItem(withCoordinate: Coordinate) {
+    function submitFoodItem() {
         const dataToSubmit: FoodItemFormData = {...formData};
         if (dataToSubmit.locationTitle) {
             dataToSubmit.location = {
                 title: dataToSubmit.locationTitle,
-                coordinate: withCoordinate
+                coordinate: foundCoordinate
             }
             delete dataToSubmit.locationTitle;
         }
@@ -167,7 +169,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
             {formError && <div className={"form-error"}>Error: {formError}</div>}
             <SetCoordinateScreen locationTitle={formData.locationTitle || ""} modalIsOpen={showSetCoordinateModal}
                                  closeModal={handleCloseSetShowCoordinateModalClick}
-                                 submit={submitFoodItem}/>
+                                 submit={submitFoodItem} coordinate={foundCoordinate} error={coordinateError}/>
             <section>
                 <div className={"input-with-icon"}>
                     <FontAwesomeIcon icon={faQuoteLeft}/>
@@ -175,7 +177,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
                            onChange={handleInputChange}/>
                 </div>
                 {oldPhotoUri
-                    ? <img className={"old-item-image"} src={oldPhotoUri} alt={"Click to delete"}
+                    ? <img className={"image old-item-image"} src={oldPhotoUri} alt={"Click to delete"}
                            onClick={handleClickOldImage}/>
                     : <div className={"input-with-icon"}>
                         <FontAwesomeIcon icon={faCamera}/>
