@@ -12,7 +12,8 @@ function BananaMapController(props: BananaMapProps) {
     const map = useMap();
 
     useEffect(() => {
-        map.setView([props.location.coordinate.latitude, props.location.coordinate.longitude]);
+        map.setView([props.location.coordinate.latitude || 52.5170365,
+            props.location.coordinate.longitude || 13.3888599]);
     }, [map, props.location.coordinate.latitude, props.location.coordinate.longitude]);
 
     useEffect(() => {
@@ -25,10 +26,6 @@ function BananaMapController(props: BananaMapProps) {
 }
 
 export default function BananaMap(props: BananaMapProps) {
-    if (props.location.coordinate.latitude === 0) {
-        return <div className={"leaflet-container"}>Nothing to display yet…</div>;
-    }
-
     return (
         <MapContainer center={[props.location.coordinate.latitude, props.location.coordinate.longitude]} zoom={15}
                       scrollWheelZoom={false}>
