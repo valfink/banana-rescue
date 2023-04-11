@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Coordinate} from "../model/Coordinate";
-import axios from "axios/index";
+import axios from "axios";
 import {OpenStreetMapsSearchResult} from "../model/OpenStreetMapsSearchResult";
 import toast from "react-hot-toast";
 
@@ -10,7 +10,10 @@ export default function useCoordinate(searchString: string, doSearch: boolean, s
 
     useEffect(() => {
         if (doSearch) {
+            console.log("SEARCH");
+            console.log("go");
             setAppIsLoading(oldValue => oldValue + 1);
+            setError(false);
             axios.get(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${searchString}`)
                 .then(res => res.data as OpenStreetMapsSearchResult[])
                 .then((results) => {
