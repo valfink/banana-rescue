@@ -67,6 +67,6 @@ class RadarControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(radarDTO1))
                         .with(csrf()))
-                .andExpect(status().isConflict());
+                .andExpect(status().isBadRequest());
     }
 }
