@@ -34,7 +34,7 @@ export default function RadarForm() {
         if ("geolocation" in navigator) {
             setAppIsLoading(oldValue => oldValue + 1);
             navigator.geolocation.getCurrentPosition(position => {
-                    setFoundCoordinate(position.coords);
+                    setFoundCoordinate({latitude: position.coords.latitude, longitude: position.coords.longitude});
                     setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
                 },
                 err => {
