@@ -13,18 +13,18 @@ public class RadarService {
     private final RadarRepository radarRepository;
     private final MongoUserService mongoUserService;
 
-    public RadarDTO addRadar(RadarDTO radarDTO, Principal principal) {
+    public RadarDTORequest addRadar(RadarDTORequest radarDTORequest, Principal principal) {
         MongoUserDTOResponse user = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
 
         if (radarRepository.existsByUserId(user.id())) {
             throw new RadarExceptionBadInputData("You can only set one radar at a time.");
         }
-        if (radarDTO.center() == null || radarDTO.center().latitude() == null || radarDTO.center().longitude() == null) {
+        if (radarDTORequest.center() == null || radarDTORequest.center().latitude() == null || radarDTORequest.center().longitude() == null) {
             throw new RadarExceptionBadInputData("Center coordinate must be set.");
         }
 
-        Radar radar = radarRepository.save(new Radar(user.id(), radarDTO.center(), radarDTO.radiusInMeters()));
+        Radar radar = radarRepository.save(new Radar(user.id(), radarDTORequest.center(), radarDTORequest.radiusInMeters()));
 
-        return new RadarDTO(radar.center(), radar.radiusInMeters());
+        return new RadarDTORequest(radar.center(), radar.radiusInMeters());
     }
 }

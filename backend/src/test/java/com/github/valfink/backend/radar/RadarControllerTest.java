@@ -34,14 +34,14 @@ class RadarControllerTest {
     ObjectMapper objectMapper;
     MongoUser mongoUser1;
     Radar radar1, radar2;
-    RadarDTO radarDTO1;
+    RadarDTORequest radarDTORequest1;
 
     @BeforeEach
     void setUp() {
         mongoUser1 = new MongoUser("1", "user", "pass", "BASIC");
         radar1 = new Radar(mongoUser1.id(), new Coordinate(new BigDecimal("52.5170365"), new BigDecimal("13.3888599")), 200);
         radar2 = new Radar(mongoUser1.id(), new Coordinate(new BigDecimal("20"), new BigDecimal("40")), 20);
-        radarDTO1 = new RadarDTO(radar1.center(), radar1.radiusInMeters());
+        radarDTORequest1 = new RadarDTORequest(radar1.center(), radar1.radiusInMeters());
     }
 
     @Test
@@ -51,10 +51,10 @@ class RadarControllerTest {
         mongoUserRepository.save(mongoUser1);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/my-radar")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(radarDTO1))
+                        .content(objectMapper.writeValueAsString(radarDTORequest1))
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(radarDTO1)));
+                .andExpect(content().json(objectMapper.writeValueAsString(radarDTORequest1)));
     }
 
     @Test
@@ -65,7 +65,7 @@ class RadarControllerTest {
         radarRepository.save(radar2);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/my-radar")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(radarDTO1))
+                        .content(objectMapper.writeValueAsString(radarDTORequest1))
                         .with(csrf()))
                 .andExpect(status().isBadRequest());
     }

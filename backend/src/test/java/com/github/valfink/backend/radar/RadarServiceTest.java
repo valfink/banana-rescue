@@ -20,7 +20,7 @@ class RadarServiceTest {
     Principal principal;
     MongoUserDTOResponse mongoUserDTOResponse1;
     Radar radar1;
-    RadarDTO radarDTO1;
+    RadarDTORequest radarDTORequest1;
 
     @BeforeEach
     void setUp() {
@@ -31,7 +31,7 @@ class RadarServiceTest {
         principal = mock(Principal.class);
         mongoUserDTOResponse1 = new MongoUserDTOResponse("u1", "user");
         radar1 = new Radar(mongoUserDTOResponse1.id(), new Coordinate(new BigDecimal("52.5170365"), new BigDecimal("13.3888599")), 200);
-        radarDTO1 = new RadarDTO(radar1.center(), radar1.radiusInMeters());
+        radarDTORequest1 = new RadarDTORequest(radar1.center(), radar1.radiusInMeters());
     }
 
     @Test
@@ -43,8 +43,8 @@ class RadarServiceTest {
         when(radarRepository.save(radar1)).thenReturn(radar1);
 
         // WHEN
-        RadarDTO expected = radarDTO1;
-        RadarDTO actual = radarService.addRadar(radarDTO1, principal);
+        RadarDTORequest expected = radarDTORequest1;
+        RadarDTORequest actual = radarService.addRadar(radarDTORequest1, principal);
 
         // THEN
         verify(radarRepository).save(radar1);
@@ -59,7 +59,7 @@ class RadarServiceTest {
         when(radarRepository.existsByUserId(mongoUserDTOResponse1.id())).thenReturn(true);
 
         // WHEN & THEN
-        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(radarDTO1, principal));
+        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(radarDTORequest1, principal));
     }
 
     @Test
@@ -68,10 +68,10 @@ class RadarServiceTest {
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
         when(radarRepository.existsByUserId(mongoUserDTOResponse1.id())).thenReturn(false);
-        RadarDTO badRadarDTO = new RadarDTO(null, 100);
+        RadarDTORequest badRadarDTORequest = new RadarDTORequest(null, 100);
 
         // WHEN & THEN
-        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(badRadarDTO, principal));
+        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(badRadarDTORequest, principal));
     }
 
     @Test
@@ -80,10 +80,10 @@ class RadarServiceTest {
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
         when(radarRepository.existsByUserId(mongoUserDTOResponse1.id())).thenReturn(false);
-        RadarDTO badRadarDTO = new RadarDTO(new Coordinate(null, new BigDecimal("50")), 100);
+        RadarDTORequest badRadarDTORequest = new RadarDTORequest(new Coordinate(null, new BigDecimal("50")), 100);
 
         // WHEN & THEN
-        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(badRadarDTO, principal));
+        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(badRadarDTORequest, principal));
     }
 
     @Test
@@ -92,9 +92,9 @@ class RadarServiceTest {
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
         when(radarRepository.existsByUserId(mongoUserDTOResponse1.id())).thenReturn(false);
-        RadarDTO badRadarDTO = new RadarDTO(new Coordinate(new BigDecimal("50"), null), 100);
+        RadarDTORequest badRadarDTORequest = new RadarDTORequest(new Coordinate(new BigDecimal("50"), null), 100);
 
         // WHEN & THEN
-        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(badRadarDTO, principal));
+        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(badRadarDTORequest, principal));
     }
 }
