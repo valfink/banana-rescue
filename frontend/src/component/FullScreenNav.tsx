@@ -25,6 +25,7 @@ export default function FullScreenNav(props: FullScreenNavProps) {
                 <>
                     <NavLink to={"/food/my-items"} className={"secondary-button cursor-pointer"}>My Items</NavLink>
                     <NavLink to={"/chats"} className={"secondary-button cursor-pointer"}>My Chats</NavLink>
+                    <NavLink to={"/my-radar"} className={"secondary-button cursor-pointer"}>My Radar</NavLink>
                     <button onClick={logOutUser} className={"secondary-button cursor-pointer"}>Log Out</button>
                 </>
                 :

@@ -8,7 +8,7 @@ import {FoodItem} from "../model/FoodItem";
 import {UserContext, UserContextType} from "../context/UserContext";
 import DeletionWarningScreen from "../modal/DeletionWarningScreen";
 import useChat from "../hook/useChat";
-import FoodItemMap from "../component/FoodItemMap";
+import BananaMap from "../component/BananaMap";
 
 export default function FoodItemDetailsPage() {
     const {id} = useParams();
@@ -78,7 +78,7 @@ export default function FoodItemDetailsPage() {
                         <li><strong>Donator:</strong> {foodItem.donator.username}</li>
                         <li><strong>Comment:</strong> {foodItem.description}</li>
                     </ul>
-                    <FoodItemMap location={foodItem.location}/>
+                    <BananaMap location={foodItem.location}/>
                 </main>
             </section>
             <footer>
