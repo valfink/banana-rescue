@@ -15,7 +15,7 @@ public class RadarController {
     private final RadarService radarService;
 
     @PostMapping
-    public RadarDTORequest addRadar(@RequestBody RadarDTORequest radarDTORequest, Principal principal) {
+    public RadarDTOResponse addRadar(@RequestBody RadarDTORequest radarDTORequest, Principal principal) {
         return radarService.addRadar(radarDTORequest, principal);
     }
 }
