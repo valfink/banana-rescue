@@ -25,5 +25,18 @@ export default function useRadar(setAppIsLoading: React.Dispatch<React.SetStateA
             });
     }, [setAppIsLoading]);
 
-    return {radar, radarHasBeenSet};
+    function postRadar(radar: Radar) {
+        axios.post("/api/my-radar", radar)
+            .then((res) => {
+                setRadar(res.data);
+                setRadarHasBeenSet(true);
+                toast.success("Radar successfully added 🤗");
+            })
+            .catch(err => {
+                console.error(err);
+                toast.error(`Could not post radar 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
+            })
+    }
+
+    return {radar, radarHasBeenSet, postRadar};
 }

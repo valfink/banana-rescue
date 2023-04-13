@@ -10,16 +10,16 @@ import useRadar from "../hook/useRadar";
 export default function RadarDetailsPage() {
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
-    const {radar, radarHasBeenSet} = useRadar(setAppIsLoading);
+    const {radar, radarHasBeenSet, postRadar} = useRadar(setAppIsLoading);
 
     useEffect(redirectIfNotSignedIn, [redirectIfNotSignedIn]);
 
     if (!radarHasBeenSet) {
-        return <RadarForm/>;
+        return <RadarForm postRadar={postRadar}/>;
     }
 
     return (
-        <main className={"radar-details"}>
+        <main className={"radar-details item-gallery"}>
             {radar &&
                 <>
                     <header><BananaMap location={{title: "My Radar", coordinate: radar.center}}
