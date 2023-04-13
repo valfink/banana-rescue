@@ -1,33 +1,16 @@
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect} from "react";
 import {UserContext, UserContextType} from "../context/UserContext";
-import {Radar} from "../model/Radar";
-import axios from "axios";
 import RadarForm from "./RadarForm";
 import BananaMap from "../component/BananaMap";
 import "./RadarDetailsPage.css";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import FoodItemCard from "../component/FoodItemCard";
+import useRadar from "../hook/useRadar";
 
 export default function RadarDetailsPage() {
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
-    const [radar, setRadar] = useState<Radar | undefined>(undefined);
-    const [radarHasBeenSet, setRadarHasBeenSet] = useState(true);
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
-
-    useEffect(() => {
-        setAppIsLoading(oldValue => oldValue + 1);
-        axios.get("/api/my-radar")
-            .then(response => response.data as Radar)
-            .then(setRadar)
-            .catch(err => {
-                if (err.response.status === 404) {
-                    setRadarHasBeenSet(false);
-                }
-            })
-            .finally(() => {
-                setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
-            });
-    }, [setAppIsLoading]);
+    const {radar, radarHasBeenSet} = useRadar(setAppIsLoading);
 
     useEffect(redirectIfNotSignedIn, [redirectIfNotSignedIn]);
 
