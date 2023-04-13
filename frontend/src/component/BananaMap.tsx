@@ -42,7 +42,7 @@ export default function BananaMap(props: BananaMapProps) {
             {props.radius &&
                 <>
                     <Circle center={[props.location.coordinate.latitude, props.location.coordinate.longitude]}
-                            radius={props.radius} color={"var(--success-bg)"}/>
+                            radius={props.radius} color={"var(--success-bg)"} fillColor={"var(--bright-bg)"}/>
                     <Circle fillColor={"url(#circleGradient)"} fillOpacity={1} className={"radar-line"}
                             center={[props.location.coordinate.latitude, props.location.coordinate.longitude]}
                             radius={props.radius} color={"transparent"}/>
