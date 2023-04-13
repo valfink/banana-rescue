@@ -28,7 +28,7 @@ class RadarServiceTest {
     MongoUserDTOResponse mongoUserDTOResponse1, mongoUserDTOResponse2;
     Radar radar1;
     RadarDTORequest radarDTORequest1;
-    FoodItemDTOResponse foodItem1CloseBy, foodItem2NotSoClose;
+    FoodItemDTOResponse foodItem1CloseBy, foodItem2NotSoClose, foodItem3CloseByButFromSameUser;
 
     @BeforeEach
     void setUp() {
@@ -61,6 +61,16 @@ class RadarServiceTest {
                 Instant.parse("2023-04-12T11:30:00Z"),
                 Instant.parse("2023-04-14T12:00:00Z"),
                 "This is my food item not so close, but not very far away."
+        );
+        foodItem3CloseByButFromSameUser = new FoodItemDTOResponse(
+                "f3",
+                mongoUserDTOResponse1,
+                "Food Item Close By But From Same User",
+                null,
+                new Location("Also very close", new Coordinate(new BigDecimal("52.51836"), new BigDecimal("13.38856"))),
+                Instant.parse("2023-04-12T11:30:00Z"),
+                Instant.parse("2023-04-14T12:00:00Z"),
+                "This is my food item close by but it should not appear."
         );
     }
 
@@ -159,12 +169,12 @@ class RadarServiceTest {
     }
 
     @Test
-    void getRadar_whenUserHasRadarAndFoodItemIsCloseBy_thenReturnRadarDTOWithItem() {
+    void getRadar_whenUserHasRadarAndFoodItemIsCloseBy_thenReturnRadarDTOWithItemButWithoutOwnItem() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
         when(radarRepository.findById(mongoUserDTOResponse1.id())).thenReturn(Optional.of(radar1));
-        when(foodItemService.getAllFoodItems()).thenReturn(List.of(foodItem1CloseBy, foodItem2NotSoClose));
+        when(foodItemService.getAllFoodItems()).thenReturn(List.of(foodItem1CloseBy, foodItem2NotSoClose, foodItem3CloseByButFromSameUser));
 
         // WHEN
         RadarDTOResponse expected = radar1.convertToDTOResponse(List.of(foodItem1CloseBy));
