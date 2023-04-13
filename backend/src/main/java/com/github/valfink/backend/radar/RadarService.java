@@ -26,6 +26,7 @@ public class RadarService {
         return foodItemService
                 .getAllFoodItems()
                 .stream()
+                .filter(item -> !item.donator().id().equals(radar.userId()))
                 .filter(item ->
                         item.location().coordinate().latitude().subtract(radar.center().latitude()).pow(2)
                                 .add(item.location().coordinate().longitude().subtract(radar.center().longitude()).pow(2))
