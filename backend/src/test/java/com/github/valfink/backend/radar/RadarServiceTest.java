@@ -83,7 +83,7 @@ class RadarServiceTest {
     }
 
     @Test
-    void addRadar_whenUserAlreadyHasRadius_thenThrowException() {
+    void addRadar_whenUserAlreadyHasRadar_thenThrowException() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
@@ -148,7 +148,7 @@ class RadarServiceTest {
     }
 
     @Test
-    void getRadar_whenUserHasNoRadar_thenReturnNull() {
+    void getRadar_whenUserHasNoRadar_thenThrowException() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
