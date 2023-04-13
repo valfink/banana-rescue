@@ -15,7 +15,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class RadarServiceTest {
@@ -153,12 +154,8 @@ class RadarServiceTest {
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
         when(radarRepository.findById(mongoUserDTOResponse1.id())).thenReturn(Optional.empty());
 
-        // WHEN
-        RadarDTOResponse actual = radarService.getRadar(principal);
-
-        // THEN
-        verify(radarRepository).findById(mongoUserDTOResponse1.id());
-        assertNull(actual);
+        // WHEN & THEN
+        assertThrows(RadarExceptionNotFound.class, () -> radarService.getRadar(principal));
     }
 
     @Test

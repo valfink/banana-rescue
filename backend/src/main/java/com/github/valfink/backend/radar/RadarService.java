@@ -52,9 +52,8 @@ public class RadarService {
 
     public RadarDTOResponse getRadar(Principal principal) {
         MongoUserDTOResponse user = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
-
-        Radar radar = radarRepository.findById(user.id()).orElse(null);
-        if (radar == null) return null;
+        Radar radar = radarRepository.findById(user.id())
+                .orElseThrow(() -> new RadarExceptionNotFound("You have not set up a Radar yet."));
 
         return radar.convertToDTOResponse(getFoodItemsForRadar(radar));
     }
