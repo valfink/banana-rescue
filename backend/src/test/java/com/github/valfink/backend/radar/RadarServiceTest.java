@@ -171,7 +171,6 @@ class RadarServiceTest {
 
         // WHEN
         RadarDTOResponse expected = radar1.convertToDTOResponse(List.of(foodItem1CloseBy));
-        // TODO: FIX THIS!
         RadarDTOResponse actual = radarService.getRadar(principal);
 
         // THEN
