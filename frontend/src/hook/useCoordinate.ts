@@ -25,9 +25,9 @@ export default function useCoordinate(setAppIsLoading: React.Dispatch<React.SetS
                 console.error(err);
                 toast.error(`Could not fetch location search results 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
             })
-                .finally(() => {
-                    setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
-                });
+            .finally(() => {
+                setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
+            });
     }
 
     return {searchForCoordinates, foundCoordinate, setFoundCoordinate, coordinateError};
