@@ -56,8 +56,8 @@ export default function BananaMap(props: BananaMapProps) {
                                 <stop offset="50.5%" stopColor="transparent"/>
                             </linearGradient>
                             <linearGradient id="halfHeight" x2={"0%"} y2={"100%"}>
-                                <stop offset="50%" stopColor="white" stopOpacity={1}/>
-                                <stop offset="50%" stopColor="white" stopOpacity={0}/>
+                                <stop offset="49%" stopColor="white" stopOpacity={1}/>
+                                <stop offset="51%" stopColor="white" stopOpacity={0}/>
                             </linearGradient>
                             <mask id="halfMask" maskContentUnits="objectBoundingBox">
                                 <rect width="1" height="1" fill="url(#halfHeight)"/>

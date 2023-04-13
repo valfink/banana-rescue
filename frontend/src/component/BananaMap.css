@@ -10,4 +10,5 @@
     transform-box: fill-box;
     transform-origin: center;
     mask: url("#halfMask");
+    filter: drop-shadow(-1rem 0 1rem black);
 }
