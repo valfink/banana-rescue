@@ -17,9 +17,7 @@ export default function ChatDetailsPage() {
     const scrollRef = useRef<HTMLSpanElement>(null);
     const messageDraftRef = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-        redirectIfNotSignedIn();
-    }, [redirectIfNotSignedIn]);
+    useEffect(redirectIfNotSignedIn, [redirectIfNotSignedIn]);
 
 
     useEffect(() => {

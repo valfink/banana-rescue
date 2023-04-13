@@ -62,9 +62,7 @@ export default function RadarForm() {
             })
     }
 
-    useEffect(() => {
-        redirectIfNotSignedIn();
-    }, [redirectIfNotSignedIn]);
+    useEffect(redirectIfNotSignedIn, [redirectIfNotSignedIn]);
 
     return (
         <main className={"form radar-form"}>
