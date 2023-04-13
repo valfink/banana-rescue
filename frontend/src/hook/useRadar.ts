@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Radar} from "../model/Radar";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function useRadar(setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     const [radar, setRadar] = useState<Radar | undefined>(undefined);
@@ -14,6 +15,9 @@ export default function useRadar(setAppIsLoading: React.Dispatch<React.SetStateA
             .catch(err => {
                 if (err.response.status === 404) {
                     setRadarHasBeenSet(false);
+                } else {
+                    console.error(err);
+                    toast.error(`Could not fetch radar 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
                 }
             })
             .finally(() => {
