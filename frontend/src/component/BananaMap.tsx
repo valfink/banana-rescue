@@ -2,10 +2,14 @@ import {Circle, MapContainer, Marker, Popup, TileLayer, useMap} from "react-leaf
 import React, {useEffect} from "react";
 import {Location} from "../model/Location";
 import "./BananaMap.css";
+import {FoodItem} from "../model/FoodItem";
+import {DivIcon} from "leaflet";
+import {useLocation, useNavigate} from "react-router-dom";
 
 type BananaMapProps = {
     location: Location;
     radius?: number;
+    itemsToDisplay?: FoodItem[];
 }
 
 function BananaMapController(props: BananaMapProps) {
@@ -26,6 +30,9 @@ function BananaMapController(props: BananaMapProps) {
 }
 
 export default function BananaMap(props: BananaMapProps) {
+    const navigate = useNavigate();
+    const location = useLocation();
+
     return (
         <MapContainer center={[props.location.coordinate.latitude, props.location.coordinate.longitude]} zoom={15}
                       scrollWheelZoom={false}>
@@ -65,6 +72,22 @@ export default function BananaMap(props: BananaMapProps) {
                         </defs>
                     </svg>
                 </>}
+            {props.itemsToDisplay &&
+                <>
+                    {props.itemsToDisplay.map(item =>
+                        <Marker icon={new DivIcon({className: 'banana-marker', iconSize: [41, 41]})} key={item.id}
+                                position={[item.location.coordinate.latitude, item.location.coordinate.longitude]}>
+                            <Popup><strong onClick={() =>
+                                navigate(`/food/${item.id}`, {
+                                    state: {
+                                        navBarBackLink: location.pathname,
+                                        oldState: location.state
+                                    }
+                                })}>{item.title}</strong></Popup>
+                        </Marker>)
+                    }
+                </>
+            }
         </MapContainer>
     );
 }

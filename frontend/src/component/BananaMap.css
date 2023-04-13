@@ -11,4 +11,14 @@
     transform-origin: center;
     mask: url("#halfMask");
     filter: drop-shadow(-1rem 0 1rem var(--success-bg)) drop-shadow(-1rem 0 1rem var(--success-bg));
+    z-index: 200;
+}
+
+.banana-marker {
+    font-size: 35px;
+    filter: drop-shadow(0.5rem -0.3rem 0.2rem rgba(0, 0, 0, 0.4));
+}
+
+.banana-marker:before {
+    content: '🍌';
 }
