@@ -18,7 +18,7 @@ import {Toaster} from "react-hot-toast";
 import ChatDetailsPage from "./page/ChatDetailsPage";
 import ChatGallery from "./page/ChatGallery";
 import Div100vh from "react-div-100vh";
-import RadarForm from "./page/RadarForm";
+import RadarDetailsPage from "./page/RadarDetailsPage";
 
 axios.defaults.timeout = 5000;
 axios.interceptors.request.use(config => {
@@ -59,7 +59,7 @@ function App() {
                         <Route path={"/login"} element={<UserLogInPage/>}/>
                         <Route path={"/chats"} element={<ChatGallery/>}/>
                         <Route path={"/chats/:id"} element={<ChatDetailsPage/>}/>
-                        <Route path={"/my-radar"} element={<RadarForm/>}/>
+                        <Route path={"/my-radar"} element={<RadarDetailsPage/>}/>
                     </Routes>
                     <Toaster/>
                 </UserContext.Provider>

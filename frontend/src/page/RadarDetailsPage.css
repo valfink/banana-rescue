@@ -1,0 +1,10 @@
+.radar-details {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 0.5rem;
+}
+
+.radar-details header {
+    height: 25vh;
+    display: flex;
+}
