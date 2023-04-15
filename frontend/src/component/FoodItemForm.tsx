@@ -150,9 +150,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
             });
     }
 
-    useEffect(() => {
-        redirectIfNotSignedIn();
-    }, [redirectIfNotSignedIn]);
+    useEffect(redirectIfNotSignedIn, [redirectIfNotSignedIn]);
 
     return (
         <form onSubmit={handleFormSubmit}>

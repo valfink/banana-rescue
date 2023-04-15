@@ -9,9 +9,7 @@ export default function ChatGallery() {
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
     const chats = useMyChats(user, setAppIsLoading);
 
-    useEffect(() => {
-        redirectIfNotSignedIn();
-    }, [redirectIfNotSignedIn]);
+    useEffect(redirectIfNotSignedIn, [redirectIfNotSignedIn]);
 
     return (
         <main className={"item-gallery"}>

@@ -11,8 +11,13 @@ import "./RadarForm.css";
 import axios from "axios";
 import {Radar} from "../model/Radar";
 import toast from "react-hot-toast";
+import {OpenStreetMapsSearchResult} from "../model/OpenStreetMapsSearchResult";
 
-export default function RadarForm() {
+type RadarFormProps = {
+    postRadar: (radar: Radar) => void;
+}
+
+export default function RadarForm(props: RadarFormProps) {
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
     const location = useLocation();
     const [radarCenterSearchText, setRadarCenterSearchText] = useState("");
@@ -31,10 +36,18 @@ export default function RadarForm() {
     }
 
     function handleUseCurrentPositionClick() {
+        setRadarCenterSearchText("");
         if ("geolocation" in navigator) {
             setAppIsLoading(oldValue => oldValue + 1);
             navigator.geolocation.getCurrentPosition(position => {
-                    setFoundCoordinate(position.coords);
+                    setFoundCoordinate({latitude: position.coords.latitude, longitude: position.coords.longitude});
+                    axios.get(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${[position.coords.latitude, position.coords.longitude]}`)
+                        .then(res => res.data as OpenStreetMapsSearchResult[])
+                        .then((results) => {
+                            if (results.length > 0) {
+                                setRadarCenterSearchText(results[0].display_name);
+                            }
+                        });
                     setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
                 },
                 err => {
@@ -52,19 +65,10 @@ export default function RadarForm() {
 
     function handleAddRadarClick() {
         const radar: Radar = {center: radarLocation.coordinate, radiusInMeters: radius};
-        axios.post("/api/my-radar", radar)
-            .then(() => {
-                toast.success("Radar successfully added 🤗");
-            })
-            .catch(err => {
-                console.error(err);
-                toast.error(`Could not post radar 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
-            })
+        props.postRadar(radar);
     }
 
-    useEffect(() => {
-        redirectIfNotSignedIn();
-    }, [redirectIfNotSignedIn]);
+    useEffect(redirectIfNotSignedIn, [redirectIfNotSignedIn]);
 
     return (
         <main className={"form radar-form"}>

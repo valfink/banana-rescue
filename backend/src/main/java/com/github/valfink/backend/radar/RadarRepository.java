@@ -5,5 +5,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RadarRepository extends MongoRepository<Radar, String> {
-    boolean existsByUserId(String userId);
 }

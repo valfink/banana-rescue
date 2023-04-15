@@ -2,10 +2,14 @@ import {Circle, MapContainer, Marker, Popup, TileLayer, useMap} from "react-leaf
 import React, {useEffect} from "react";
 import {Location} from "../model/Location";
 import "./BananaMap.css";
+import {FoodItem} from "../model/FoodItem";
+import {DivIcon} from "leaflet";
+import {useLocation, useNavigate} from "react-router-dom";
 
 type BananaMapProps = {
     location: Location;
     radius?: number;
+    itemsToDisplay?: FoodItem[];
 }
 
 function BananaMapController(props: BananaMapProps) {
@@ -26,6 +30,9 @@ function BananaMapController(props: BananaMapProps) {
 }
 
 export default function BananaMap(props: BananaMapProps) {
+    const navigate = useNavigate();
+    const location = useLocation();
+
     return (
         <MapContainer center={[props.location.coordinate.latitude, props.location.coordinate.longitude]} zoom={15}
                       scrollWheelZoom={false}>
@@ -42,7 +49,7 @@ export default function BananaMap(props: BananaMapProps) {
             {props.radius &&
                 <>
                     <Circle center={[props.location.coordinate.latitude, props.location.coordinate.longitude]}
-                            radius={props.radius} color={"var(--success-bg)"}/>
+                            radius={props.radius} color={"var(--success-bg)"} fillColor={"var(--bright-bg)"}/>
                     <Circle fillColor={"url(#circleGradient)"} fillOpacity={1} className={"radar-line"}
                             center={[props.location.coordinate.latitude, props.location.coordinate.longitude]}
                             radius={props.radius} color={"transparent"}/>
@@ -56,8 +63,8 @@ export default function BananaMap(props: BananaMapProps) {
                                 <stop offset="50.5%" stopColor="transparent"/>
                             </linearGradient>
                             <linearGradient id="halfHeight" x2={"0%"} y2={"100%"}>
-                                <stop offset="50%" stopColor="white" stopOpacity={1}/>
-                                <stop offset="50%" stopColor="white" stopOpacity={0}/>
+                                <stop offset="49%" stopColor="white" stopOpacity={1}/>
+                                <stop offset="51%" stopColor="white" stopOpacity={0}/>
                             </linearGradient>
                             <mask id="halfMask" maskContentUnits="objectBoundingBox">
                                 <rect width="1" height="1" fill="url(#halfHeight)"/>
@@ -65,6 +72,22 @@ export default function BananaMap(props: BananaMapProps) {
                         </defs>
                     </svg>
                 </>}
+            {props.itemsToDisplay &&
+                <>
+                    {props.itemsToDisplay.map(item =>
+                        <Marker icon={new DivIcon({className: 'banana-marker', iconSize: [41, 41]})} key={item.id}
+                                position={[item.location.coordinate.latitude, item.location.coordinate.longitude]}>
+                            <Popup><strong onClick={() =>
+                                navigate(`/food/${item.id}`, {
+                                    state: {
+                                        navBarBackLink: location.pathname,
+                                        oldState: location.state
+                                    }
+                                })}>{item.title}</strong></Popup>
+                        </Marker>)
+                    }
+                </>
+            }
         </MapContainer>
     );
 }
