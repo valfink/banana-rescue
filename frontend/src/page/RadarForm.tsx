@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FormEvent, useContext, useEffect, useState} from "react";
 import {UserContext, UserContextType} from "../context/UserContext";
-import {Link, useLocation} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCrosshairs, faLocationDot, faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import BananaMap from "../component/BananaMap";
@@ -19,7 +19,6 @@ type RadarFormProps = {
 
 export default function RadarForm(props: RadarFormProps) {
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
-    const location = useLocation();
     const [radarCenterSearchText, setRadarCenterSearchText] = useState("");
     const [radius, setRadius] = useState(1000);
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
@@ -96,8 +95,7 @@ export default function RadarForm(props: RadarFormProps) {
                 <button type={"button"} onClick={handleAddRadarClick}
                         disabled={foundCoordinate.latitude === 0 && foundCoordinate.longitude === 0}>Add Radar
                 </button>
-                <Link to={location.state?.navBarBackLink || "/"} state={location.state?.oldState}
-                      className={"secondary-button"}>Cancel</Link>
+                <Link to={"/"} className={"secondary-button"}>Cancel</Link>
             </form>
         </main>
     );

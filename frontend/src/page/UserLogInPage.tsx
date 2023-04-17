@@ -1,8 +1,7 @@
 import UserForm from "../component/UserForm";
-import {Link, useLocation} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 export default function UserLogInPage() {
-    const location = useLocation();
 
     return (
         <main className={"user form"}>
@@ -10,7 +9,7 @@ export default function UserLogInPage() {
             <UserForm action={"login"}/>
             <footer>
                 Don't have an account yet?<br/>
-                <Link to={"/signup"} state={{navBarBackLink: location.pathname, oldState: location.state}}>
+                <Link to={"/signup"} state={{showBackLink: true}}>
                     Sign up
                 </Link>
             </footer>

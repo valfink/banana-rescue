@@ -1,5 +1,5 @@
 import "./FullScreenNav.css";
-import {NavLink, useLocation} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import React, {useContext} from "react";
 import {UserContext, UserContextType} from "../context/UserContext";
 
@@ -10,7 +10,6 @@ type FullScreenNavProps = {
 
 export default function FullScreenNav(props: FullScreenNavProps) {
     const {user, logOutUser} = useContext(UserContext) as UserContextType;
-    const location = useLocation();
 
     function closeNavBar() {
         props.setShowNavBar(false);
@@ -20,7 +19,7 @@ export default function FullScreenNav(props: FullScreenNavProps) {
         <nav className={"full-screen-nav"} onClick={closeNavBar}>
             <NavLink to={"/food"} className={"secondary-button cursor-pointer"}>All Items</NavLink>
             <NavLink to={"/add-food"} className={"secondary-button cursor-pointer"}
-                     state={{navBarBackLink: location.pathname, oldState: location.state}}>Add Item</NavLink>
+                     state={{showBackLink: true}}>Add Item</NavLink>
             {user ?
                 <>
                     <NavLink to={"/food/my-items"} className={"secondary-button cursor-pointer"}>My Items</NavLink>
@@ -31,9 +30,9 @@ export default function FullScreenNav(props: FullScreenNavProps) {
                 :
                 <>
                     <NavLink to={"/login"} className={"secondary-button cursor-pointer"}
-                             state={{navBarBackLink: location.pathname, oldState: location.state}}>Log In</NavLink>
+                             state={{showBackLink: true}}>Log In</NavLink>
                     <NavLink to={"/signup"} className={"secondary-button cursor-pointer"}
-                             state={{navBarBackLink: location.pathname, oldState: location.state}}>Sign Up</NavLink>
+                             state={{showBackLink: true}}>Sign Up</NavLink>
                 </>
             }
         </nav>

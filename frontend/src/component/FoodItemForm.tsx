@@ -1,7 +1,7 @@
 import React, {ChangeEvent, FormEvent, useContext, useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCamera, faLocationDot, faQuoteLeft, faTrainSubway, faUtensils} from '@fortawesome/free-solid-svg-icons';
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {UserContext, UserContextType} from "../context/UserContext";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import {FoodItemFormData} from "../model/FoodItemFormData";
@@ -34,7 +34,6 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     const [showDeleteFoodItemModal, setShowDeleteFoodItemModal] = useState(false);
     const [showSetCoordinateModal, setShowSetCoordinateModal] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation();
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
     const {searchForCoordinates, foundCoordinate, coordinateError} = useCoordinate(setAppIsLoading);
@@ -211,15 +210,13 @@ export default function FoodItemForm(props: FoodItemFormProps) {
             {props.action === "add"
                 ? <>
                     <button type={"submit"}>Add Item</button>
-                    <Link to={location.state?.navBarBackLink || "/"} state={location.state?.oldState}
-                          className={"secondary-button"}>Cancel</Link>
+                    <Link to={"/"} className={"secondary-button"}>Cancel</Link>
                 </>
                 : <>
                     <button type={"submit"}>Update Item</button>
                     <button type={"button"} className={"danger-button"} onClick={handleDeleteButtonClick}>Delete Item
                     </button>
-                    <Link to={location.state?.navBarBackLink || `/food/${props.oldFoodItem?.id}`}
-                          state={location.state?.oldState} className={"secondary-button"}>Cancel</Link>
+                    <Link to={`/food/${props.oldFoodItem?.id}`} className={"secondary-button"}>Cancel</Link>
                 </>
             }
         </form>

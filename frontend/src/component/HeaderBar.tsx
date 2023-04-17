@@ -4,7 +4,7 @@ import {faArrowLeft, faBars, faCircleUser as loggedInUser, faTruckMedical} from 
 import {faCircleUser as loggedOutUser} from "@fortawesome/free-regular-svg-icons";
 import React, {useContext, useState} from "react";
 import {UserContext, UserContextType} from "../context/UserContext";
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import LogOutWarningScreen from "../modal/LogOutWarningScreen";
 
 type HeaderBarProps = {
@@ -16,7 +16,8 @@ export default function HeaderBar(props: HeaderBarProps) {
     const {user, logOutUser} = useContext(UserContext) as UserContextType;
     const [showLogOutWarning, setShowLogOutWarning] = useState(false);
     const location = useLocation();
-    const navBarBackLink = location.state?.navBarBackLink;
+    const showBackLink = location.state?.showBackLink;
+    const navigate = useNavigate();
 
     function handleShowNavBarClick() {
         props.setShowNavBar(showNavBar => !showNavBar);
@@ -45,8 +46,8 @@ export default function HeaderBar(props: HeaderBarProps) {
         <section className={"header-bar" + (props.displayShadow ? " with-shadow" : "")}>
             <LogOutWarningScreen modalIsOpen={showLogOutWarning} closeModal={handleCloseLogOutWarningClick}
                                  logOut={handleLogOutClick}/>
-            {navBarBackLink
-                ? <Link to={navBarBackLink} state={location.state.oldState}><FontAwesomeIcon icon={faArrowLeft}/></Link>
+            {showBackLink
+                ? <span onClick={() => navigate(-1)}><FontAwesomeIcon icon={faArrowLeft}/></span>
                 : <span className={"cursor-pointer"} onClick={handleShowNavBarClick}><FontAwesomeIcon
                     icon={faBars}/></span>}
             <Link to={"/"} onClick={closeNavBarIfOpen}><FontAwesomeIcon icon={faTruckMedical}/> Banana Rescue</Link>
@@ -56,9 +57,8 @@ export default function HeaderBar(props: HeaderBarProps) {
                 </span>
                 :
                 <Link to={"/login"} state={{
-                    navBarBackLink: location.pathname,
-                    redirectAfterLogIn: location.pathname,
-                    oldState: location.state
+                    showBackLink: true,
+                    redirectAfterLogIn: location.pathname
                 }}
                       onClick={closeNavBarIfOpen}>
                     <FontAwesomeIcon icon={loggedOutUser} className={"not-logged-in"}/>

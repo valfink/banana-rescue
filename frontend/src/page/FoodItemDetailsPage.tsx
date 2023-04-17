@@ -1,4 +1,4 @@
-import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import React, {useContext, useEffect, useState} from "react";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import "./FoodItemDetailsPage.css";
@@ -15,7 +15,6 @@ export default function FoodItemDetailsPage() {
     const {appIsLoading, setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
     const [foodItem, setFoodItem] = useState<FoodItem | undefined>(undefined);
     const {user} = useContext(UserContext) as UserContextType;
-    const {pathname, state} = useLocation();
     const [showDeleteFoodItemModal, setShowDeleteFoodItemModal] = useState(false);
     const navigate = useNavigate();
     const {startNewChat} = useChat(undefined, user, setAppIsLoading);
@@ -48,7 +47,7 @@ export default function FoodItemDetailsPage() {
         if (foodItem?.id) {
             startNewChat(foodItem.id)
                 .then(chatId => {
-                    navigate(`/chats/${chatId}`, {state: {navBarBackLink: pathname, oldState: state}});
+                    navigate(`/chats/${chatId}`, {state: {showBackLink: true}});
                 })
         }
     }
@@ -85,7 +84,7 @@ export default function FoodItemDetailsPage() {
                 {user?.id === foodItem.donator.id
                     ? <>
                         <Link to={`/food/${foodItem.id}/edit`} className={"primary-button"}
-                              state={{navBarBackLink: pathname, oldState: state}}>Edit Item</Link>
+                              state={{showBackLink: true}}>Edit Item</Link>
                         <button className={"danger-button"} onClick={handleDeleteButtonClick}>Delete Item</button>
                         <DeletionWarningScreen closeModal={handleCloseModalClick} deleteItem={handleDeleteItemClick}
                                                modalIsOpen={showDeleteFoodItemModal} itemDescriptor={"food item"}
