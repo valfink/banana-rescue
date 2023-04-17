@@ -32,25 +32,28 @@ export default function useWebSocketNotifications(user: User | undefined) {
                         toast((t) => (
                                 <>
                                     <main>
-                                        <h4>New Food Item on your Radar</h4>
-                                        There is a new Food Item within your Radar's radius.<br/>Would you like to see it
-                                        now?
                                         <section>
-                                            <Link to={`/food/${newRadarItem.id}`} onClick={() => toast.dismiss(t.id)}
-                                                  className={"primary-button"}>View Food Item</Link>
-                                            <button className={"secondary-button"} onClick={() => toast.dismiss(t.id)}>
-                                                Stay here
-                                            </button>
+                                            <h4>New Food Item on your Radar</h4>
+                                            There is a new Food Item within your Radar's radius.<br/>
+                                            Would you like to see it now?
                                         </section>
+                                        <aside
+                                            style={{backgroundImage: `url(${newRadarItem.photoUri || "/surprise-food.jpg"})`}}/>
                                     </main>
-                                    <aside
-                                        style={{backgroundImage: `url(${newRadarItem.photoUri || "/surprise-food.jpg"})`}}/>
+                                    <footer>
+                                        <Link to={`/food/${newRadarItem.id}`} onClick={() => toast.dismiss(t.id)}
+                                              className={"primary-button"} state={{showBackLink: true}}>View Food
+                                            Item</Link>
+                                        <button className={"secondary-button"} onClick={() => toast.dismiss(t.id)}>
+                                            Stay here
+                                        </button>
+                                    </footer>
                                 </>
                             ),
                             {
                                 icon: "🍌",
                                 duration: Infinity,
-                                className: "actionable-toast radar-toast"
+                                className: "actionable-toast radar-toast",
                             });
                     });
                 }
