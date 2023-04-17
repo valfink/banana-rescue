@@ -6,6 +6,9 @@
     flex-flow: column nowrap;
     gap: 1rem;
     padding: 0 1rem;
+    box-sizing: border-box;
+    max-width: 750px;
+    margin: auto;
 }
 
 .modal .buttons {
@@ -35,4 +38,6 @@
 
 .ReactModal__Overlay {
     z-index: 1010;
+    position: fixed;
+    inset: 0;
 }

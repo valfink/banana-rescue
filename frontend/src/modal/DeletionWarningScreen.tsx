@@ -17,6 +17,7 @@ export default function DeletionWarningScreen(props: DeletionWarningScreenProps)
             bodyOpenClassName={"has-open-modal"}
             htmlOpenClassName={"has-open-modal"}
             className={"modal deletion-warning"}
+            overlayClassName={"overlay"}
         >
             <h1>ATTENTION</h1>
             <h2>

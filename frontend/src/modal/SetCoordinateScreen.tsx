@@ -24,6 +24,7 @@ export default function SetCoordinateScreen(props: SetCoordinateScreenProps) {
             bodyOpenClassName={"has-open-modal"}
             htmlOpenClassName={"has-open-modal"}
             className={"modal"}
+            overlayClassName={"overlay"}
         >
             <h1>Choose Location</h1>
             <h2>

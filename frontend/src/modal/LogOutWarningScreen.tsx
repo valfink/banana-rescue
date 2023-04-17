@@ -15,6 +15,7 @@ export default function LogOutWarningScreen(props: LogOutWarningScreenProps) {
             bodyOpenClassName={"has-open-modal"}
             htmlOpenClassName={"has-open-modal"}
             className={"modal deletion-warning"}
+            overlayClassName={"overlay"}
         >
             <h1>LOG OUT</h1>
             <h2>
