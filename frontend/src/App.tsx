@@ -19,6 +19,7 @@ import ChatDetailsPage from "./page/ChatDetailsPage";
 import ChatGallery from "./page/ChatGallery";
 import Div100vh from "react-div-100vh";
 import RadarDetailsPage from "./page/RadarDetailsPage";
+import useWebSocketNotifications from "./hook/useWebSocketNotifications";
 
 axios.defaults.timeout = 5000;
 axios.interceptors.request.use(config => {
@@ -37,6 +38,8 @@ function App() {
     const [appIsLoading, setAppIsLoading] = useState(0);
     const loadingContext = useMemo(() => ({appIsLoading, setAppIsLoading}), [appIsLoading]);
     const [appContentIsScrolled, setAppContentIsScrolled] = useState(false);
+    const currentUserContext = useUserAuth(setAppIsLoading);
+    useWebSocketNotifications(currentUserContext.user);
 
     function handleAppScroll(e: React.UIEvent) {
         setAppContentIsScrolled(e.currentTarget.scrollTop > 0);
@@ -45,7 +48,7 @@ function App() {
     return (
         <Div100vh className="App" onScroll={handleAppScroll}>
             <AppIsLoadingContext.Provider value={loadingContext}>
-                <UserContext.Provider value={useUserAuth(setAppIsLoading)}>
+                <UserContext.Provider value={currentUserContext}>
                     {appIsLoading !== 0 && <LoadingScreen/>}
                     <HeaderBarAndFullScreenNav displayHeaderBarShadow={appContentIsScrolled}/>
                     <Routes>
