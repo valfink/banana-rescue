@@ -79,7 +79,7 @@ class RadarServiceTest {
     }
 
     @Test
-    void addRadar_whenUserHasNoRadarYetAndDTOIsValid_thenReturnNewRadarDTO() {
+    void addMyRadar_whenUserHasNoRadarYetAndDTOIsValid_thenReturnNewRadarDTO() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
@@ -89,7 +89,7 @@ class RadarServiceTest {
 
         // WHEN
         RadarDTOResponse expected = radar1.convertToDTOResponse(List.of());
-        RadarDTOResponse actual = radarService.addRadar(radarDTORequest1, principal);
+        RadarDTOResponse actual = radarService.addMyRadar(radarDTORequest1, principal);
 
         // THEN
         verify(radarRepository).save(radar1);
@@ -97,18 +97,18 @@ class RadarServiceTest {
     }
 
     @Test
-    void addRadar_whenUserAlreadyHasRadar_thenThrowException() {
+    void addMyRadar_whenUserAlreadyHasRadar_thenThrowException() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
         when(radarRepository.existsById(mongoUserDTOResponse1.id())).thenReturn(true);
 
         // WHEN & THEN
-        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(radarDTORequest1, principal));
+        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addMyRadar(radarDTORequest1, principal));
     }
 
     @Test
-    void addRadar_whenCenterIsNull_thenThrowException() {
+    void addMyRadar_whenCenterIsNull_thenThrowException() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
@@ -116,11 +116,11 @@ class RadarServiceTest {
         RadarDTORequest badRadarDTORequest = new RadarDTORequest(null, 100);
 
         // WHEN & THEN
-        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(badRadarDTORequest, principal));
+        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addMyRadar(badRadarDTORequest, principal));
     }
 
     @Test
-    void addRadar_whenCenterLatitudeIsNull_thenThrowException() {
+    void addMyRadar_whenCenterLatitudeIsNull_thenThrowException() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
@@ -128,11 +128,11 @@ class RadarServiceTest {
         RadarDTORequest badRadarDTORequest = new RadarDTORequest(new Coordinate(null, new BigDecimal("50")), 100);
 
         // WHEN & THEN
-        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(badRadarDTORequest, principal));
+        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addMyRadar(badRadarDTORequest, principal));
     }
 
     @Test
-    void addRadar_whenCenterLongitudeIsNull_thenThrowException() {
+    void addMyRadar_whenCenterLongitudeIsNull_thenThrowException() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
@@ -140,11 +140,11 @@ class RadarServiceTest {
         RadarDTORequest badRadarDTORequest = new RadarDTORequest(new Coordinate(new BigDecimal("50"), null), 100);
 
         // WHEN & THEN
-        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addRadar(badRadarDTORequest, principal));
+        assertThrows(RadarExceptionBadInputData.class, () -> radarService.addMyRadar(badRadarDTORequest, principal));
     }
 
     @Test
-    void getRadar_whenUserHasRadar_thenReturnRadarDTO() {
+    void getMyRadar_whenUserHasRadar_thenReturnRadarDTO() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
@@ -153,7 +153,7 @@ class RadarServiceTest {
 
         // WHEN
         RadarDTOResponse expected = radar1.convertToDTOResponse(List.of());
-        RadarDTOResponse actual = radarService.getRadar(principal);
+        RadarDTOResponse actual = radarService.getMyRadar(principal);
 
         // THEN
         verify(radarRepository).findById(mongoUserDTOResponse1.id());
@@ -162,18 +162,18 @@ class RadarServiceTest {
     }
 
     @Test
-    void getRadar_whenUserHasNoRadar_thenThrowException() {
+    void getMyRadar_whenUserHasNoRadar_thenThrowException() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
         when(radarRepository.findById(mongoUserDTOResponse1.id())).thenReturn(Optional.empty());
 
         // WHEN & THEN
-        assertThrows(RadarExceptionNotFound.class, () -> radarService.getRadar(principal));
+        assertThrows(RadarExceptionNotFound.class, () -> radarService.getMyRadar(principal));
     }
 
     @Test
-    void getRadar_whenUserHasRadarAndFoodItemIsCloseBy_thenReturnRadarDTOWithItemButWithoutOwnItem() {
+    void getMyRadar_whenUserHasRadarAndFoodItemIsCloseBy_thenReturnRadarDTOWithItemButWithoutOwnItem() {
         // GIVEN
         when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
         when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
@@ -182,7 +182,7 @@ class RadarServiceTest {
 
         // WHEN
         RadarDTOResponse expected = radar1.convertToDTOResponse(List.of(foodItem1CloseBy));
-        RadarDTOResponse actual = radarService.getRadar(principal);
+        RadarDTOResponse actual = radarService.getMyRadar(principal);
 
         // THEN
         verify(radarRepository).findById(mongoUserDTOResponse1.id());
@@ -202,5 +202,33 @@ class RadarServiceTest {
         // THEN
         verify(messagingTemplate).convertAndSendToUser(mongoUserDTOResponse1.username(), "/queue/radar", foodItem1CloseBy);
         verifyNoMoreInteractions(messagingTemplate);
+    }
+
+    @Test
+    void deleteMyRadar_whenUserHasRadar_thenDeleteItAndReturnString() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
+        when(radarRepository.findById(mongoUserDTOResponse1.id())).thenReturn(Optional.of(radar1));
+
+        // WHEN
+        String expected = "Radar deleted";
+        String actual = radarService.deleteMyRadar(principal);
+
+        // THEN
+        verify(radarRepository).findById(mongoUserDTOResponse1.id());
+        verify(radarRepository).delete(radar1);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void deleteMyRadar_whenUserHasNoRadar_thenThrowException() {
+        // GIVEN
+        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
+        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
+        when(radarRepository.findById(mongoUserDTOResponse1.id())).thenReturn(Optional.empty());
+
+        // WHEN & THEN
+        assertThrows(RadarExceptionNotFound.class, () -> radarService.deleteMyRadar(principal));
     }
 }
