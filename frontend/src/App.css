@@ -174,15 +174,63 @@ button[type=submit]:last-of-type {
     min-width: 90%;
 }
 
+.actionable-toast a {
+    animation: shake 2s linear infinite;
+    animation-delay: 0.6s;
+}
+
+@keyframes shake {
+    0% {
+        transform: rotate(-7deg);
+    }
+    2% {
+        transform: rotate(7deg);
+    }
+    4%, 12% {
+        transform: rotate(-9deg);
+    }
+    6%, 14% {
+        transform: rotate(9deg);
+    }
+    8% {
+        transform: rotate(-11deg);
+    }
+    10% {
+        transform: rotate(11deg);
+    }
+    16% {
+        transform: rotate(-5deg);
+    }
+    18% {
+        transform: rotate(5deg);
+    }
+    20%, 100% {
+        transform: rotate(0);
+    }
+
+}
+
 .actionable-toast div[role=status] {
     flex-flow: column nowrap;
+}
+
+.radar-toast div[role=status] main {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.radar-toast aside {
+    flex-basis: 40%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 0.3rem;
 }
 
 .actionable-toast h4 {
     margin: 0;
 }
 
-.actionable-toast section {
+.actionable-toast footer {
     margin-top: 0.5rem;
     display: flex;
     flex-flow: row nowrap;
