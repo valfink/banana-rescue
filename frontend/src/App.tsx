@@ -49,7 +49,7 @@ function App() {
         <Div100vh className="App" onScroll={handleAppScroll}>
             <AppIsLoadingContext.Provider value={loadingContext}>
                 <UserContext.Provider value={currentUserContext}>
-                    {appIsLoading !== 0 && <LoadingScreen/>}
+                    {<LoadingScreen modalIsOpen={appIsLoading !== 0}/>}
                     <HeaderBarAndFullScreenNav displayHeaderBarShadow={appContentIsScrolled}/>
                     <Routes>
                         <Route path={"/"} element={<Navigate to={"/food"}/>}/>

@@ -1,14 +1,13 @@
+.loading-screen-overlay {
+    z-index: 10000;
+}
+
 .loading-screen {
-    position: absolute;
     background-color: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(2px);
-    width: 100%;
-    max-width: 750px;
-    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
 }
 
 .spinner {
