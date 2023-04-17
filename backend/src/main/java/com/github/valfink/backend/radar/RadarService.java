@@ -7,8 +7,6 @@ import com.github.valfink.backend.mongouser.MongoUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.security.Principal;
 import java.util.List;
 
@@ -20,19 +18,11 @@ public class RadarService {
     private final FoodItemService foodItemService;
 
     private List<FoodItemDTOResponse> getFoodItemsForRadar(Radar radar) {
-        int divisionScale = 10;
-        BigDecimal radiusAsCoordinateOffset = new BigDecimal(radar.radiusInMeters()).divide(new BigDecimal("111111"), divisionScale, RoundingMode.HALF_EVEN);
-
         return foodItemService
                 .getAllFoodItems()
                 .stream()
                 .filter(item -> !item.donator().id().equals(radar.userId()))
-                .filter(item ->
-                        item.location().coordinate().latitude().subtract(radar.center().latitude()).pow(2)
-                                .add(item.location().coordinate().longitude().subtract(radar.center().longitude()).pow(2))
-                                .compareTo(radiusAsCoordinateOffset.pow(2))
-                                <= 0
-                )
+                .filter(radar::containsFoodItem)
                 .toList();
     }
 
