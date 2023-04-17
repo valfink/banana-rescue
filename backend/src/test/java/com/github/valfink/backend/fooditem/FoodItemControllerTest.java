@@ -364,7 +364,7 @@ class FoodItemControllerTest {
         String authorization = mongoUser2.username() + ":" + rawPasswordForAllTestUsers;
         httpHeaders.add("Authorization", "Basic " + new String(Base64.getEncoder().encode(authorization.getBytes())));
         StompSession stompSession = stompClient
-                .connectAsync("ws://localhost:" + port + "/api/ws/chat", wsHeaders, new StompSessionHandlerAdapter() {
+                .connectAsync("ws://localhost:" + port + "/api/ws", wsHeaders, new StompSessionHandlerAdapter() {
                 })
                 .get(1, TimeUnit.SECONDS);
         stompSession.subscribe("/user/queue/radar", stompFrameHandler);

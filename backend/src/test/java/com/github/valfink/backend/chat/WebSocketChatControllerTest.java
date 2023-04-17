@@ -193,7 +193,7 @@ class WebSocketChatControllerTest {
         String authorization = user.username() + ":" + rawPasswordForAllTestUsers;
         httpHeaders.add("Authorization", "Basic " + new String(Base64.getEncoder().encode(authorization.getBytes())));
         return stompClient
-                .connectAsync("ws://localhost:" + port + "/api/ws/chat", wsHeaders, new StompSessionHandlerAdapter() {
+                .connectAsync("ws://localhost:" + port + "/api/ws", wsHeaders, new StompSessionHandlerAdapter() {
                 })
                 .get(1, TimeUnit.SECONDS);
     }

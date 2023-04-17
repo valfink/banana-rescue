@@ -18,10 +18,10 @@ export default function useChat(chatId: string | undefined, user: User | undefin
 
     function generateBrokerUrl(): string {
         if (process.env.NODE_ENV !== 'production') {
-            return "ws://localhost:8080/api/ws/chat";
+            return "ws://localhost:8080/api/ws";
         }
         const scheme = window.location.protocol === "https:" ? "wss" : "ws";
-        return `${scheme}://${window.location.hostname}:${window.location.port}/api/ws/chat`;
+        return `${scheme}://${window.location.hostname}:${window.location.port}/api/ws`;
     }
 
     useEffect(() => {
