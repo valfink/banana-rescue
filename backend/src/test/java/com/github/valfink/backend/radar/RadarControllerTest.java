@@ -78,7 +78,7 @@ class RadarControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser
-    void addRadar_whenUserHasNoRadarYetAndDTOIsValid_thenReturnNewRadarDTO() throws Exception {
+    void addMyRadar_whenUserHasNoRadarYetAndDTOIsValid_thenReturnNewRadarDTO() throws Exception {
         mongoUserRepository.save(mongoUser1);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/my-radar")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -91,7 +91,7 @@ class RadarControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser
-    void addRadar_whenUserAlreadyHasRadar_thenReturn400() throws Exception {
+    void addMyRadar_whenUserAlreadyHasRadar_thenReturn400() throws Exception {
         mongoUserRepository.save(mongoUser1);
         radarRepository.save(radar2);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/my-radar")
@@ -104,7 +104,7 @@ class RadarControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser
-    void getRadar_whenUserHasNoRadar_thenReturn404() throws Exception {
+    void getMyRadar_whenUserHasNoRadar_thenReturn404() throws Exception {
         mongoUserRepository.save(mongoUser1);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/my-radar"))
                 .andExpect(status().isNotFound());
@@ -113,7 +113,7 @@ class RadarControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser
-    void getRadar_whenUserHasRadar_thenReturnRadar() throws Exception {
+    void getMyRadar_whenUserHasRadar_thenReturnRadar() throws Exception {
         mongoUserRepository.save(mongoUser1);
         radarRepository.save(radar1);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/my-radar"))
@@ -124,7 +124,7 @@ class RadarControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser
-    void getRadar_whenUserHasRadarAndFoodItemIsCloseBy_thenReturnRadarDTOWithItem() throws Exception {
+    void getMyRadar_whenUserHasRadarAndFoodItemIsCloseBy_thenReturnRadarDTOWithItem() throws Exception {
         mongoUserRepository.save(mongoUser1);
         mongoUserRepository.save(mongoUser2);
         foodItemRepository.save(foodItem1CloseBy);
