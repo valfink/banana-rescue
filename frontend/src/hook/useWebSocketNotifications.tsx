@@ -19,14 +19,11 @@ export default function useWebSocketNotifications(user: User | undefined) {
     }
 
     useEffect(() => {
-        console.log("Use WebSocket Notification...");
         if (user) {
-            console.log("User exists. Connecting...");
             const chatClient = new Client();
             chatClient.configure({
                 brokerURL: API_BROKER_URL,
                 onConnect: () => {
-                    console.log("Connected. Subscribing...");
                     chatClient.subscribe(API_SUBSCRIPTION_ENDPOINT, message => {
                         const newRadarItem = JSON.parse(message.body) as FoodItem;
                         toast((t) => (
