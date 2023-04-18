@@ -1,5 +1,6 @@
 package com.github.valfink.backend.fooditem;
 
+import com.github.valfink.backend.radar.RadarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,7 @@ import java.util.List;
 @RequestMapping("/api/food")
 public class FoodItemController {
     private final FoodItemService foodItemService;
+    private final RadarService radarService;
 
     @GetMapping
     public List<FoodItemDTOResponse> getAllFoodItems() {
@@ -25,7 +27,9 @@ public class FoodItemController {
 
     @PostMapping
     public FoodItemDTOResponse addFoodItem(@RequestPart("form") FoodItemDTORequest foodItemDTORequest, @RequestPart(value = "photo", required = false) MultipartFile photo, Principal principal) {
-        return foodItemService.addFoodItem(foodItemDTORequest, photo, principal);
+        FoodItemDTOResponse foodItemDTOResponse = foodItemService.addFoodItem(foodItemDTORequest, photo, principal);
+        radarService.checkAllRadarsOnFoodItemAndNotifyUsers(foodItemDTOResponse);
+        return foodItemDTOResponse;
     }
 
     @GetMapping("/{id}")

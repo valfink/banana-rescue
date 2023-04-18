@@ -18,10 +18,10 @@ export default function useChat(chatId: string | undefined, user: User | undefin
 
     function generateBrokerUrl(): string {
         if (process.env.NODE_ENV !== 'production') {
-            return "ws://localhost:8080/api/ws/chat";
+            return "ws://localhost:8080/api/ws";
         }
         const scheme = window.location.protocol === "https:" ? "wss" : "ws";
-        return `${scheme}://${window.location.hostname}:${window.location.port}/api/ws/chat`;
+        return `${scheme}://${window.location.hostname}:${window.location.port}/api/ws`;
     }
 
     useEffect(() => {
@@ -60,13 +60,15 @@ export default function useChat(chatId: string | undefined, user: User | undefin
                                             <h4>Message in another chat</h4>
                                             You received a message in another chat.<br/>Would you like to go there now to read
                                             it?
-                                            <section>
-                                                <Link to={`/chats/${newMessage.chatId}`} onClick={() => toast.dismiss(t.id)}
+                                            <footer>
+                                                <Link to={`/chats/${newMessage.chatId}`}
+                                                      onClick={() => toast.dismiss(t.id)}
                                                       className={"primary-button"}>Read message</Link>
-                                                <button className={"secondary-button"} onClick={() => toast.dismiss(t.id)}>Stay
+                                                <button className={"secondary-button"}
+                                                        onClick={() => toast.dismiss(t.id)}>Stay
                                                     here
                                                 </button>
-                                            </section>
+                                            </footer>
                                         </>
                                     ),
                                     {

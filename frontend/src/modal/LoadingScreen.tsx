@@ -1,9 +1,20 @@
 import "./LoadingScreen.css";
+import Modal from "react-modal";
 
-export default function LoadingScreen() {
+type LoadingScreenProps = {
+    modalIsOpen: boolean;
+}
+
+export default function LoadingScreen(props: LoadingScreenProps) {
     return (
-        <div className={"loading-screen"}>
+        <Modal
+            isOpen={props.modalIsOpen}
+            bodyOpenClassName={"has-open-modal"}
+            htmlOpenClassName={"has-open-modal"}
+            className={"modal loading-screen"}
+            overlayClassName={"loading-screen-overlay"}
+        >
             <span className={"spinner"}/>
-        </div>
+        </Modal>
     );
 }

@@ -8,6 +8,7 @@ import com.github.valfink.backend.mongouser.MongoUserDTOResponse;
 import com.github.valfink.backend.mongouser.MongoUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -23,10 +24,11 @@ class RadarServiceTest {
     RadarRepository radarRepository;
     MongoUserService mongoUserService;
     FoodItemService foodItemService;
+    SimpMessagingTemplate messagingTemplate;
     RadarService radarService;
     Principal principal;
     MongoUserDTOResponse mongoUserDTOResponse1, mongoUserDTOResponse2;
-    Radar radar1;
+    Radar radar1, radar2;
     RadarDTORequest radarDTORequest1;
     FoodItemDTOResponse foodItem1CloseBy, foodItem2NotSoClose, foodItem3CloseByButFromSameUser;
 
@@ -35,12 +37,14 @@ class RadarServiceTest {
         radarRepository = mock(RadarRepository.class);
         mongoUserService = mock(MongoUserService.class);
         foodItemService = mock(FoodItemService.class);
-        radarService = new RadarService(radarRepository, mongoUserService, foodItemService);
+        messagingTemplate = mock(SimpMessagingTemplate.class);
+        radarService = new RadarService(radarRepository, mongoUserService, foodItemService, messagingTemplate);
 
         principal = mock(Principal.class);
         mongoUserDTOResponse1 = new MongoUserDTOResponse("u1", "user");
         mongoUserDTOResponse2 = new MongoUserDTOResponse("u2", "user2");
         radar1 = new Radar(mongoUserDTOResponse1.id(), new Coordinate(new BigDecimal("52.5170365"), new BigDecimal("13.3888599")), 200);
+        radar2 = new Radar(mongoUserDTOResponse2.id(), new Coordinate(new BigDecimal("48.8534951"), new BigDecimal("2.3483915")), 200);
         radarDTORequest1 = new RadarDTORequest(radar1.center(), radar1.radiusInMeters());
         foodItem1CloseBy = new FoodItemDTOResponse(
                 "f1",
@@ -184,5 +188,19 @@ class RadarServiceTest {
         verify(radarRepository).findById(mongoUserDTOResponse1.id());
         verify(foodItemService).getAllFoodItems();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void checkAllRadarsOnFoodItemAndNotifyUsers_whenFoodItemIsInOneRadar_thenNotifyItsUser() {
+        // GIVEN
+        when(radarRepository.findAll()).thenReturn(List.of(radar1, radar2));
+        when(mongoUserService.getMongoUserDTOResponseById(radar1.userId())).thenReturn(mongoUserDTOResponse1);
+
+        // WHEN
+        radarService.checkAllRadarsOnFoodItemAndNotifyUsers(foodItem1CloseBy);
+
+        // THEN
+        verify(messagingTemplate).convertAndSendToUser(mongoUserDTOResponse1.username(), "/queue/radar", foodItem1CloseBy);
+        verifyNoMoreInteractions(messagingTemplate);
     }
 }

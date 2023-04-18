@@ -28,7 +28,7 @@ my [API Documentation](https://app.swaggerhub.com/apis-docs/VALENTINFINKE/Banana
 
 In order to run *BANANA RESCUE* in your environment, you will need to do the following:
 
-* download the repo
+* clone the repo
 * set up the following environment variables for the backend:
   * `MONGO_URI=mongodb://[SERVER]:[PORT]`
   * `CLOUDINARY_URL=cloudinary://[API_KEY]:[API_SECRET]@[CLOUD_NAME]`
@@ -36,4 +36,7 @@ In order to run *BANANA RESCUE* in your environment, you will need to do the fol
 * `cd` into the frontend folder and run: `npm ci`
 * start the frontend with: `npm start`
 
-## More infos to follow...!
+Please be aware that using the User's location when setting up the Radar in most Browsers requires an HTTPS connection,
+so for these environments that feature will not work in development mode.  
+I deliberately didn't set the `HTTPS=true` flag in the `start` command as this breaks the WebSocket connections.  
+This caveat only applies to the development environment, not production!
