@@ -10,8 +10,8 @@ import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoad
 import "./RadarForm.css";
 import axios from "axios";
 import {Radar} from "../model/Radar";
-import toast from "react-hot-toast";
 import {OpenStreetMapsSearchResult} from "../model/OpenStreetMapsSearchResult";
+import useGenerateToast from "../hook/useGenerateToast";
 
 type RadarFormProps = {
     postRadar: (radar: Radar) => void;
@@ -24,6 +24,7 @@ export default function RadarForm(props: RadarFormProps) {
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
     const {searchForCoordinates, foundCoordinate, setFoundCoordinate, coordinateError} = useCoordinate(setAppIsLoading);
     const radarLocation: Location = {title: "My Radar", coordinate: foundCoordinate};
+    const {errorToast} = useGenerateToast();
 
     function handleSearchTextInputChange(e: ChangeEvent<HTMLInputElement>) {
         setRadarCenterSearchText(e.target.value);
@@ -50,11 +51,11 @@ export default function RadarForm(props: RadarFormProps) {
                     setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
                 },
                 err => {
-                    toast.error(`Could not get current position from Browser 😱\n${err.message}`);
+                    errorToast("Could not get current position from Browser", err);
                     setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
                 });
         } else {
-            toast.error("Can't get current position from Browser 😱");
+            errorToast("Can't get current position from Browser", null);
         }
     }
 

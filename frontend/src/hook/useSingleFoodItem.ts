@@ -3,32 +3,36 @@ import {FoodItem} from "../model/FoodItem";
 import moment from "moment/moment";
 import {FoodItemFormData} from "../model/FoodItemFormData";
 import React, {useEffect, useState} from "react";
-import toast from "react-hot-toast";
+import useGenerateToast from "./useGenerateToast";
 
 export default function useSingleFoodItem(id: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     const [foodItem, setFoodItem] = useState<FoodItem>();
+    const {errorToast, successToast} = useGenerateToast();
     const API_URL = "/api/food";
 
     useEffect(() => {
-        setAppIsLoading(oldValue => oldValue + 1);
-        axios.get(`${API_URL}/${id}`)
-            .then(res => res.data as FoodItem)
-            .then(setFoodItem)
-            .catch(err => handleRequestError("Could not fetch food item", err))
-            .finally(() => {
-                setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
-            });
-    }, [id, setAppIsLoading]);
+        if (id) {
+            setAppIsLoading(oldValue => oldValue + 1);
+            axios.get(`${API_URL}/${id}`)
+                .then(res => res.data as FoodItem)
+                .then(setFoodItem)
+                .catch(err => errorToast("Could not fetch food item", err))
+                .finally(() => {
+                    setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
+                });
+        }
+    }, [errorToast, id, setAppIsLoading]);
 
     async function postNewFoodItem(formData: FoodItemFormData, photo: File | null) {
         setAppIsLoading(oldValue => oldValue + 1);
         const payload = createFormDataPayload(formData, photo);
         try {
             const res = await axios.post(API_URL, payload);
-            toast.success("Food item successfully added 🤗");
+            successToast("Food item successfully added");
             return res.data as FoodItem;
         } catch (err: any) {
-            return handleRequestError("Could not add food item", err);
+            errorToast("Could not add food item", err);
+            return Promise.reject(err);
         } finally {
             setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
         }
@@ -39,10 +43,11 @@ export default function useSingleFoodItem(id: string | undefined, setAppIsLoadin
         const payload = createFormDataPayload(formData, photo);
         try {
             const res = await axios.put(`${API_URL}/${id}`, payload);
-            toast.success("Food item successfully updated 🤗");
+            successToast("Food item successfully updated");
             return res.data as FoodItem;
         } catch (err: any) {
-            return handleRequestError("Could not update food item", err);
+            errorToast("Could not update food item", err);
+            return Promise.reject(err);
         } finally {
             setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
         }
@@ -52,10 +57,11 @@ export default function useSingleFoodItem(id: string | undefined, setAppIsLoadin
         setAppIsLoading(oldValue => oldValue + 1);
         try {
             await axios.delete(`${API_URL}/${id}/photo`);
-            toast.success("Photo successfully deleted 🤗");
+            successToast("Photo successfully deleted");
             return true;
         } catch (err: any) {
-            return handleRequestError("Could not delete photo from food item", err);
+            errorToast("Could not delete photo from food item", err);
+            return Promise.reject(err);
         } finally {
             setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
         }
@@ -65,10 +71,11 @@ export default function useSingleFoodItem(id: string | undefined, setAppIsLoadin
         setAppIsLoading(oldValue => oldValue + 1);
         try {
             await axios.delete(`${API_URL}/${id}`);
-            toast.success("Food item successfully deleted 🤗");
+            successToast("Food item successfully deleted");
             return true;
         } catch (err: any) {
-            return handleRequestError("Could not delete food item", err);
+            errorToast("Could not delete food item", err);
+            return Promise.reject(err);
         } finally {
             setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
         }
@@ -90,12 +97,5 @@ export default function useSingleFoodItem(id: string | undefined, setAppIsLoadin
         }));
 
         return payload;
-    }
-
-    function handleRequestError(userMessage: string, err: any) {
-        console.error(err);
-        const errorMsg = err.response?.data.error || err.response?.data.message || err.message;
-        toast.error(`${userMessage} 😱\n${errorMsg}`);
-        return Promise.reject(errorMsg);
     }
 }
