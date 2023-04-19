@@ -5,7 +5,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {UserContext, UserContextType} from "../context/UserContext";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import {FoodItemFormData} from "../model/FoodItemFormData";
-import {deleteFoodItem, deletePhotoFromFoodItem, postNewFoodItem, updateFoodItem} from "../util/foodItemRequests";
+import {deleteFoodItem, deletePhotoFromFoodItem, postNewFoodItem, updateFoodItem} from "../hook/foodItemRequests";
 import {FoodItem} from "../model/FoodItem";
 import moment from "moment";
 import "./FoodItemForm.css";
