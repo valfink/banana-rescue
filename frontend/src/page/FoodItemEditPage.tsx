@@ -2,7 +2,7 @@ import FoodItemForm from "../component/FoodItemForm";
 import {useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
-import {fetchSingleFoodItem} from "../hook/foodItemRequests";
+import {fetchSingleFoodItem} from "../hook/useSingleFoodItem";
 import {UserContext, UserContextType} from "../context/UserContext";
 import {FoodItem} from "../model/FoodItem";
 

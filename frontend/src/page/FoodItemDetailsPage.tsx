@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import "./FoodItemDetailsPage.css";
 import moment from "moment/moment";
-import {deleteFoodItem, fetchSingleFoodItem} from "../hook/foodItemRequests";
+import {deleteFoodItem, fetchSingleFoodItem} from "../hook/useSingleFoodItem";
 import {FoodItem} from "../model/FoodItem";
 import {UserContext, UserContextType} from "../context/UserContext";
 import DeletionWarningScreen from "../modal/DeletionWarningScreen";
