@@ -64,7 +64,7 @@ function App() {
                         <Route path={"/chats/:id"} element={<ChatDetailsPage/>}/>
                         <Route path={"/my-radar"} element={<RadarDetailsPage/>}/>
                     </Routes>
-                    <Toaster/>
+                    <Toaster containerClassName={"toast-container"}/>
                 </UserContext.Provider>
             </AppIsLoadingContext.Provider>
         </Div100vh>
