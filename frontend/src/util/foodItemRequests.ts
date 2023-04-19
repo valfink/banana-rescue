@@ -7,22 +7,6 @@ import toast from "react-hot-toast";
 
 const API_URL = "/api/food";
 
-export async function fetchFoodItems(setAppIsLoading: React.Dispatch<React.SetStateAction<number>>, fetchOnlyMyItems = false) {
-    let foodItems: FoodItem[] = [];
-
-    setAppIsLoading(oldValue => oldValue + 1);
-    try {
-        const response = await axios.get(API_URL + (fetchOnlyMyItems ? "/my-items" : ""));
-        foodItems = response.data as FoodItem[];
-    } catch (err: any) {
-        return handleRequestError("Could not fetch food items", err);
-    } finally {
-        setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
-    }
-
-    return foodItems;
-}
-
 export async function fetchSingleFoodItem(id: string | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     let foodItem: FoodItem | undefined;
 
