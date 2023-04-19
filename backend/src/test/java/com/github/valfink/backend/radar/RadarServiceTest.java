@@ -203,32 +203,4 @@ class RadarServiceTest {
         verify(messagingTemplate).convertAndSendToUser(mongoUserDTOResponse1.username(), "/queue/radar", foodItem1CloseBy);
         verifyNoMoreInteractions(messagingTemplate);
     }
-
-    @Test
-    void deleteMyRadar_whenUserHasRadar_thenDeleteItAndReturnString() {
-        // GIVEN
-        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
-        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
-        when(radarRepository.findById(mongoUserDTOResponse1.id())).thenReturn(Optional.of(radar1));
-
-        // WHEN
-        String expected = "Radar deleted";
-        String actual = radarService.deleteMyRadar(principal);
-
-        // THEN
-        verify(radarRepository).findById(mongoUserDTOResponse1.id());
-        verify(radarRepository).delete(radar1);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void deleteMyRadar_whenUserHasNoRadar_thenThrowException() {
-        // GIVEN
-        when(principal.getName()).thenReturn(mongoUserDTOResponse1.username());
-        when(mongoUserService.getMongoUserDTOResponseByUsername(mongoUserDTOResponse1.username())).thenReturn(mongoUserDTOResponse1);
-        when(radarRepository.findById(mongoUserDTOResponse1.id())).thenReturn(Optional.empty());
-
-        // WHEN & THEN
-        assertThrows(RadarExceptionNotFound.class, () -> radarService.deleteMyRadar(principal));
-    }
 }

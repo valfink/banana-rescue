@@ -62,12 +62,4 @@ public class RadarService {
                     }
                 });
     }
-
-    public String deleteMyRadar(Principal principal) {
-        MongoUserDTOResponse user = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
-        Radar radar = radarRepository.findById(user.id())
-                .orElseThrow(() -> new RadarExceptionNotFound("You have not set up a Radar yet."));
-        radarRepository.delete(radar);
-        return "Radar deleted";
-    }
 }
