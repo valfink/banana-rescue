@@ -21,7 +21,7 @@ import Div100vh from "react-div-100vh";
 import RadarDetailsPage from "./page/RadarDetailsPage";
 import useWebSocketNotifications from "./hook/useWebSocketNotifications";
 
-axios.defaults.timeout = 15000;
+axios.defaults.timeout = 15_000;
 axios.interceptors.request.use(config => {
     if (["put", "post", "delete"].includes(config.method || "")) {
         return fetch("/api/csrf")
