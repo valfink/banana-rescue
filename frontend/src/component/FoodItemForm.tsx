@@ -5,13 +5,13 @@ import {Link, useNavigate} from "react-router-dom";
 import {UserContext, UserContextType} from "../context/UserContext";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import {FoodItemFormData} from "../model/FoodItemFormData";
-import {deleteFoodItem, deletePhotoFromFoodItem, postNewFoodItem, updateFoodItem} from "../hook/useSingleFoodItem";
 import {FoodItem} from "../model/FoodItem";
 import moment from "moment";
 import "./FoodItemForm.css";
 import DeletionWarningScreen from "../modal/DeletionWarningScreen";
 import SetCoordinateScreen from "../modal/SetCoordinateScreen";
 import useCoordinate from "../hook/useCoordinate";
+import useSingleFoodItem from "../hook/useSingleFoodItem";
 
 type FoodItemFormProps = {
     action: "add" | "edit";
@@ -37,6 +37,12 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     const {redirectIfNotSignedIn} = useContext(UserContext) as UserContextType;
     const {setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
     const {searchForCoordinates, foundCoordinate, coordinateError} = useCoordinate(setAppIsLoading);
+    const {
+        deleteFoodItem,
+        deletePhotoFromFoodItem,
+        postNewFoodItem,
+        updateFoodItem
+    } = useSingleFoodItem(props.oldFoodItem?.id, setAppIsLoading);
 
     function setInputTypeToDateOrTime(e: React.FocusEvent<HTMLInputElement>) {
         if (e.target.dataset.hasFocus === "false") {
@@ -94,7 +100,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
         if (props.action === "add") {
             let navigateOptions = {state: {successMessage: "Food item successfully added."}};
 
-            postNewFoodItem(dataToSubmit, photo, setAppIsLoading)
+            postNewFoodItem(dataToSubmit, photo)
                 .then(foodItemResponse => {
                     navigate(`/food/${foodItemResponse.id}`, navigateOptions);
                 })
@@ -105,7 +111,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
             } else {
                 let navigateOptions = {state: {successMessage: "Food item successfully updated."}};
 
-                updateFoodItem(props.oldFoodItem.id, dataToSubmit, photo, setAppIsLoading)
+                updateFoodItem(dataToSubmit, photo)
                     .then(foodItemResponse => {
                         navigate(`/food/${foodItemResponse.id}`, navigateOptions);
                     })
@@ -123,7 +129,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     }
 
     function handleDeletePhotoClick() {
-        deletePhotoFromFoodItem(props.oldFoodItem?.id || "", setAppIsLoading)
+        deletePhotoFromFoodItem()
             .then(() => setOldPhotoUri(undefined))
             .catch(setFormError)
             .finally(() => {
@@ -140,7 +146,7 @@ export default function FoodItemForm(props: FoodItemFormProps) {
     }
 
     function handleDeleteFoodItemClick() {
-        deleteFoodItem(props.oldFoodItem?.id || "", setAppIsLoading)
+        deleteFoodItem()
             .then(() => {
                 navigate("/");
             })
