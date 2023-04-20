@@ -21,7 +21,7 @@ import Div100vh from "react-div-100vh";
 import RadarDetailsPage from "./page/RadarDetailsPage";
 import useWebSocketNotifications from "./hook/useWebSocketNotifications";
 
-axios.defaults.timeout = 5000;
+axios.defaults.timeout = 15_000;
 axios.interceptors.request.use(config => {
     if (["put", "post", "delete"].includes(config.method || "")) {
         return fetch("/api/csrf")
@@ -64,7 +64,7 @@ function App() {
                         <Route path={"/chats/:id"} element={<ChatDetailsPage/>}/>
                         <Route path={"/my-radar"} element={<RadarDetailsPage/>}/>
                     </Routes>
-                    <Toaster/>
+                    <Toaster containerClassName={"toast-container"}/>
                 </UserContext.Provider>
             </AppIsLoadingContext.Provider>
         </Div100vh>

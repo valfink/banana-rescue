@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {Radar} from "../model/Radar";
 import axios from "axios";
-import toast from "react-hot-toast";
+import useGenerateToast from "./useGenerateToast";
 
 export default function useRadar(setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     const [radar, setRadar] = useState<Radar | undefined>(undefined);
     const [radarHasBeenSet, setRadarHasBeenSet] = useState(true);
+    const {errorToast, successToast} = useGenerateToast();
 
     useEffect(() => {
         setAppIsLoading(oldValue => oldValue + 1);
@@ -16,25 +17,23 @@ export default function useRadar(setAppIsLoading: React.Dispatch<React.SetStateA
                 if (err.response.status === 404) {
                     setRadarHasBeenSet(false);
                 } else {
-                    console.error(err);
-                    toast.error(`Could not fetch radar 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
+                    errorToast("Could not fetch radar", err);
                 }
             })
             .finally(() => {
                 setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
             });
-    }, [setAppIsLoading]);
+    }, [errorToast, setAppIsLoading]);
 
     function postRadar(radar: Radar) {
         axios.post("/api/my-radar", radar)
             .then((res) => {
                 setRadar(res.data);
                 setRadarHasBeenSet(true);
-                toast.success("Radar successfully added 🤗");
+                successToast("Radar successfully added");
             })
             .catch(err => {
-                console.error(err);
-                toast.error(`Could not post radar 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
+                errorToast("Could not post radar", err);
             })
     }
 

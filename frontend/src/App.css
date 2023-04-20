@@ -16,12 +16,15 @@
 
 .App {
     background-color: var(--dark-bg);
-    max-width: 750px;
-    margin: auto;
     overflow: auto;
     box-sizing: border-box;
     display: flex;
     flex-flow: column nowrap;
+}
+
+.App, .toast-container {
+    max-width: 750px;
+    margin: auto;
 }
 
 .App > *:not(header, footer) {

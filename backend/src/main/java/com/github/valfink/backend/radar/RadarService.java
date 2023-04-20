@@ -29,7 +29,7 @@ public class RadarService {
                 .toList();
     }
 
-    public RadarDTOResponse addRadar(RadarDTORequest radarDTORequest, Principal principal) {
+    public RadarDTOResponse addMyRadar(RadarDTORequest radarDTORequest, Principal principal) {
         MongoUserDTOResponse user = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
 
         if (radarRepository.existsById(user.id())) {
@@ -44,7 +44,7 @@ public class RadarService {
         return radar.convertToDTOResponse(getFoodItemsForRadar(radar));
     }
 
-    public RadarDTOResponse getRadar(Principal principal) {
+    public RadarDTOResponse getMyRadar(Principal principal) {
         MongoUserDTOResponse user = mongoUserService.getMongoUserDTOResponseByUsername(principal.getName());
         Radar radar = radarRepository.findById(user.id())
                 .orElseThrow(() -> new RadarExceptionNotFound("You have not set up a Radar yet."));

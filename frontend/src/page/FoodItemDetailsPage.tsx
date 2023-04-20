@@ -1,29 +1,22 @@
 import {Link, useNavigate, useParams} from "react-router-dom";
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import {AppIsLoadingContext, AppIsLoadingContextType} from "../context/AppIsLoadingContext";
 import "./FoodItemDetailsPage.css";
 import moment from "moment/moment";
-import {deleteFoodItem, fetchSingleFoodItem} from "../util/foodItemRequests";
-import {FoodItem} from "../model/FoodItem";
 import {UserContext, UserContextType} from "../context/UserContext";
 import DeletionWarningScreen from "../modal/DeletionWarningScreen";
 import useChat from "../hook/useChat";
 import BananaMap from "../component/BananaMap";
+import useSingleFoodItem from "../hook/useSingleFoodItem";
 
 export default function FoodItemDetailsPage() {
     const {id} = useParams();
     const {appIsLoading, setAppIsLoading} = useContext(AppIsLoadingContext) as AppIsLoadingContextType;
-    const [foodItem, setFoodItem] = useState<FoodItem | undefined>(undefined);
+    const {deleteFoodItem, foodItem} = useSingleFoodItem(id, setAppIsLoading);
     const {user} = useContext(UserContext) as UserContextType;
     const [showDeleteFoodItemModal, setShowDeleteFoodItemModal] = useState(false);
     const navigate = useNavigate();
     const {startNewChat} = useChat(undefined, user, setAppIsLoading);
-
-    useEffect(() => {
-        fetchSingleFoodItem(id, setAppIsLoading)
-            .then(setFoodItem)
-            .catch(console.error);
-    }, [id, setAppIsLoading]);
 
     function handleDeleteButtonClick() {
         setShowDeleteFoodItemModal(true);
@@ -34,7 +27,7 @@ export default function FoodItemDetailsPage() {
     }
 
     function handleDeleteItemClick() {
-        deleteFoodItem(foodItem?.id || "", setAppIsLoading)
+        deleteFoodItem()
             .then(() => {
                 navigate("/");
             })

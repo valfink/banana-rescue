@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Chat} from "../model/Chat";
 import {Client} from "@stomp/stompjs";
 import {ChatMessage} from "../model/ChatMessage";
@@ -8,6 +8,7 @@ import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Link} from "react-router-dom";
 import {User} from "../model/User";
+import useGenerateToast from "./useGenerateToast";
 
 export default function useChat(chatId: string | undefined, user: User | undefined, setAppIsLoading: React.Dispatch<React.SetStateAction<number>>) {
     const API_BROKER_URL = generateBrokerUrl();
@@ -15,6 +16,9 @@ export default function useChat(chatId: string | undefined, user: User | undefin
     const API_PUBLISH_ENDPOINT = `/api/ws/chat/${chatId}`;
     const [chat, setChat] = useState<Chat | undefined>(undefined);
     const [client, setClient] = useState(new Client());
+    const [errorOnInit, setErrorOnInit] = useState<{ message: string, err: any }>();
+    const [messageToMarkAsRead, setMessageToMarkAsRead] = useState<ChatMessage>();
+    const {errorToast} = useGenerateToast();
 
     function generateBrokerUrl(): string {
         if (process.env.NODE_ENV !== 'production') {
@@ -24,6 +28,41 @@ export default function useChat(chatId: string | undefined, user: User | undefin
         return `${scheme}://${window.location.hostname}:${window.location.port}/api/ws`;
     }
 
+    function markAllUnreadMessagesAsRead() {
+        if (chat && user) {
+            chat.messages
+                .filter(message => message.isUnread && message.senderId !== user.id)
+                .forEach(message => markSingleMessageAsRead(message.id))
+        }
+    }
+
+    const markSingleMessageAsRead = useCallback((messageId: string) => {
+        axios.put(`/api/chats/read/${messageId}`)
+            .then(response => response.data as ChatMessage)
+            .then(readMessage => setChat(chat => chat && ({
+                ...chat,
+                messages: chat.messages.map(message => message.id !== readMessage.id ? message : readMessage),
+                hasUnreadMessages: false
+            })))
+            .catch(err => {
+                errorToast("Could not mark message as read", err);
+            })
+    }, [errorToast]);
+
+    useEffect(() => {
+        if (errorOnInit) {
+            errorToast(errorOnInit.message, errorOnInit.err);
+            setErrorOnInit(undefined);
+        }
+    }, [errorOnInit, errorToast]);
+
+    useEffect(() => {
+        if (messageToMarkAsRead) {
+            setTimeout(() => markSingleMessageAsRead(messageToMarkAsRead.id), 5_000);
+            setMessageToMarkAsRead(undefined);
+        }
+    }, [markSingleMessageAsRead, messageToMarkAsRead]);
+
     useEffect(() => {
         if (chatId) {
             setAppIsLoading(oldValue => oldValue + 1);
@@ -31,7 +70,7 @@ export default function useChat(chatId: string | undefined, user: User | undefin
                 .then(res => res.data)
                 .then(setChat)
                 .catch(err => {
-                    toast.error(`Could not fetch chat 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
+                    setErrorOnInit({message: "Could not fetch chat", err: err});
                 })
                 .finally(() => {
                     setAppIsLoading(oldValue => Math.max(0, oldValue - 1));
@@ -52,7 +91,7 @@ export default function useChat(chatId: string | undefined, user: User | undefin
                                     ]
                                 });
                                 if (newMessage.senderId !== user?.id) {
-                                    setTimeout(() => markSingleMessageAsRead(newMessage.id), 5_000);
+                                    setMessageToMarkAsRead(newMessage);
                                 }
                             } else {
                                 toast((t) => (
@@ -100,34 +139,12 @@ export default function useChat(chatId: string | undefined, user: User | undefin
         return axios.post(`/api/chats?foodItemId=${foodItemId}`)
             .then(res => res.data)
             .catch(err => {
-                console.error(err);
-                toast.error(`Could not start a chat 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
+                errorToast("Could not start a chat", err);
                 return Promise.reject(err);
             })
             .finally(() => {
                 setAppIsLoading(oldValue => oldValue - 1);
             });
-    }
-
-    function markAllUnreadMessagesAsRead() {
-        if (chat && user) {
-            chat.messages
-                .filter(message => message.isUnread && message.senderId !== user.id)
-                .forEach(message => markSingleMessageAsRead(message.id))
-        }
-    }
-
-    function markSingleMessageAsRead(messageId: string) {
-        axios.put(`/api/chats/read/${messageId}`)
-            .then(response => response.data as ChatMessage)
-            .then(readMessage => setChat(chat => chat && ({
-                ...chat,
-                messages: chat.messages.map(message => message.id !== readMessage.id ? message : readMessage),
-                hasUnreadMessages: false
-            })))
-            .catch(err => {
-                toast.error(`Could not mark message as read 😱\n${err.response?.data.error || err.response?.data.message || err.message}`);
-            })
     }
 
     return {chat, sendNewMessage, startNewChat, markAllUnreadMessagesAsRead}
