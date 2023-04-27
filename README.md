@@ -4,9 +4,8 @@ Banana Rescue is my capstone project for the coding bootcamp *Web Development wi
 *neuefische*.  
 The app helps users to reduce food waste by sharing what they are not able to consume.
 
-If you have food that you want to share, you can take a picture of it, put it in the app together with some infos – the
-name, until when you need it to be picked up, until when it can be consumed, where it is located, a comment – and the
-other users can write you a message in order to pick it up.
+If you have food that you want to share, you can take a picture of it, put it in the app together with some infos and the
+other users can start a real-time chat with you in order to pick it up. You can even set up a radar to get live notifications whenever there is a new item nearby!
 
 ## Technology
 
