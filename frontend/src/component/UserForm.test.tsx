@@ -32,5 +32,18 @@ describe("The user form", () => {
         const usernameTextbox = screen.getByPlaceholderText("Username");
         await userEvent.type(usernameTextbox, "User_a");
         expect(usernameTextbox).toHaveValue("User_a");
+    });
+
+    it("updates password state correctly", async () => {
+        render(
+            <BrowserRouter>
+                <UserContext.Provider value={mockedUserContext}>
+                    <UserForm action={"login"}/>
+                </UserContext.Provider>
+            </BrowserRouter>
+        );
+        const usernameTextbox = screen.getByPlaceholderText("Password");
+        await userEvent.type(usernameTextbox, "Pass");
+        expect(usernameTextbox).toHaveValue("Pass");
     })
 });
